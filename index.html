@@ -1,1 +1,867 @@
-hi
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="icon" type="image/png" href="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" />
+<title>Cloud iNIT </title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#050507;--black-2:#0a0a0d;
+  --panel:#0e0e12;--panel-2:#131318;
+  --line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.18);--line-3:rgba(255,255,255,.3);
+  --white:#f5f5f7;--g1:#c7c7cc;--g2:#8e8e93;--g3:#5c5c60;
+  --r:16px;
+  /* Apple-glass tokens */
+  --glass-fill:rgba(255,255,255,.055);
+  --glass-fill-2:rgba(255,255,255,.09);
+  --glass-border:rgba(255,255,255,.14);
+  --glass-highlight:rgba(255,255,255,.35);
+  --glass-blur:28px;
+  --r-glass:26px;
+  --accent-a:#5ac8fa;--accent-b:#0a84ff;--accent-c:#bf5af2;
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Space Grotesk',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden;line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:var(--white);color:var(--black)}
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#4a4a48,#f3f3f1);z-index:9999;width:0;transition:width .1s linear}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;
+  background:rgba(10,10,14,.5);backdrop-filter:blur(var(--glass-blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(180%);border-bottom:1px solid var(--glass-border);transition:background .4s ease,box-shadow .4s ease,height .4s ease}
+nav::after{content:'';position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,var(--glass-highlight) 50%,transparent)}
+nav.nav-scrolled{background:rgba(10,10,14,.72);box-shadow:0 12px 40px rgba(0,0,0,.35);height:60px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.14em;color:var(--white);font-family:'Space Mono',monospace}
+.logo img{width:30px;height:30px;border-radius:50%;object-fit:cover;background:#000}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{text-decoration:none;color:var(--g2);font-size:13px;font-weight:500;padding:8px 16px;border-radius:9px;transition:.2s;letter-spacing:.02em}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,.06)}
+.nav-cta{background:var(--white)!important;color:#000!important;font-weight:700!important;letter-spacing:.03em}
+.nav-cta:hover{background:var(--g1)!important;transform:translateY(-1px)}
+
+/* HERO */
+#hero-canvas{position:absolute;inset:0;z-index:0}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:110px 20px 80px;overflow:hidden}
+
+/* ── Parallax depth orbs ── */
+.hero-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.35;pointer-events:none;z-index:0;will-change:transform}
+.hero-orb-a{width:420px;height:420px;top:-8%;left:-6%;background:radial-gradient(circle,var(--accent-b),transparent 70%)}
+.hero-orb-b{width:360px;height:360px;bottom:-10%;right:-4%;background:radial-gradient(circle,var(--accent-c),transparent 70%)}
+.hero-orb-c{width:260px;height:260px;top:38%;left:60%;background:radial-gradient(circle,var(--accent-a),transparent 70%);opacity:.22}
+
+/* ── Global cursor glow (trailing light) ── */
+.cursor-glow{position:fixed;top:0;left:0;width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.05),transparent 70%);
+  pointer-events:none;z-index:2;transform:translate(-50%,-50%);mix-blend-mode:screen}
+
+/* ── Cursor-tracked glass shine on panels (Apple "liquid glass" refraction) ── */
+.glass-shine{position:relative}
+.glass-shine::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+  background:radial-gradient(circle 180px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.16), transparent 60%);
+  transition:opacity .4s ease;z-index:2;
+}
+.glass-shine:hover::before{opacity:1}
+
+/* ── Magnetic buttons ── */
+.magnetic{will-change:transform}
+.hero-badge{display:inline-flex;align-items:center;gap:9px;background:var(--glass-fill);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);border-radius:40px;padding:7px 18px;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);margin-bottom:30px;position:relative;z-index:1;font-family:'Space Mono',monospace;box-shadow:inset 0 1px 0 var(--glass-highlight),0 8px 24px rgba(0,0,0,.25)}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--white);animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.hero h1{font-size:clamp(52px,8vw,98px);font-weight:700;letter-spacing:-.04em;line-height:.98;margin-bottom:22px;position:relative;z-index:1;perspective:600px}
+.hero h1 .line1{display:block;background:linear-gradient(120deg,#fff 20%,#c7c7c4 60%,#8c8c89 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;transform-style:preserve-3d}
+.hero h1 .line1 .chr{-webkit-text-fill-color:var(--white);color:var(--white)}
+.hero-sub{font-size:17px;color:var(--g2);max-width:500px;margin:0 auto 46px;position:relative;z-index:1;min-height:1.8em}
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:50px;position:relative;z-index:1}
+.pill{padding:9px 20px;border-radius:40px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--glass-fill);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);color:var(--g1);border:1px solid var(--glass-border);transition:.35s cubic-bezier(.22,1,.36,1);cursor:default;font-family:'Space Mono',monospace;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.pill:hover{background:var(--glass-fill-2);border-color:var(--glass-highlight);color:var(--white);transform:translateY(-3px)}
+.hero-btns{display:flex;gap:14px;position:relative;z-index:1}
+.btn-primary{background:var(--white);color:#000;font-weight:700;font-size:14px;padding:14px 32px;border-radius:999px;text-decoration:none;transition:.35s cubic-bezier(.22,1,.36,1);border:none;font-family:inherit;cursor:pointer;letter-spacing:.02em;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 12px 30px rgba(255,255,255,.06)}
+.btn-primary:hover{transform:translateY(-2px) scale(1.03);background:var(--g1);box-shadow:0 20px 50px rgba(255,255,255,.12)}
+.btn-ghost{background:var(--glass-fill);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);color:var(--white);font-weight:600;font-size:14px;padding:14px 32px;border-radius:999px;text-decoration:none;border:1px solid var(--glass-border);transition:.35s cubic-bezier(.22,1,.36,1);font-family:inherit;cursor:pointer;letter-spacing:.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.btn-ghost:hover{background:var(--glass-fill-2);border-color:var(--glass-highlight);transform:translateY(-2px) scale(1.03)}
+.scroll-cue{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--g3);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;z-index:1;animation:bob 2.6s ease-in-out infinite;font-family:'Space Mono',monospace}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);opacity:.4}50%{transform:translateX(-50%) translateY(8px);opacity:.9}}
+.scroll-line{width:1px;height:40px;background:linear-gradient(180deg,transparent,var(--line-3))}
+
+section,.section{position:relative;z-index:1}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--g3);margin-bottom:14px;font-family:'Space Mono',monospace}
+
+/* ABOUT ROW */
+.about-row{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;max-width:1080px;margin:0 auto;padding:130px 32px}
+.about-text h2{font-size:clamp(34px,4.5vw,56px);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px}
+.about-text h2 em{font-style:normal;color:var(--g1)}
+.about-text p{font-size:15px;color:var(--g2);line-height:1.85}
+.about-3d{perspective:900px;display:flex;align-items:center;justify-content:center}
+.cube3d-big{width:220px;height:220px;transform-style:preserve-3d;animation:cube-spin 14s linear infinite;position:relative}
+.cube3d-big .face{position:absolute;width:220px;height:220px;display:flex;align-items:center;justify-content:center;font-size:48px;border:1px solid var(--glass-border);border-radius:28px;background:linear-gradient(155deg,rgba(255,255,255,.07),rgba(255,255,255,.015));backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);box-shadow:inset 0 1px 0 var(--glass-highlight)}
+.cube3d-big .face img{opacity:.95}
+.cube3d-big .f-front{transform:translateZ(110px)}
+.cube3d-big .f-back{transform:translateZ(-110px) rotateY(180deg)}
+.cube3d-big .f-left{transform:translateX(-110px) rotateY(-90deg)}
+.cube3d-big .f-right{transform:translateX(110px) rotateY(90deg)}
+.cube3d-big .f-top{transform:translateY(-110px) rotateX(90deg)}
+.cube3d-big .f-bottom{transform:translateY(110px) rotateX(-90deg)}
+@keyframes cube-spin{0%{transform:rotateX(15deg) rotateY(0deg)}100%{transform:rotateX(15deg) rotateY(360deg)}}
+
+/* FEATURES */
+.feat-intro{text-align:center;padding:100px 20px 60px}
+.feat-intro h2{font-size:clamp(30px,4.5vw,54px);font-weight:700;letter-spacing:-.03em;margin-bottom:14px}
+.feat-intro p{color:var(--g2);font-size:15px;max-width:440px;margin:0 auto}
+.sticky-outer{position:relative}
+.sticky-track{height:calc(9 * 100vh)}
+.sticky-panel{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;perspective:1200px}
+.feat-3d-card{
+  width:min(900px,92vw);padding:56px 60px;
+  background:linear-gradient(155deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid var(--glass-border);border-radius:var(--r-glass);
+  backdrop-filter:blur(var(--glass-blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(180%);
+  display:grid;grid-template-columns:1fr auto;gap:56px;align-items:center;
+  transform-style:preserve-3d;
+  opacity:0;transform:translateZ(-80px) rotateX(12deg);
+  transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1);
+  position:relative;
+}
+.feat-3d-card.show{opacity:1;transform:translateZ(0) rotateX(0deg);box-shadow:0 40px 100px rgba(0,0,0,.55),inset 0 1px 0 var(--glass-highlight)}
+.feat-3d-card::before{content:'';position:absolute;inset:0;border-radius:24px;background:radial-gradient(ellipse 80% 60% at 20% 30%,rgba(255,255,255,.035),transparent 60%);pointer-events:none}
+.feat-inner-num{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:var(--g3);margin-bottom:12px}
+.feat-inner-title{font-size:clamp(26px,3.5vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:18px}
+.feat-inner-title em{font-style:normal;color:var(--g1)}
+.feat-inner-desc{font-size:15px;color:var(--g2);line-height:1.8;max-width:380px}
+.feat-visual{position:relative;width:180px;height:180px;flex-shrink:0}
+.feat-visual-orb{width:180px;height:180px;border-radius:32px;overflow:hidden;border:1px solid var(--glass-border);box-shadow:inset 0 0 30px rgba(0,0,0,.4),inset 0 1px 0 var(--glass-highlight);display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,0));backdrop-filter:blur(10px)}
+.feat-visual-orb img{width:100%;height:100%;object-fit:cover;opacity:.95}
+.feat-glow{position:absolute;inset:-20px;border-radius:36px;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.06),transparent 70%);pointer-events:none;animation:glow-pulse 3s ease-in-out infinite}
+@keyframes glow-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.bg-index-num{position:absolute;right:5vw;bottom:10vh;font-size:clamp(160px,22vw,300px);font-weight:700;font-family:'Space Mono',monospace;color:rgba(255,255,255,.025);line-height:1;user-select:none;pointer-events:none;letter-spacing:-.06em}
+
+.side-dots{position:fixed;right:28px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:200;opacity:0;transition:.4s}
+.side-dots.vis{opacity:1}
+.sdot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid var(--line-3);transition:.3s;cursor:pointer}
+.sdot.on{background:var(--white);box-shadow:0 0 10px rgba(255,255,255,.5);transform:scale(1.5)}
+
+/* STATS */
+.stats-section{padding:80px 20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.stats-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 100% at 50% 50%,rgba(255,255,255,.03),transparent);pointer-events:none}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1000px;margin:0 auto}
+.stat-cell{background:var(--glass-fill);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-border);border-radius:20px;padding:48px 32px;text-align:center;position:relative;overflow:hidden;transition:.35s cubic-bezier(.22,1,.36,1);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.stat-cell:hover{background:var(--glass-fill-2);transform:translateY(-4px)}
+.stat-cell::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:40%;height:1px;background:linear-gradient(90deg,transparent,var(--white),transparent);opacity:0;transition:.3s}
+.stat-cell:hover::after{opacity:.6}
+.stat-val{font-size:42px;font-weight:700;font-family:'Space Mono',monospace;color:var(--white);letter-spacing:-.04em;line-height:1;margin-bottom:10px}
+.stat-lbl{font-size:11px;font-weight:600;color:var(--g2);text-transform:uppercase;letter-spacing:.12em}
+
+/* DOWNLOAD */
+.dl-wrap{max-width:1040px;margin:0 auto;padding:130px 32px 90px}
+.dl-wrap>h2{font-size:clamp(32px,4.5vw,52px);font-weight:700;letter-spacing:-.03em;text-align:center;margin-bottom:10px}
+.dl-wrap>h2 span{color:var(--g1)}
+.dl-wrap>.sub{text-align:center;color:var(--g2);font-size:15px;margin-bottom:56px}
+.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.dl-card{background:linear-gradient(155deg,rgba(255,255,255,.07),rgba(255,255,255,.015));backdrop-filter:blur(var(--glass-blur)) saturate(160%);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(160%);border:1px solid var(--glass-border);border-radius:var(--r-glass);overflow:hidden;transition:.5s cubic-bezier(.34,1.56,.64,1);opacity:0;transform:translateY(28px);transform-style:preserve-3d;box-shadow:inset 0 1px 0 var(--glass-highlight)}
+.dl-card.show{opacity:1;transform:translateY(0)}
+.dl-card:nth-child(2){transition-delay:.12s}
+.dl-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 32px 80px rgba(0,0,0,.5);border-color:var(--glass-highlight)}
+.dl-screen{width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;border-bottom:1px solid var(--line)}
+.dl-screen img{width:100%;height:100%;object-fit:cover;opacity:.65;transition:.4s}
+.dl-card:hover .dl-screen img{opacity:.9}
+.dl-screen-tag{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:8px;background:rgba(4,4,4,.85);color:var(--white);border:1px solid var(--line-2);backdrop-filter:blur(8px);font-family:'Space Mono',monospace}
+.dl-body{padding:24px 26px 28px}
+.dl-plat-title{font-size:14px;font-weight:700;margin-bottom:20px;color:var(--white);font-family:'Space Mono',monospace;letter-spacing:.02em}
+.dl-plat-title span{color:var(--g1)}
+.batch-block{background:var(--glass-fill);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:10px;transition:.25s}
+.batch-block:hover{border-color:var(--glass-border);background:var(--glass-fill-2)}
+.batch-head{padding:8px 14px;font-size:10px;font-weight:700;color:var(--g2);letter-spacing:.1em;border-bottom:1px solid var(--line);background:rgba(255,255,255,.015);font-family:'Space Mono',monospace}
+.batch-row{display:flex;gap:8px;padding:8px 14px}
+.btn-tog{padding:5px 14px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;outline:none;transition:.2s;font-family:'Space Mono',monospace}
+.btn-online{background:rgba(255,255,255,.05);color:var(--white);border:1px solid var(--line-2)!important}
+.btn-online:hover,.btn-online.on{background:var(--white);color:#000;box-shadow:0 0 16px rgba(255,255,255,.15)}
+.btn-offline{background:rgba(255,255,255,.02);color:var(--g1);border:1px solid var(--line)!important}
+.btn-offline:hover,.btn-offline.on{background:var(--g1);color:#000;box-shadow:0 0 16px rgba(255,255,255,.1)}
+.reveal{max-height:0;overflow:hidden;transition:max-height .3s ease,opacity .3s,padding .3s;opacity:0;padding:0 14px;background:rgba(255,255,255,.02)}
+.reveal.open{max-height:50px;opacity:1;padding:8px 14px;border-top:1px solid var(--line)}
+.dl-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:10px;font-weight:700;padding:5px 14px;border-radius:7px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);color:var(--g1);transition:.2s;font-family:'Space Mono',monospace;letter-spacing:.04em}
+.dl-link:hover{background:var(--white);border-color:var(--white);color:#000;transform:translateX(3px)}
+
+footer{text-align:center;padding:56px 20px;color:var(--g3);font-size:13px;border-top:1px solid var(--line);position:relative;z-index:1}
+footer a{color:var(--g1);text-decoration:none;transition:.2s}
+footer a:hover{color:var(--white)}
+.footer-credit{margin-top:22px;font-size:12px;color:var(--g3)}
+
+/* ── GLASS ICON BUTTONS w/ hover name-reveal ── */
+.social-row{display:flex;align-items:center;justify-content:center;gap:16px}
+.icon-btn{
+  position:relative;width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--glass-fill);border:1px solid var(--glass-border);
+  backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+  box-shadow:inset 0 1px 0 var(--glass-highlight),0 8px 20px rgba(0,0,0,.25);
+  color:var(--g1);text-decoration:none;overflow:visible;
+}
+.icon-btn svg{width:20px;height:20px;position:relative;z-index:1;transition:color .3s ease}
+.icon-btn:hover{color:var(--white)}
+.icon-tip{
+  position:absolute;bottom:calc(100% + 12px);left:50%;
+  transform:translate(-50%,6px);
+  white-space:nowrap;padding:7px 14px;border-radius:10px;
+  background:rgba(20,20,26,.7);border:1px solid var(--glass-border);
+  backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+  box-shadow:inset 0 1px 0 var(--glass-highlight),0 10px 30px rgba(0,0,0,.4);
+  color:var(--white);font-size:11px;font-weight:600;letter-spacing:.03em;
+  font-family:'Space Mono',monospace;
+  opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s cubic-bezier(.22,1,.36,1);
+  z-index:20;
+}
+.icon-tip::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:rgba(20,20,26,.7);
+}
+
+#toasts{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none}
+.tst{background:rgba(20,20,26,.65);color:var(--g1);padding:10px 18px;border-radius:14px;font-size:12px;border:1px solid var(--glass-border);border-left:2px solid var(--accent-a);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);box-shadow:0 8px 40px rgba(0,0,0,.5),inset 0 1px 0 var(--glass-highlight);opacity:0;transform:translateX(14px);transition:.28s;max-width:280px;font-family:'Space Mono',monospace}
+.tst.in{opacity:1;transform:translateX(0)}
+
+@media(max-width:768px){
+  nav{padding:0 20px;height:60px}
+  .logo{font-size:12px;gap:8px}
+  .logo img{width:26px;height:26px;border-radius:50%;object-fit:cover}
+  .nav-links a{padding:7px 12px;font-size:12px}
+  .hero{padding:90px 18px 70px}
+  .hero-sub{font-size:15px;padding:0 8px}
+  .hero-pills{gap:8px}
+  .pill{padding:7px 14px;font-size:10px}
+  .about-row{grid-template-columns:1fr;padding:80px 20px;gap:36px}
+  .about-3d{display:none}
+  .feat-intro{padding:70px 20px 44px}
+  .sticky-track{height:calc(9 * 88vh)}
+  .feat-3d-card{grid-template-columns:1fr;padding:32px 22px;gap:22px;width:94vw}
+  .feat-3d-card > div:first-child{order:2}
+  .feat-visual{order:1;width:110px;height:110px;margin:0 auto}
+  .feat-visual-orb{width:110px;height:110px}
+  .feat-inner-desc{max-width:100%}
+  .bg-index-num{display:none}
+  .dl-grid{grid-template-columns:1fr}
+  .dl-wrap{padding:90px 20px 60px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-cell{padding:34px 16px}
+  .stat-val{font-size:32px}
+  .hero-btns{flex-direction:column;align-items:stretch;width:100%;max-width:320px}
+  .btn-primary,.btn-ghost{text-align:center}
+  .side-dots{display:none}
+  #toasts{left:16px;right:16px;bottom:16px}
+  .tst{max-width:none}
+}
+
+@media(max-width:480px){
+  nav{padding:0 14px}
+  .logo span,.nav-links a:not(.nav-cta){font-size:11px}
+  .nav-links{gap:2px}
+  .nav-links a:not(.nav-cta){padding:6px 9px}
+  .hero-badge{font-size:9.5px;padding:6px 14px;letter-spacing:.12em}
+  .hero h1{letter-spacing:-.03em}
+  .about-text h2{font-size:30px}
+  .feat-intro h2{font-size:28px}
+  .feat-3d-card{padding:26px 18px}
+  .feat-inner-title{font-size:24px}
+  .feat-inner-desc{font-size:13.5px}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:1px}
+  .stat-val{font-size:26px}
+  .stat-lbl{font-size:9.5px;letter-spacing:.08em}
+  .dl-plat-title{font-size:12.5px}
+  .batch-row{flex-wrap:wrap}
+  .btn-tog{padding:7px 14px;font-size:10.5px}
+  footer{padding:44px 16px;font-size:12px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .hero-badge span,.scroll-cue{animation:none}
+  #hero-canvas{opacity:.6}
+}
+</style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7732013841415004"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+
+<div id="prog"></div>
+<div id="toasts"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">
+    <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt="Cloud iNIT"/>
+    CLOUD iNIT
+  </a>
+  <div class="nav-links">
+    <a href="#why">Why</a>
+    <a href="profile/index.html">About</a>
+    <a href="#download">Download</a>
+    <a href="https://github.com/abinashkumar19" target="_blank">API</a>
+    <a href="javascript:void(0);" class="nav-cta" onclick="toast('In development — iOS and Android apps coming soon', 3500)">Get App</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-orb hero-orb-a"></div>
+  <div class="hero-orb hero-orb-b"></div>
+  <div class="hero-orb hero-orb-c"></div>
+  <div class="hero-badge"><span></span>Platform v2.0 — AI-Managed Infrastructure</div>
+  <h1><span class="line1">Cloud iNIT</span></h1>
+  <p class="hero-sub" id="heroSub">Enterprise cloud infrastructure, built for scale.</p>
+  <div class="hero-pills">
+    <span class="pill">Cloud</span>
+    <span class="pill">AI Services</span>
+    <span class="pill">Encrypted</span>
+    <span class="pill">Open API</span>
+    <span class="pill">High Availability</span>
+  </div>
+  <div class="hero-btns">
+    <a href="#download" class="btn-primary magnetic">Download Cloud iNIT</a>
+    <a href="#why" class="btn-ghost magnetic">Explore Features</a>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT ROW -->
+<div id="why" class="about-row section">
+  <div class="about-text">
+    <div class="eyebrow">Why Cloud iNIT</div>
+    <h2>Built for the <em>next generation</em> of developers</h2>
+    <p>Every feature designed with intent. Cloud iNIT combines enterprise-grade infrastructure with an open-source ethos — giving you power without the price tag, and simplicity without the compromise.</p>
+  </div>
+  <div class="about-3d">
+    <div class="cube3d-big">
+      <div class="face f-front">
+        <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt="Cloud iNIT" style="width:56px;height:56px;object-fit:cover;border-radius:50%;background:#000;"/>
+      </div>
+      <div class="face f-back">
+        <img src="https://unqork.com/wp-content/uploads/2021/05/Amazon_Web_Services-Logo.wine_.png" alt="AWS" style="width:80px;height:36px;object-fit:contain;"/>
+      </div>
+      <div class="face f-left">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Microsoft_Azure.svg" alt="Azure" style="width:80px;height:36px;object-fit:contain;"/>
+      </div>
+      <div class="face f-right">
+        <img src="https://ik.imagekit.io/businesswith/tr:w-200,h-100,cm-pad_resize,dpr-2/logo/google-cloud-logo.png" alt="Google Cloud" style="width:80px;height:36px;object-fit:contain;"/>
+      </div>
+      <div class="face f-top"></div>
+      <div class="face f-bottom"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE INTRO -->
+<div class="feat-intro section">
+  <div class="eyebrow">Features</div>
+  <h2>Reasons to switch</h2>
+  <p>Discover what makes Cloud iNIT stand out from the rest.</p>
+</div>
+
+<!-- STICKY FEATURES -->
+<div class="sticky-outer">
+  <div class="sticky-track" id="stickyTrack">
+    <div class="sticky-panel" id="stickyPanel">
+      <div class="bg-index-num" id="bgIndexNum">01</div>
+      <div class="feat-3d-card glass-shine" id="feat3dCard">
+        <div>
+          <div class="feat-inner-num" id="fi-num">01 / 09</div>
+          <h3 class="feat-inner-title" id="fi-title">Loading...</h3>
+          <p class="feat-inner-desc" id="fi-desc">...</p>
+        </div>
+        <div class="feat-visual">
+          <div class="feat-glow"></div>
+          <div class="feat-visual-orb">
+            <img id="fi-img" src="" alt=""/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIDE DOTS -->
+<div class="side-dots" id="sideDots">
+  <div class="sdot" data-i="0"></div>
+  <div class="sdot" data-i="1"></div>
+  <div class="sdot" data-i="2"></div>
+  <div class="sdot" data-i="3"></div>
+  <div class="sdot" data-i="4"></div>
+  <div class="sdot" data-i="5"></div>
+  <div class="sdot" data-i="6"></div>
+  <div class="sdot" data-i="7"></div>
+  <div class="sdot" data-i="8"></div>
+</div>
+
+<!-- STATS -->
+<div class="stats-section section">
+  <div class="stats-grid">
+    <div class="stat-cell glass-shine"><div class="stat-val" data-val="99.9">0</div><div class="stat-lbl">Uptime SLA %</div></div>
+    <div class="stat-cell glass-shine"><div class="stat-val" data-val="12">0</div><div class="stat-lbl">AI Integrations</div></div>
+    <div class="stat-cell glass-shine"><div class="stat-val">&lt;5ms</div><div class="stat-lbl">Response Time</div></div>
+    <div class="stat-cell glass-shine"><div class="stat-val">AES‑256</div><div class="stat-lbl">Encryption</div></div>
+  </div>
+</div>
+
+<!-- DOWNLOAD -->
+<section id="download" class="dl-wrap section">
+  <div class="eyebrow" style="text-align:center">Download</div>
+  <h2>Get <span>Cloud iNIT</span></h2>
+  <p class="sub">Choose your platform and release window. Online or offline — always ready.</p>
+  <div class="dl-grid">
+    <div class="dl-card glass-shine" id="dlpc">
+      <div class="dl-screen">
+        <img src="https://blogs.windows.com/wp-content/uploads/prod/sites/2/2021/06/WIN_Start_GenZ_Light_16x10_en-US-1024x640.png" alt="Windows"/>
+        <div class="dl-screen-tag">Windows PC</div>
+      </div>
+      <div class="dl-body">
+        <div class="dl-plat-title">Cloud iNIT / <span>Windows</span></div>
+        <div id="pc-batches"></div>
+      </div>
+    </div>
+    <div class="dl-card glass-shine" id="dlmac">
+      <div class="dl-screen">
+        <img src="https://seeddownload.cdn-apple.com/s3/prod/ATLC/package/T024582A-en_US/0267d20c-4cbb-4f3d-beee-0f8820381866/31.0/T024582A-mac-mac-desktop/images/gallery_1_poster.jpg" alt="macOS"/>
+        <div class="dl-screen-tag">macOS</div>
+      </div>
+      <div class="dl-body">
+        <div class="dl-plat-title">Cloud iNIT / <span>macOS</span></div>
+        <div id="mac-batches"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="social-row">
+    <a class="icon-btn glass-shine" href="https://github.com/abinashkumar19" target="_blank" aria-label="GitHub — Abinash Kumar">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.27 5.68.42.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+      <span class="icon-tip">Abinash Kumar</span>
+    </a>
+    <a class="icon-btn glass-shine" href="https://x.com/AbinashKumar192" target="_blank" aria-label="X (Twitter) — @AbinashKumar192">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-6.9l-5.4-7.06L4.8 22H1.7l8.14-9.3L1 2h7.1l4.9 6.47L18.9 2Zm-1.2 18h1.9L7.4 3.9H5.36L17.7 20Z"/></svg>
+      <span class="icon-tip">@AbinashKumar192</span>
+    </a>
+  </div>
+  <div class="footer-credit">Developed by Abinash Kumar</div>
+</footer>
+
+<script>
+/* ─── THREE.JS HERO (monochrome) ─── */
+(function(){
+  const canvas = document.getElementById('hero-canvas');
+  const isMobile = window.innerWidth < 768;
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setClearColor(0x000000, 0);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 1000);
+  camera.position.set(0, 6, 30);
+
+  function resize(){
+    const w = canvas.parentElement.clientWidth;
+    const h = canvas.parentElement.clientHeight;
+    renderer.setSize(w, h, false);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const density = isMobile ? 0.55 : 1;
+
+  /* ── Wave grid floor: a flowing wireframe plane, like a data terrain ── */
+  const gridSize = 70, gridSeg = isMobile ? 26 : 42;
+  const waveGeo = new THREE.PlaneGeometry(gridSize, gridSize*0.75, gridSeg, Math.round(gridSeg*0.75));
+  waveGeo.rotateX(-Math.PI/2.35);
+  const waveMat = new THREE.MeshBasicMaterial({color:0xffffff, wireframe:true, transparent:true, opacity:0.14});
+  const waveMesh = new THREE.Mesh(waveGeo, waveMat);
+  waveMesh.position.set(0, -9, -6);
+  scene.add(waveMesh);
+  const waveBasePos = waveGeo.attributes.position.array.slice();
+
+  /* ── Central network globe: an icosahedron edge-wireframe with node points ── */
+  const globeGroup = new THREE.Group();
+  scene.add(globeGroup);
+  const icoGeo = new THREE.IcosahedronGeometry(8.5, 1);
+  const edgesGeo = new THREE.EdgesGeometry(icoGeo);
+  const edgesMat = new THREE.LineBasicMaterial({color:0xffffff, transparent:true, opacity:0.16});
+  globeGroup.add(new THREE.LineSegments(edgesGeo, edgesMat));
+  const nodeMat = new THREE.PointsMaterial({color:0xffffff, size:0.34, transparent:true, opacity:0.75, sizeAttenuation:true});
+  const nodePts = new THREE.Points(icoGeo, nodeMat);
+  globeGroup.add(nodePts);
+  globeGroup.position.set(0, 2, -4);
+
+  /* ── Rising data particles: drift upward and loop ── */
+  const dataCount = Math.round((isMobile ? 90 : 160) * density);
+  const dataGeo = new THREE.BufferGeometry();
+  const dataPos = new Float32Array(dataCount * 3);
+  const dataSpeed = new Float32Array(dataCount);
+  for(let i=0;i<dataCount;i++){
+    dataPos[i*3]   = (Math.random()-0.5)*54;
+    dataPos[i*3+1] = (Math.random()-0.5)*30;
+    dataPos[i*3+2] = (Math.random()-0.5)*22-4;
+    dataSpeed[i] = 0.015 + Math.random()*0.03;
+  }
+  dataGeo.setAttribute('position', new THREE.BufferAttribute(dataPos, 3));
+  const dataMat = new THREE.PointsMaterial({color:0xffffff, size:0.14, transparent:true, opacity:0.4, sizeAttenuation:true});
+  const dataPts = new THREE.Points(dataGeo, dataMat);
+  scene.add(dataPts);
+
+  /* ── Ambient distant dots for depth ── */
+  const farCount = Math.round((isMobile ? 80 : 160) * density);
+  const farGeo = new THREE.BufferGeometry();
+  const farPos = new Float32Array(farCount * 3);
+  for(let i=0;i<farCount;i++){
+    farPos[i*3]   = (Math.random()-0.5)*80;
+    farPos[i*3+1] = (Math.random()-0.5)*44;
+    farPos[i*3+2] = -20-Math.random()*24;
+  }
+  farGeo.setAttribute('position', new THREE.BufferAttribute(farPos, 3));
+  const farMat = new THREE.PointsMaterial({color:0xffffff, size:0.1, transparent:true, opacity:0.22, sizeAttenuation:true});
+  scene.add(new THREE.Points(farGeo, farMat));
+
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e=>{
+    mx = (e.clientX/window.innerWidth - 0.5) * 2;
+    my = (e.clientY/window.innerHeight - 0.5) * 2;
+  }, {passive:true});
+  document.addEventListener('touchmove', e=>{
+    if(!e.touches || !e.touches.length) return;
+    mx = (e.touches[0].clientX/window.innerWidth - 0.5) * 2;
+    my = (e.touches[0].clientY/window.innerHeight - 0.5) * 2;
+  }, {passive:true});
+
+  let t = 0;
+  const posAttr = waveGeo.attributes.position;
+  (function animate(){
+    requestAnimationFrame(animate);
+    t += 0.008;
+    camera.position.x += (mx * 3 - camera.position.x) * 0.04;
+    camera.position.y += (6 - my * 2 - camera.position.y) * 0.04;
+    camera.lookAt(0, 1, -4);
+
+    /* animate the wave grid vertices */
+    const arr = posAttr.array;
+    for(let i=0;i<arr.length;i+=3){
+      const x = waveBasePos[i], z = waveBasePos[i+2];
+      arr[i+1] = Math.sin(x*0.18 + t) * 0.9 + Math.cos(z*0.22 + t*0.8) * 0.7;
+    }
+    posAttr.needsUpdate = true;
+
+    /* slow globe rotation */
+    globeGroup.rotation.y += 0.0018;
+    globeGroup.rotation.x = Math.sin(t*0.2) * 0.08;
+
+    /* rising data particles, loop when they drift too high */
+    const dp = dataPts.geometry.attributes.position.array;
+    for(let i=0;i<dataCount;i++){
+      dp[i*3+1] += dataSpeed[i];
+      if(dp[i*3+1] > 18) dp[i*3+1] = -18;
+    }
+    dataPts.geometry.attributes.position.needsUpdate = true;
+
+    renderer.render(scene, camera);
+  })();
+})();
+
+/* ─── PROGRESS ─── */
+window.addEventListener('scroll',()=>{
+  const p = scrollY / (document.body.scrollHeight - innerHeight) * 100;
+  document.getElementById('prog').style.width = Math.min(p,100) + '%';
+},{passive:true});
+
+/* ─── TYPEWRITER HERO ─── */
+(()=>{
+  const el = document.getElementById('heroSub');
+  const lines = [
+    'Enterprise cloud infrastructure, built for scale.',
+    'Encrypted, distributed, and always available.',
+    'Open APIs for every integration.',
+    'AI-managed operations, end to end.'
+  ];
+  let li=0, ci=0, del=false;
+  function tick(){
+    const line = lines[li];
+    if(!del){el.textContent = line.slice(0,++ci); if(ci===line.length){del=true;setTimeout(tick,2600);return;}}
+    else{el.textContent = line.slice(0,--ci); if(ci===0){del=false;li=(li+1)%lines.length;}}
+    setTimeout(tick, del?30:60);
+  }
+  setTimeout(()=>{el.textContent='';tick();}, 800);
+})();
+
+/* ─── FEATURES DATA ─── */
+const feats = [
+  {title:'<em>Simplicity</em> by design',desc:'An intuitive console you already know how to use. No steep learning curve — just sign in and start building, from day one.',gif:'https://media.tenor.com/kdfWfHvqvy0AAAAj/utya-utya-duck.gif'},
+  {title:'<em>Privacy</em> first',desc:'Your data is protected by the Cloud iNIT Database with advanced encryption, hardened infrastructure, and secure erasure on request. Your data stays private and under your control.',gif:'https://c.tenor.com/jIY5ocmDN38AAAAC/tenor.gif'},
+  {title:'Powered by <em>AI</em>',desc:'Cloud iNIT runs on a network of AI-managed services that automate routine tasks, validate operations, and optimize workflows for speed, security, and reliability.',gif:'https://c.tenor.com/N45ON07E7mAAAAAC/tenor.gif'},
+  {title:'Built for <em>speed</em>',desc:'Engineered for ultra-low latency. A globally distributed network with intelligent routing delivers your applications and data quickly and reliably, wherever your users are.',gif:'https://media.tenor.com/TeM5g2MK6BEAAAAj/kaczka-duck.gif'},
+  {title:'<em>Elastic</em> scale',desc:'No interruptions, no downtime. Scale up or down whenever you need, regardless of environment — keep building without limits or disruption.',gif:'https://media.tenor.com/FZR_GXmf-tcAAAAj/kaczka-duck.gif'},
+  {title:'Fully <em>open</em> API',desc:'Open APIs, endless possibilities. Cloud iNIT lets developers build, integrate, and extend applications with ease, while the core platform stays secure and proprietary.',gif:'https://c.tenor.com/hhF-qFh-IMIAAAAd/tenor.gif'},
+  {title:'<em>Security</em> at every layer',desc:'Enterprise-grade security built into every layer. Accounts and data are protected with strong encryption, robust authentication, and layered safeguards across the Cloud iNIT Database.',gif:'https://media1.tenor.com/m/eO5kL5ONh0IAAAAd/cxyduck-cxydck.gif'},
+  {title:'Continuous <em>updates</em>',desc:'Regular monthly releases bring database security enhancements, performance optimizations, interface improvements, and bug fixes — keeping your deployment current and reliable.',gif:'https://media.tenor.com/qYMVanBDxI8AAAAi/utya-telegram.gif'},
+  {title:'Developer <em>sandbox</em>',desc:'Free accounts are available for both online and offline use. Offline accounts include advanced features and, for qualifying users, dedicated 24/7 access. Online accounts receive a sandbox environment after a short verification and evaluation period.',gif:'https://media.tenor.com/yU7NPQwMCQEAAAAM/utya-utya-duck.gif'},
+];
+
+const stickyTrack = document.getElementById('stickyTrack');
+const feat3dCard = document.getElementById('feat3dCard');
+const sdots = document.querySelectorAll('#sideDots .sdot');
+const sideDotsEl = document.getElementById('sideDots');
+let curFeat = -1;
+
+function showFeat(i){
+  if(i === curFeat) return;
+  curFeat = i;
+  const f = feats[i];
+  feat3dCard.classList.remove('show');
+  setTimeout(()=>{
+    document.getElementById('fi-num').textContent = `0${i+1} / 0${feats.length}`;
+    document.getElementById('fi-title').innerHTML = f.title;
+    document.getElementById('fi-desc').textContent = f.desc;
+    document.getElementById('fi-img').src = f.gif;
+    document.getElementById('bgIndexNum').textContent = (i+1<10?'0':'')+(i+1);
+    feat3dCard.classList.add('show');
+  }, 220);
+  sdots.forEach((d,j) => d.classList.toggle('on', j===i));
+}
+
+function onScroll(){
+  const rect = stickyTrack.getBoundingClientRect();
+  const total = stickyTrack.offsetHeight - innerHeight;
+  const scrolled = Math.max(0, -rect.top);
+  const progress = Math.min(1, scrolled/total);
+  const idx = Math.min(feats.length-1, Math.floor(progress * feats.length));
+  const inSticky = rect.top <= 0 && rect.bottom >= innerHeight;
+  sideDotsEl.classList.toggle('vis', inSticky);
+  if(inSticky) showFeat(idx);
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+showFeat(0);
+
+sdots.forEach(d => {
+  d.addEventListener('click', ()=>{
+    const i = parseInt(d.dataset.i);
+    const total = stickyTrack.offsetHeight - innerHeight;
+    window.scrollTo({top: stickyTrack.offsetTop + (i/feats.length)*total, behavior:'smooth'});
+  });
+});
+
+document.addEventListener('mousemove', e=>{
+  if(!feat3dCard.classList.contains('show')) return;
+  const dx = (e.clientX/innerWidth - 0.5) * 14;
+  const dy = (e.clientY/innerHeight - 0.5) * 8;
+  gsap.to(feat3dCard, {rotateY:dx, rotateX:-dy, duration:.6, ease:'power3.out', overwrite:'auto'});
+},{passive:true});
+
+/* ─── DOWNLOAD BATCHES ─── */
+const batches = [{label:'7:30 AM',id:'730'},{label:'9:00 AM',id:'900'},{label:'10:30 AM',id:'1030'}];
+const platforms = {'pc-batches':{suffix:'pc'},'mac-batches':{suffix:''}};
+Object.entries(platforms).forEach(([cid, plat])=>{
+  const container = document.getElementById(cid);
+  batches.forEach(b=>{
+    const block = document.createElement('div');
+    block.className='batch-block';
+    const key = plat.suffix||'mac';
+    const onId=`r-${key}-${b.id}-on`, offId=`r-${key}-${b.id}-off`;
+    const onH=`https://github.com/CloudTechDevOps/CloudTechDevOps/releases/tag/${b.id}online${plat.suffix}`;
+    const offH=`https://github.com/CloudTechDevOps/CloudTechDevOps/releases/tag/${b.id}offline${plat.suffix}`;
+    block.innerHTML=`
+      <div class="batch-head">RELEASE WINDOW · ${b.label}</div>
+      <div class="batch-row">
+        <button class="btn-tog btn-online" onclick="tog(this,'${onId}')">Online</button>
+        <button class="btn-tog btn-offline" onclick="tog(this,'${offId}')">Offline</button>
+      </div>
+      <div class="reveal" id="${onId}"><a class="dl-link" href="${onH}" target="_blank">Download from GitHub</a></div>
+      <div class="reveal" id="${offId}"><a class="dl-link" href="${offH}" target="_blank">Download from GitHub</a></div>
+    `;
+    container.appendChild(block);
+  });
+});
+
+function tog(btn, id){
+  const p = document.getElementById(id);
+  if(!p) return;
+  const open = p.classList.contains('open');
+  const block = btn.closest('.batch-block');
+  block.querySelectorAll('.reveal').forEach(x=>x.classList.remove('open'));
+  block.querySelectorAll('.btn-tog').forEach(x=>x.classList.remove('on'));
+  if(!open){p.classList.add('open');btn.classList.add('on');}
+}
+
+/* ─── GSAP GLASS + MOTION SYSTEM ─── */
+gsap.registerPlugin(ScrollTrigger);
+
+/* Hero load-in: staggered glass-panel rise */
+const heroLine = document.querySelector('.hero h1 .line1');
+if(heroLine){
+  const txt = heroLine.textContent;
+  heroLine.innerHTML = txt.split('').map(ch=>
+    `<span class="chr" style="display:inline-block;transform-origin:50% 100%">${ch===' '?'&nbsp;':ch}</span>`
+  ).join('');
+}
+
+gsap.timeline({defaults:{ease:'power3.out'}})
+  .from('.hero-badge', {opacity:0, y:-16, scale:.92, duration:.7})
+  .from('.hero h1 .chr', {opacity:0, y:60, rotateX:-90, duration:.8, stagger:.03, ease:'back.out(1.7)'}, '-=.35')
+  .from('.hero-sub', {opacity:0, y:16, duration:.7}, '-=.5')
+  .from('.pill', {opacity:0, y:18, scale:.9, duration:.55, stagger:.07}, '-=.4')
+  .from('.hero-btns .btn-primary, .hero-btns .btn-ghost', {opacity:0, y:16, scale:.95, duration:.55, stagger:.1}, '-=.35')
+  .from('.scroll-cue', {opacity:0, duration:.6}, '-=.2')
+  .from('.hero-orb', {opacity:0, scale:.5, duration:1.4, stagger:.15, ease:'power2.out'}, 0);
+
+/* Nav: intensify glass on scroll */
+ScrollTrigger.create({
+  start: 'top -60',
+  end: 99999,
+  toggleClass: {targets: 'nav', className: 'nav-scrolled'}
+});
+
+/* About row: text + 3D cube glass panel reveal */
+gsap.from('.about-text > *', {
+  scrollTrigger: {trigger:'.about-row', start:'top 78%'},
+  opacity:0, y:32, duration:.8, stagger:.12, ease:'power3.out'
+});
+gsap.from('.about-3d', {
+  scrollTrigger: {trigger:'.about-row', start:'top 75%'},
+  opacity:0, scale:.85, duration:1, ease:'back.out(1.5)'
+});
+
+/* Feature intro reveal */
+gsap.from('.feat-intro > *', {
+  scrollTrigger: {trigger:'.feat-intro', start:'top 82%'},
+  opacity:0, y:26, duration:.7, stagger:.1, ease:'power3.out'
+});
+
+/* Stats: glass cells pop in + count up */
+gsap.from('.stat-cell', {
+  scrollTrigger: {trigger:'.stats-grid', start:'top 82%'},
+  opacity:0, y:24, scale:.94, duration:.6, stagger:.08, ease:'back.out(1.6)'
+});
+ScrollTrigger.create({
+  trigger:'.stats-section', start:'top 70%', once:true,
+  onEnter: ()=>{
+    document.querySelectorAll('[data-val]').forEach(el=>{
+      const target = parseFloat(el.dataset.val);
+      const obj = {v:0};
+      gsap.to(obj, {v:target, duration:1.6, ease:'power2.out', onUpdate:()=>{el.textContent = obj.v.toFixed(1)+'%';}});
+    });
+  }
+});
+
+/* Download heading + glass cards */
+gsap.from('.dl-wrap > .eyebrow, .dl-wrap > h2, .dl-wrap > .sub', {
+  scrollTrigger: {trigger:'.dl-wrap', start:'top 80%'},
+  opacity:0, y:24, duration:.7, stagger:.1, ease:'power3.out'
+});
+gsap.utils.toArray('.dl-card').forEach((card, i)=>{
+  ScrollTrigger.create({
+    trigger: card, start:'top 85%',
+    onEnter: ()=> card.classList.add('show')
+  });
+});
+
+/* Footer fade */
+gsap.from('footer', {
+  scrollTrigger: {trigger:'footer', start:'top 92%'},
+  opacity:0, y:20, duration:.7, ease:'power3.out'
+});
+
+/* Glass hover micro-interactions: springy lift for buttons + pills */
+document.querySelectorAll('.btn-primary, .btn-ghost, .nav-cta').forEach(btn=>{
+  btn.addEventListener('mouseenter', ()=> gsap.to(btn, {scale:1.045, y:-3, duration:.35, ease:'power3.out'}));
+  btn.addEventListener('mouseleave', ()=> gsap.to(btn, {scale:1, y:0, duration:.4, ease:'power3.out'}));
+});
+document.querySelectorAll('.dl-card').forEach(card=>{
+  card.addEventListener('mouseenter', ()=> gsap.to(card, {y:-8, duration:.45, ease:'power3.out'}));
+  card.addEventListener('mouseleave', ()=> gsap.to(card, {y:0, duration:.45, ease:'power3.out'}));
+});
+
+/* Icon buttons: circular glass buttons that reveal their full name on hover */
+document.querySelectorAll('.icon-btn').forEach(btn=>{
+  const tip = btn.querySelector('.icon-tip');
+  btn.addEventListener('mouseenter', ()=>{
+    gsap.to(btn, {scale:1.08, y:-2, duration:.35, ease:'back.out(2)'});
+    gsap.to(tip, {opacity:1, y:0, duration:.3, ease:'power3.out'});
+  });
+  btn.addEventListener('mouseleave', ()=>{
+    gsap.to(btn, {scale:1, y:0, duration:.35, ease:'power3.out'});
+    gsap.to(tip, {opacity:0, y:6, duration:.25, ease:'power2.in'});
+  });
+});
+
+/* ─── ADVANCED: trailing cursor glow ─── */
+const cursorGlow = document.getElementById('cursorGlow');
+if(cursorGlow && matchMedia('(pointer:fine)').matches){
+  const glowX = gsap.quickTo(cursorGlow, 'x', {duration:.6, ease:'power3.out'});
+  const glowY = gsap.quickTo(cursorGlow, 'y', {duration:.6, ease:'power3.out'});
+  window.addEventListener('mousemove', e=>{ glowX(e.clientX); glowY(e.clientY); },{passive:true});
+}
+
+/* ─── ADVANCED: cursor-tracked glass shine (liquid-glass refraction) ─── */
+document.querySelectorAll('.glass-shine').forEach(el=>{
+  el.addEventListener('mousemove', e=>{
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    el.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  },{passive:true});
+});
+
+/* ─── ADVANCED: magnetic pull for buttons/icons ─── */
+if(matchMedia('(pointer:fine)').matches){
+  document.querySelectorAll('.magnetic').forEach(el=>{
+    const strength = el.classList.contains('icon-btn') ? .5 : .3;
+    el.addEventListener('mousemove', e=>{
+      const r = el.getBoundingClientRect();
+      const relX = e.clientX - (r.left + r.width/2);
+      const relY = e.clientY - (r.top + r.height/2);
+      gsap.to(el, {x:relX*strength, y:relY*strength, duration:.4, ease:'power3.out'});
+    },{passive:true});
+    el.addEventListener('mouseleave', ()=>{
+      gsap.to(el, {x:0, y:0, duration:.6, ease:'elastic.out(1,.4)'});
+    });
+  });
+}
+
+/* ─── ADVANCED: hero parallax orbs follow mouse (depth layering) ─── */
+if(matchMedia('(pointer:fine)').matches){
+  const orbs = gsap.utils.toArray('.hero-orb');
+  window.addEventListener('mousemove', e=>{
+    const cx = (e.clientX / innerWidth - .5);
+    const cy = (e.clientY / innerHeight - .5);
+    orbs.forEach((orb,i)=>{
+      const depth = (i+1) * 22;
+      gsap.to(orb, {x:cx*depth, y:cy*depth, duration:1, ease:'power2.out'});
+    });
+  },{passive:true});
+}
+
+/* ─── TOASTS ─── */
+function toast(msg, d=3500){
+  const w=document.getElementById('toasts');
+  const t=document.createElement('div');t.className='tst';t.textContent=msg;w.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('in'));
+  setTimeout(()=>{t.classList.remove('in');setTimeout(()=>t.remove(),300)},d);
+}
+setTimeout(()=>toast('Scroll to explore the platform', 4200), 1500);
+setTimeout(()=>toast('Select Online or Offline to reveal download links', 7000), 6200);
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"22188c7db1bf43e28939ffcdafe1a591","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"22188c7db1bf43e28939ffcdafe1a591","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"22188c7db1bf43e28939ffcdafe1a591","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"22188c7db1bf43e28939ffcdafe1a591","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
