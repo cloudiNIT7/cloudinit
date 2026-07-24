@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Cloud Projects — 30 Capstone Projects · Veera Sir · NareshIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --aws:    #FF9900;
+  --azure:  #0089D6;
+  --gcp:    #34A853;
+  --devops: #f97316;
+  --k8s:    #326CE5;
+  --tf:     #7B42BC;
+  --gold:   #c9a84c;
+  --gold-l: #e8c97a;
+  --dark:   #080808;
+  --dark2:  #101010;
+  --dark3:  #181818;
+  --border: rgba(255,255,255,0.07);
+  --text:   #d8d0c0;
+  --muted:  #504840;
+  --white:  #ffffff;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+/* noise */
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* ── CANVAS for particle network ── */
+#particleCanvas {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ── MULTI-COLOR STRIPE ── */
+.stripe {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300; height: 3px;
+  background: linear-gradient(90deg,
+    var(--aws) 0%, var(--devops) 20%,
+    var(--azure) 40%, var(--k8s) 60%,
+    var(--gcp) 80%, var(--tf) 100%);
+  background-size: 300% 100%;
+  animation: stripe-scroll 6s linear infinite;
+}
+@keyframes stripe-scroll { from{background-position:0%} to{background-position:300%} }
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap {
+  position: fixed; top: 67px; left: 0; right: 0; z-index: 99;
+  height: 2px; background: rgba(255,255,255,0.04);
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--aws), var(--azure), var(--gcp), var(--tf));
+  background-size: 300% 100%;
+  animation: stripe-scroll 4s linear infinite;
+  width: 0%; transition: width 0.1s;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 3px; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 60px; height: 64px;
+  background: rgba(8,8,8,0.96);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand { display: flex; align-items: center; gap: 12px; }
+.nav-logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold), #8b5e1a);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.nav-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+.nav-name span { color: var(--gold-l); }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-tag { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+/* multi-cloud dots in nav */
+.nav-clouds { display: flex; align-items: center; gap: 6px; }
+.nc-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
+
+/* ── HERO ── */
+.hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 60px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* big number watermark */
+.hero-watermark {
+  position: absolute; right: -40px; bottom: -60px;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(200px, 30vw, 400px); font-weight: 800;
+  color: rgba(255,255,255,0.02); line-height: 1;
+  pointer-events: none; user-select: none; letter-spacing: -0.06em;
+}
+
+.hero-inner { max-width: 1100px; margin: 0 auto; width: 100%; }
+
+/* spinning ring decoration */
+.hero-ring {
+  position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-ring::before {
+  content: '';
+  position: absolute; inset: -20px; border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.08);
+  animation: ring-spin 30s linear infinite;
+}
+.hero-ring::after {
+  content: '';
+  position: absolute; inset: -50px; border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,0.04);
+  animation: ring-spin 20s linear infinite reverse;
+}
+@keyframes ring-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* orbit dots */
+.orbit-dot {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  top: 50%; left: 50%; margin: -4px;
+  animation: orbit 8s linear infinite;
+  transform-origin: 160px 0;
+}
+@keyframes orbit { from{rotate:0deg} to{rotate:360deg} }
+
+/* ring stats */
+.ring-inner {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; z-index: 1;
+}
+.ring-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1;
+}
+.ring-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+
+.overline {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold-l); font-weight: 600; margin-bottom: 20px;
+}
+.overline::before { content:''; width: 24px; height: 1px; background: var(--gold-l); display: block; }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 800; line-height: 1; letter-spacing: -0.02em;
+  color: var(--white); margin-bottom: 8px;
+}
+.hero-title span {
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-sub-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 600; color: rgba(255,255,255,0.3);
+  margin-bottom: 24px; font-style: italic;
+}
+.hero-desc { font-size: 15px; color: var(--muted); line-height: 1.8; max-width: 520px; margin-bottom: 48px; }
+
+/* cloud tag row */
+.cloud-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 48px; }
+.ctag {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 16px; border-radius: 100px; font-size: 11px; font-weight: 600;
+  border: 1px solid; letter-spacing: 0.05em; text-transform: uppercase;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.ctag:hover { transform: translateY(-3px); }
+
+/* stats row */
+.hero-stats { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.hstat {
+  flex: 1; padding: 24px 20px; text-align: center;
+  border-right: 1px solid var(--border);
+  transition: background 0.3s;
+}
+.hstat:last-child { border-right: none; }
+.hstat:hover { background: rgba(201,168,76,0.05); }
+.hstat-num {
+  font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700;
+  color: var(--gold-l); display: block; line-height: 1; margin-bottom: 5px;
+}
+.hstat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 500; }
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  position: relative; z-index: 1;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,8,8,0.8);
+  backdrop-filter: blur(10px);
+  padding: 18px 60px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.filter-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-right: 4px; }
+.filt-btn {
+  padding: 7px 16px; border-radius: 100px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  cursor: pointer; transition: all 0.25s;
+}
+.filt-btn:hover { background: rgba(201,168,76,0.08); border-color: rgba(201,168,76,0.3); color: var(--gold-l); }
+.filt-btn.active { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.4); color: var(--gold-l); }
+
+/* ── PROJECTS GRID ── */
+.projects-section {
+  position: relative; z-index: 1;
+  padding: 60px 60px 100px;
+  max-width: 1280px; margin: 0 auto;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* PROJECT CARD */
+.proj-card {
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), border-color 0.3s, box-shadow 0.35s;
+  cursor: default;
+  animation: card-enter 0.6s ease both;
+}
+.proj-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* shimmer on hover */
+.proj-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.3s;
+  border-radius: 20px;
+}
+.proj-card:hover::before { opacity: 1; }
+
+/* colored top border */
+.proj-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  border-radius: 20px 20px 0 0;
+  transition: opacity 0.3s;
+  opacity: 0.7;
+}
+.proj-card:hover::after { opacity: 1; }
+
+/* card number */
+.card-num {
+  position: absolute; top: 20px; right: 22px;
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem; font-weight: 800;
+  color: rgba(255,255,255,0.04); line-height: 1;
+  user-select: none; transition: color 0.3s;
+}
+.proj-card:hover .card-num { color: rgba(255,255,255,0.06); }
+
+/* cloud badges row */
+.card-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.cbadge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 100px; border: 1px solid;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--white); line-height: 1.5;
+  margin-bottom: 16px;
+  transition: color 0.3s;
+}
+
+/* tech tags */
+.card-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: auto; }
+.cttech {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 6px;
+  background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.2s, color 0.2s;
+}
+.proj-card:hover .cttech { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.45); }
+
+/* FEATURED card (spans 2 cols) */
+.proj-card.featured {
+  grid-column: span 2;
+}
+.proj-card.featured .card-title { font-size: 1.1rem; }
+
+/* ── COLORS per cloud ── */
+/* AWS */
+.proj-card.c-aws::after { background: linear-gradient(90deg, var(--aws), #ffb733); }
+.proj-card.c-aws:hover { border-color: rgba(255,153,0,0.3); box-shadow: 0 20px 60px rgba(255,153,0,0.08); }
+/* AZURE */
+.proj-card.c-azure::after { background: linear-gradient(90deg, var(--azure), #41b3f5); }
+.proj-card.c-azure:hover { border-color: rgba(0,137,214,0.3); box-shadow: 0 20px 60px rgba(0,137,214,0.08); }
+/* GCP */
+.proj-card.c-gcp::after { background: linear-gradient(90deg, var(--gcp), #86efac); }
+.proj-card.c-gcp:hover { border-color: rgba(52,168,83,0.3); box-shadow: 0 20px 60px rgba(52,168,83,0.08); }
+/* MULTI */
+.proj-card.c-multi::after { background: linear-gradient(90deg, var(--aws), var(--azure), var(--gcp), var(--tf)); }
+.proj-card.c-multi:hover { border-color: rgba(201,168,76,0.3); box-shadow: 0 20px 60px rgba(201,168,76,0.1); }
+/* DEVOPS */
+.proj-card.c-devops::after { background: linear-gradient(90deg, var(--devops), #fdba74); }
+.proj-card.c-devops:hover { border-color: rgba(249,115,22,0.3); box-shadow: 0 20px 60px rgba(249,115,22,0.08); }
+/* K8S */
+.proj-card.c-k8s::after { background: linear-gradient(90deg, var(--k8s), #93c5fd); }
+.proj-card.c-k8s:hover { border-color: rgba(50,108,229,0.3); box-shadow: 0 20px 60px rgba(50,108,229,0.08); }
+
+/* badge colors */
+.b-aws   { color: var(--aws);   border-color: rgba(255,153,0,0.3);   background: rgba(255,153,0,0.08); }
+.b-azure { color: var(--azure); border-color: rgba(0,137,214,0.3);   background: rgba(0,137,214,0.08); }
+.b-gcp   { color: var(--gcp);   border-color: rgba(52,168,83,0.3);   background: rgba(52,168,83,0.08); }
+.b-k8s   { color: #93c5fd;      border-color: rgba(50,108,229,0.3);  background: rgba(50,108,229,0.08); }
+.b-tf    { color: #c4b5fd;      border-color: rgba(123,66,188,0.3);  background: rgba(123,66,188,0.08); }
+.b-docker{ color: #67e8f9;      border-color: rgba(6,182,212,0.3);   background: rgba(6,182,212,0.08); }
+.b-ci    { color: #fde68a;      border-color: rgba(253,211,77,0.3);  background: rgba(253,211,77,0.08); }
+.b-srvl  { color: #f9a8d4;      border-color: rgba(244,114,182,0.3); background: rgba(244,114,182,0.08); }
+
+/* ── SECTION LABEL ── */
+.section-header {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 60px 32px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  border-bottom: 1px solid var(--border); margin-bottom: 40px;
+}
+.section-header-left {}
+.sec-overline { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 10px; }
+.sec-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; color: var(--white); }
+.sec-count { font-family: 'Playfair Display', serif; font-size: 6rem; font-weight: 800; color: rgba(201,168,76,0.07); line-height: 1; }
+
+/* ── FOOTER ── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border); padding: 36px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--dark2);
+}
+.footer-left { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--white); font-weight: 700; }
+.footer-left span { color: var(--gold-l); }
+.footer-right { font-size: 12px; color: var(--muted); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .nav { padding: 0 20px; }
+  .nav-tag { display: none; }
+  .hero { padding: 60px 20px; }
+  .hero-ring { display: none; }
+  .filter-bar { padding: 14px 20px; }
+  .projects-section { padding: 40px 20px 80px; }
+  .projects-grid { grid-template-columns: 1fr 1fr; }
+  .proj-card.featured { grid-column: span 2; }
+  .section-header { padding: 0 20px 24px; }
+  footer { flex-direction: column; gap: 10px; padding: 28px 20px; text-align: center; }
+}
+@media (max-width: 600px) {
+  .projects-grid { grid-template-columns: 1fr; }
+  .proj-card.featured { grid-column: span 1; }
+  .hero-stats { flex-wrap: wrap; }
+  .hstat { flex: 1 1 45%; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="particleCanvas"></canvas>
+<div class="stripe"></div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🚀</div>
+    <div class="nav-name">Veera <span>Sir</span></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-clouds">
+      <div class="nc-dot" style="background:var(--aws);animation-delay:0s"></div>
+      <div class="nc-dot" style="background:var(--azure);animation-delay:0.4s"></div>
+      <div class="nc-dot" style="background:var(--gcp);animation-delay:0.8s"></div>
+      <div class="nc-dot" style="background:var(--tf);animation-delay:1.2s"></div>
+    </div>
+    <span class="nav-tag">NareshIT · Hyderabad</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-watermark">30</div>
+
+  <!-- Spinning ring (desktop) -->
+  <div class="hero-ring">
+    <div class="orbit-dot" style="background:var(--aws);animation-duration:6s;transform-origin:150px 0"></div>
+    <div class="orbit-dot" style="background:var(--azure);animation-duration:9s;animation-delay:-3s;transform-origin:155px 0"></div>
+    <div class="orbit-dot" style="background:var(--gcp);animation-duration:12s;animation-delay:-5s;transform-origin:148px 0"></div>
+    <div class="orbit-dot" style="background:var(--tf);animation-duration:7s;animation-delay:-2s;transform-origin:152px 0"></div>
+    <div class="ring-inner">
+      <div class="ring-num">30</div>
+      <div class="ring-label">Capstone Projects</div>
+    </div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="overline">Multi-Cloud · Production-Grade</div>
+    <h1 class="hero-title">Real-World<br><span>Projects</span></h1>
+    <p class="hero-sub-title">30 Capstone Projects. Built. Deployed. Shipped.</p>
+    <p class="hero-desc">
+      Production-grade projects spanning AWS, Azure, GCP, Kubernetes, Terraform, CI/CD, and beyond.
+      Every project mirrors real enterprise infrastructure — built by Veera Sir at NareshIT.
+    </p>
+
+    <div class="cloud-tags">
+      <span class="ctag" style="color:var(--aws);border-color:rgba(255,153,0,0.3);background:rgba(255,153,0,0.07)">☁️ AWS</span>
+      <span class="ctag" style="color:var(--azure);border-color:rgba(0,137,214,0.3);background:rgba(0,137,214,0.07)">🔷 Azure</span>
+      <span class="ctag" style="color:var(--gcp);border-color:rgba(52,168,83,0.3);background:rgba(52,168,83,0.07)">🌐 GCP</span>
+      <span class="ctag" style="color:#93c5fd;border-color:rgba(50,108,229,0.3);background:rgba(50,108,229,0.07)">☸️ Kubernetes</span>
+      <span class="ctag" style="color:#c4b5fd;border-color:rgba(123,66,188,0.3);background:rgba(123,66,188,0.07)">🔧 Terraform</span>
+      <span class="ctag" style="color:#67e8f9;border-color:rgba(6,182,212,0.3);background:rgba(6,182,212,0.07)">🐳 Docker</span>
+      <span class="ctag" style="color:#fde68a;border-color:rgba(253,211,77,0.3);background:rgba(253,211,77,0.07)">⚡ CI/CD</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hstat"><span class="hstat-num">30</span><span class="hstat-label">Projects</span></div>
+      <div class="hstat"><span class="hstat-num">3</span><span class="hstat-label">Cloud Platforms</span></div>
+      <div class="hstat"><span class="hstat-num">15+</span><span class="hstat-label">Tools Used</span></div>
+      <div class="hstat"><span class="hstat-num">100%</span><span class="hstat-label">Production-Grade</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filt-btn active" data-f="all">All</button>
+  <button class="filt-btn" data-f="aws">AWS</button>
+  <button class="filt-btn" data-f="azure">Azure</button>
+  <button class="filt-btn" data-f="gcp">GCP</button>
+  <button class="filt-btn" data-f="multi">Multi-Cloud</button>
+  <button class="filt-btn" data-f="k8s">Kubernetes</button>
+  <button class="filt-btn" data-f="cicd">CI/CD</button>
+  <button class="filt-btn" data-f="serverless">Serverless</button>
+  <button class="filt-btn" data-f="terraform">Terraform</button>
+</div>
+
+<!-- PROJECTS -->
+<section class="projects-section" id="projectsSection">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="sec-overline">Capstone Portfolio</div>
+      <h2 class="sec-title">Production-Grade Projects</h2>
+    </div>
+    <div class="sec-count" id="projectCount">30</div>
+  </div>
+  <div class="projects-grid" id="projectsGrid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">Veera <span>Sir</span> · NareshIT</div>
+  <div class="footer-right">Multi-Cloud Projects · 30 Capstone · Hyderabad, India</div>
+</footer>
+
+<script>
+/* ── PARTICLE CANVAS ── */
+const canvas = document.getElementById('particleCanvas');
+const ctx    = canvas.getContext('2d');
+let W, H, pts;
+
+function resizeCanvas() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function initParticles() {
+  const COLORS = ['#FF9900','#0089D6','#34A853','#7B42BC','#326CE5'];
+  pts = Array.from({length: 60}, (_, i) => ({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3,
+    r: Math.random() * 1.5 + 0.5,
+    color: COLORS[i % COLORS.length],
+    alpha: Math.random() * 0.4 + 0.1
+  }));
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, W, H);
+  // lines
+  for (let i = 0; i < pts.length; i++) {
+    for (let j = i + 1; j < pts.length; j++) {
+      const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 150) {
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255,255,255,${0.04 * (1 - d/150)})`;
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(pts[i].x, pts[i].y);
+        ctx.lineTo(pts[j].x, pts[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  // dots
+  pts.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > W) p.vx *= -1;
+    if (p.y < 0 || p.y > H) p.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = p.color + Math.floor(p.alpha * 255).toString(16).padStart(2,'0');
+    ctx.fill();
+  });
+  requestAnimationFrame(drawParticles);
+}
+
+resizeCanvas(); initParticles(); drawParticles();
+window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+
+/* ── PROJECT DATA ── */
+const projects = [
+  {
+    id:1, title:"Multi-Tier Full-Stack Node.js Application Deployed on AWS Using 20+ Services with High Availability, Scalability, Networking, Security, and Monitoring.",
+    cloud:"c-aws", filters:["aws"],
+    badges:[{cls:"b-aws",t:"AWS"}],
+    tags:["EC2","VPC","ALB","Auto Scaling","RDS","CloudWatch","Route53","S3"],
+    featured: true
+  },
+  {
+    id:2, title:"Cloud Deployment of a Scalable, Resilient Full-Stack Python Application on AWS EC2 with Disaster Recovery Strategy.",
+    cloud:"c-aws", filters:["aws"],
+    badges:[{cls:"b-aws",t:"AWS"}],
+    tags:["EC2","Python","RDS","S3","Route53","Disaster Recovery"]
+  },
+  {
+    id:3, title:"Cloud-Native Deployment of a Full-Stack Java Spring Boot Application on Azure with High Availability and Disaster Recovery Strategy.",
+    cloud:"c-azure", filters:["azure"],
+    badges:[{cls:"b-azure",t:"Azure"}],
+    tags:["Azure VM","Spring Boot","Azure SQL","Traffic Manager","HA"]
+  },
+  {
+    id:4, title:"Cloud-Native Deployment of a Full-Stack Node.js Application on GCP with High Availability, Scalability, Networking, Security.",
+    cloud:"c-gcp", filters:["gcp"],
+    badges:[{cls:"b-gcp",t:"GCP"}],
+    tags:["Compute Engine","Cloud SQL","VPC","Load Balancer","GCP Security"]
+  },
+  {
+    id:5, title:"Automated Database Migration from EC2-Hosted MySQL to Amazon RDS Using AWS DMS with Minimal Downtime and High Availability.",
+    cloud:"c-aws", filters:["aws"],
+    badges:[{cls:"b-aws",t:"AWS"}],
+    tags:["DMS","RDS","MySQL","EC2","Migration","HA"]
+  },
+  {
+    id:6, title:"End-to-End Application Migration from On-Premises Infrastructure to AWS Cloud with High Availability, Scalability, and Security Best Practices.",
+    cloud:"c-aws", filters:["aws"],
+    badges:[{cls:"b-aws",t:"AWS"}],
+    tags:["AWS Migration","HA","VPC","Security","CloudEndure"]
+  },
+  {
+    id:7, title:"Optimized Static Web Hosting Architecture on AWS S3 with CDN and Custom Domain.",
+    cloud:"c-aws", filters:["aws"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-ci",t:"CDN"}],
+    tags:["S3","CloudFront","Route53","ACM","Static Hosting"]
+  },
+  {
+    id:8, title:"Implementing Automated Backup Strategies in AWS Cloud Using Serverless Lambda Functions.",
+    cloud:"c-aws", filters:["aws","serverless"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-srvl",t:"Serverless"}],
+    tags:["Lambda","S3","AWS Backup","CloudWatch","Automation"]
+  },
+  {
+    id:9, title:"End-to-End CDN Optimization: Configuring CloudFront for Low Latency and Automating Cache Invalidation Using Lambda.",
+    cloud:"c-aws", filters:["aws","serverless"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-srvl",t:"Serverless"}],
+    tags:["CloudFront","Lambda","S3","Cache","Performance"]
+  },
+  {
+    id:10, title:"Cloud-Native Full-Stack Application Deployment on AWS ECS Fargate with CI/CD, Auto Scaling, and Secure Networking.",
+    cloud:"c-aws", filters:["aws","cicd"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-ci",t:"CI/CD"},{cls:"b-docker",t:"Docker"}],
+    tags:["ECS","Fargate","ECR","ALB","CodePipeline","VPC"]
+  },
+  {
+    id:11, title:"Unified Infrastructure Monitoring with Prometheus and Grafana: Centralized Dashboard for Multi-Server Observability.",
+    cloud:"c-multi", filters:["multi"],
+    badges:[{cls:"b-ci",t:"Monitoring"}],
+    tags:["Prometheus","Grafana","Multi-Server","Alerting","Dashboards"]
+  },
+  {
+    id:12, title:"Centralized Logging with Amazon CloudWatch and Cost-Optimized Log Archival to S3 Using AWS Lambda Serverless.",
+    cloud:"c-aws", filters:["aws","serverless"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-srvl",t:"Serverless"}],
+    tags:["CloudWatch","Lambda","S3","Log Groups","Cost Optimization"]
+  },
+  {
+    id:13, title:"End-to-End Automation of Multi-Tier AWS, Azure and GCP Cloud Infrastructure Using Terraform with Complete Networking, Security, and Deployment Layers.",
+    cloud:"c-multi", filters:["multi","terraform"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-azure",t:"Azure"},{cls:"b-gcp",t:"GCP"},{cls:"b-tf",t:"Terraform"}],
+    tags:["Terraform","Multi-Cloud","IaC","Networking","Security"],
+    featured: true
+  },
+  {
+    id:14, title:"End-to-End Automation of Java Maven Application Deployment on Apache Tomcat Using CI/CD Practices.",
+    cloud:"c-devops", filters:["cicd"],
+    badges:[{cls:"b-ci",t:"CI/CD"}],
+    tags:["Jenkins","Maven","Tomcat","Java","Git","Automation"]
+  },
+  {
+    id:15, title:"End-to-End Cloud-Native CI/CD Pipeline for Node.js Microservices with Jenkins and Kubernetes.",
+    cloud:"c-k8s", filters:["cicd","k8s","aws"],
+    badges:[{cls:"b-ci",t:"CI/CD"},{cls:"b-k8s",t:"Kubernetes"}],
+    tags:["Jenkins","EKS","Node.js","Docker","Helm","ArgoCD"]
+  },
+  {
+    id:16, title:"End-to-End DevOps Automation for Node.js Microservices with GitLab CI/CD and Kubernetes (EKS).",
+    cloud:"c-k8s", filters:["cicd","k8s","aws"],
+    badges:[{cls:"b-ci",t:"GitLab"},{cls:"b-k8s",t:"EKS"}],
+    tags:["GitLab CI","EKS","Node.js","Docker","Kubernetes"]
+  },
+  {
+    id:17, title:"End-to-End CI/CD Pipeline for Java Applications Using Azure DevOps, Docker, and Kubernetes AKS.",
+    cloud:"c-azure", filters:["azure","cicd","k8s"],
+    badges:[{cls:"b-azure",t:"Azure"},{cls:"b-ci",t:"CI/CD"},{cls:"b-k8s",t:"AKS"}],
+    tags:["Azure DevOps","AKS","Docker","Java","Helm"]
+  },
+  {
+    id:18, title:"End-to-End CI/CD Pipeline (GitLab CI/CD) for Java Applications with Docker and Kubernetes GKE.",
+    cloud:"c-gcp", filters:["gcp","cicd","k8s"],
+    badges:[{cls:"b-gcp",t:"GCP"},{cls:"b-ci",t:"GitLab"},{cls:"b-k8s",t:"GKE"}],
+    tags:["GitLab CI","GKE","Docker","Java","Kubernetes"]
+  },
+  {
+    id:19, title:"Full-Stack Microservices Application (Python, Java, Node.js) Deployment on AWS with CI/CD, GitOps, Helm, Prometheus, Grafana, and EFK Stack.",
+    cloud:"c-k8s", filters:["aws","cicd","k8s"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-k8s",t:"K8s"},{cls:"b-ci",t:"GitOps"}],
+    tags:["EKS","Helm","ArgoCD","Prometheus","Grafana","EFK"],
+    featured: true
+  },
+  {
+    id:20, title:"Production-Grade EKS, AKS, and GKE Cluster Deployment on AWS, Azure and GCP Using Terraform with HA, Scalability, and Secure Networking.",
+    cloud:"c-multi", filters:["multi","k8s","terraform"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-azure",t:"Azure"},{cls:"b-gcp",t:"GCP"},{cls:"b-k8s",t:"K8s"},{cls:"b-tf",t:"Terraform"}],
+    tags:["EKS","AKS","GKE","Terraform","Multi-Cloud"]
+  },
+  {
+    id:21, title:"Fully Managed Serverless Full-Stack Deployment Using AWS Lambda, API Gateway, and DynamoDB.",
+    cloud:"c-aws", filters:["aws","serverless"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-srvl",t:"Serverless"}],
+    tags:["Lambda","API Gateway","DynamoDB","IAM","S3"]
+  },
+  {
+    id:22, title:"End-to-End Patch Management and Monitoring Configuration Using Ansible.",
+    cloud:"c-multi", filters:["multi"],
+    badges:[{cls:"b-ci",t:"Ansible"}],
+    tags:["Ansible","Playbooks","Patch Management","Monitoring","Configuration"]
+  },
+  {
+    id:23, title:"Containerized Full-Stack Application Deployment Using Docker & Docker Compose.",
+    cloud:"c-devops", filters:["cicd"],
+    badges:[{cls:"b-docker",t:"Docker"}],
+    tags:["Docker","Docker Compose","Full-Stack","Networking","Volumes"]
+  },
+  {
+    id:24, title:"Centralized Application Log Monitoring on Amazon EKS Using the ELK Stack (Elasticsearch, Logstash, Kibana).",
+    cloud:"c-k8s", filters:["aws","k8s"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-k8s",t:"EKS"}],
+    tags:["EKS","Elasticsearch","Logstash","Kibana","Observability"]
+  },
+  {
+    id:25, title:"Scalable Multi-Application Deployment on EC2 Using ALB Path-Based Routing.",
+    cloud:"c-aws", filters:["aws"],
+    badges:[{cls:"b-aws",t:"AWS"}],
+    tags:["EC2","ALB","Path-Based Routing","Auto Scaling","VPC"]
+  },
+  {
+    id:26, title:"Enterprise Identity and Access Management Using AWS SSO.",
+    cloud:"c-aws", filters:["aws"],
+    badges:[{cls:"b-aws",t:"AWS"}],
+    tags:["AWS SSO","IAM","Organizations","RBAC","Security"]
+  },
+  {
+    id:27, title:"End-to-End CI/CD for Microservices on Amazon EKS Using Argo CD and GitHub Actions.",
+    cloud:"c-k8s", filters:["aws","cicd","k8s"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-ci",t:"GitOps"},{cls:"b-k8s",t:"EKS"}],
+    tags:["ArgoCD","GitHub Actions","EKS","Microservices","Helm"]
+  },
+  {
+    id:28, title:"End-to-End Kubernetes Application Deployment Using Ingress Controllers for High Availability, Load Balancing, and Traffic Management.",
+    cloud:"c-k8s", filters:["k8s"],
+    badges:[{cls:"b-k8s",t:"Kubernetes"}],
+    tags:["Ingress","NGINX","Cert-Manager","TLS","HA","Traffic Management"]
+  },
+  {
+    id:29, title:"Production-Grade OTP Microservices Deployment on AWS with Containerization, CI/CD Pipelines, and Infrastructure Automation.",
+    cloud:"c-aws", filters:["aws","cicd","k8s"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-docker",t:"Docker"},{cls:"b-ci",t:"CI/CD"}],
+    tags:["OTP","Microservices","EKS","Jenkins","Terraform","Docker"]
+  },
+  {
+    id:30, title:"End-to-End OTP Authentication Platform Using AWS, Docker, Kubernetes, and DevOps CI/CD Pipelines.",
+    cloud:"c-multi", filters:["aws","cicd","k8s"],
+    badges:[{cls:"b-aws",t:"AWS"},{cls:"b-k8s",t:"K8s"},{cls:"b-docker",t:"Docker"},{cls:"b-ci",t:"CI/CD"}],
+    tags:["OTP","Auth","EKS","Docker","Jenkins","Terraform","ArgoCD"],
+    featured: true
+  }
+];
+
+function renderProjects(filter) {
+  const grid = document.getElementById('projectsGrid');
+  const countEl = document.getElementById('projectCount');
+  grid.innerHTML = '';
+
+  const filtered = filter === 'all'
+    ? projects
+    : projects.filter(p => p.filters.includes(filter));
+
+  countEl.textContent = filtered.length;
+
+  filtered.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = `proj-card ${p.cloud}${p.featured ? ' featured' : ''}`;
+    card.style.animationDelay = `${i * 0.05}s`;
+
+    const badgesHtml = p.badges.map(b => `<span class="cbadge ${b.cls}">${b.t}</span>`).join('');
+    const tagsHtml   = p.tags.map(t => `<span class="cttech">${t}</span>`).join('');
+
+    card.innerHTML = `
+      <div class="card-num">${String(p.id).padStart(2,'0')}</div>
+      <div class="card-badges">${badgesHtml}</div>
+      <div class="card-title">${p.title}</div>
+      <div class="card-tags">${tagsHtml}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+document.querySelector('.filter-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.filt-btn');
+  if (!btn) return;
+  document.querySelectorAll('.filt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProjects(btn.dataset.f);
+});
+
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  document.getElementById('progressBar').style.width =
+    (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%';
+});
+
+renderProjects('all');
+</script>
+</body>
+</html>

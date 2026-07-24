@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure with DevOps Integration · Veera Sir · NareshIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --azure: #0089D6;
+  --azure-light: #41b3f5;
+  --azure-pale: #c8e8fa;
+  --azure-dim: rgba(0,137,214,0.10);
+  --dark: #0a0d12;
+  --dark2: #101520;
+  --dark3: #161c28;
+  --border: rgba(0,137,214,0.18);
+  --border-soft: rgba(255,255,255,0.05);
+  --text: #c8d8e8;
+  --muted: #4a6070;
+  --white: #ffffff;
+  --silver: #8aaabb;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* animated grid bg */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,137,214,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,137,214,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+}
+
+/* ─── NAV ─── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 60px; height: 64px;
+  background: rgba(10,13,18,0.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand { display: flex; align-items: center; gap: 12px; }
+.nav-logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--azure), #005fa3);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.nav-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+.nav-name span { color: var(--azure-light); }
+.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-tag { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.nav-badge {
+  background: rgba(0,137,214,0.12); border: 1px solid rgba(0,137,214,0.3);
+  color: var(--azure-light); font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  padding: 5px 14px; border-radius: 100px; text-transform: uppercase;
+}
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar-wrap {
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 99;
+  height: 2px; background: rgba(255,255,255,0.04);
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--azure), var(--azure-light), #a0d8ff);
+  width: 0%; transition: width 0.1s;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative; z-index: 1;
+  padding: 90px 60px 80px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* big watermark */
+.hero::before {
+  content: 'AZURE';
+  position: absolute; right: -30px; top: 50%; transform: translateY(-50%);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(120px, 18vw, 240px); font-weight: 800;
+  color: rgba(0,137,214,0.04); line-height: 1;
+  pointer-events: none; letter-spacing: -0.04em; user-select: none;
+}
+
+/* radial glow */
+.hero::after {
+  content: '';
+  position: absolute; top: -100px; left: -100px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,137,214,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; margin-bottom: 56px; }
+
+.overline {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--azure-light); font-weight: 600; margin-bottom: 20px;
+}
+.overline::before { content:''; width: 24px; height: 1px; background: var(--azure-light); display: block; }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-weight: 800; line-height: 1.05;
+  color: var(--white); margin-bottom: 10px; letter-spacing: -0.02em;
+}
+.hero-title span {
+  background: linear-gradient(135deg, var(--azure-light) 0%, #90d0ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-sub { font-size: 15px; color: var(--muted); margin-top: 14px; line-height: 1.7; max-width: 500px; }
+
+/* stats */
+.hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-width: 280px; }
+.hstat {
+  background: var(--dark2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 20px; text-align: center;
+  transition: border-color 0.3s, background 0.3s;
+}
+.hstat:hover { border-color: rgba(0,137,214,0.45); background: var(--azure-dim); }
+.hstat-num {
+  font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;
+  color: var(--azure-light); display: block; line-height: 1; margin-bottom: 5px;
+}
+.hstat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 500; }
+
+/* category pills */
+.cat-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.cat-btn {
+  padding: 8px 18px; border-radius: 100px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  cursor: pointer; transition: all 0.25s;
+}
+.cat-btn:hover, .cat-btn.active {
+  background: var(--azure-dim); border-color: rgba(0,137,214,0.45); color: var(--azure-light);
+}
+.cat-btn.active { font-weight: 600; }
+
+/* ─── MAIN ─── */
+.main {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto;
+  padding: 60px 60px 100px;
+}
+
+/* group headers */
+.group-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; margin-top: 48px; }
+.group-header:first-child { margin-top: 0; }
+.group-line { flex: 1; height: 1px; background: var(--border); }
+.group-label {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--azure-light); font-weight: 600; white-space: nowrap;
+  padding: 4px 14px; border: 1px solid var(--border);
+  border-radius: 100px; background: var(--azure-dim);
+}
+
+/* module cards */
+.module-card {
+  background: var(--dark2); border: 1px solid var(--border-soft);
+  border-radius: 16px; margin-bottom: 8px; overflow: hidden;
+  transition: border-color 0.3s;
+}
+.module-card:hover { border-color: rgba(0,137,214,0.22); }
+.module-card.open { border-color: rgba(0,137,214,0.35); }
+
+.module-header {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px 28px; cursor: pointer; user-select: none;
+  transition: background 0.2s;
+}
+.module-header:hover { background: rgba(255,255,255,0.02); }
+
+.module-num {
+  font-family: 'Playfair Display', serif; font-size: 12px; font-weight: 700;
+  color: var(--azure-light); min-width: 28px; letter-spacing: 0.06em;
+}
+
+.module-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.06);
+}
+
+.module-meta { flex: 1; }
+.module-category { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 500; margin-bottom: 3px; }
+.module-name { font-size: 15px; font-weight: 600; color: var(--white); line-height: 1.3; }
+
+.module-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.topic-count {
+  font-size: 11px; color: var(--muted);
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft);
+  padding: 4px 12px; border-radius: 100px; font-weight: 500;
+}
+.chevron {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; transition: transform 0.3s, background 0.3s; color: var(--muted);
+}
+.module-card.open .chevron { transform: rotate(180deg); background: var(--azure-dim); color: var(--azure-light); border-color: rgba(0,137,214,0.35); }
+
+/* accordion body */
+.module-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  border-top: 1px solid transparent;
+}
+.module-card.open .module-body { border-top-color: var(--border); }
+
+.module-body-inner {
+  padding: 24px 28px 28px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px;
+}
+
+.topic-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.02); border: 1px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
+  font-size: 13px; color: #7090a8; line-height: 1.5;
+}
+.topic-item:hover { background: var(--azure-dim); border-color: rgba(0,137,214,0.25); color: var(--azure-pale); }
+.topic-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--azure); flex-shrink: 0; margin-top: 7px; }
+
+/* ─── SPECIAL BADGES for DevOps/AKS modules ─── */
+.badge-devops {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(0,200,150,0.1); border: 1px solid rgba(0,200,150,0.2);
+  color: #00c896; font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 2px 10px; border-radius: 100px;
+  margin-left: 10px; vertical-align: middle;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border); padding: 36px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--dark2);
+}
+.footer-left { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--white); font-weight: 700; }
+.footer-left span { color: var(--azure-light); }
+.footer-right { font-size: 12px; color: var(--muted); }
+
+/* ─── REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.up { opacity: 1; transform: none; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-tag { display: none; }
+  .hero { padding: 60px 20px 50px; }
+  .hero-top { flex-direction: column; }
+  .hero-stats { grid-template-columns: repeat(4, 1fr); min-width: auto; }
+  .hstat-num { font-size: 1.4rem; }
+  .main { padding: 40px 20px 80px; }
+  .module-header { padding: 16px 18px; gap: 12px; }
+  .module-body-inner { grid-template-columns: 1fr; padding: 18px 18px 22px; }
+  footer { flex-direction: column; gap: 10px; padding: 28px 20px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🔷</div>
+    <div class="nav-name">Veera <span>Sir</span></div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag">NareshIT · Hyderabad</span>
+    <span class="nav-badge">🔷 Azure Course</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-left">
+        <div class="overline">Complete Curriculum</div>
+        <h1 class="hero-title">Microsoft<br><span>Azure</span></h1>
+        <p class="hero-sub">
+          A focused program covering Azure VMs, Networking, Storage, Identity, Databases,
+          Serverless, Security, AKS, CI/CD Pipelines with Azure DevOps — and Terraform IaC.
+        </p>
+      </div>
+      <div class="hero-right">
+        <div class="hero-stats">
+          <div class="hstat"><span class="hstat-num">24</span><span class="hstat-label">Modules</span></div>
+          <div class="hstat"><span class="hstat-num">DevOps</span><span class="hstat-label">Integrated</span></div>
+          <div class="hstat"><span class="hstat-num">100%</span><span class="hstat-label">Hands-On</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-row" id="catRow">
+      <button class="cat-btn active" data-cat="all">All Modules</button>
+      <button class="cat-btn" data-cat="Cloud Fundamentals">Cloud Fundamentals</button>
+      <button class="cat-btn" data-cat="Linux Basics">Linux Basics</button>
+      <button class="cat-btn" data-cat="Compute Services">Compute Services</button>
+      <button class="cat-btn" data-cat="Networking">Networking</button>
+      <button class="cat-btn" data-cat="Storage Services">Storage</button>
+      <button class="cat-btn" data-cat="Object Storage">Blob Storage</button>
+      <button class="cat-btn" data-cat="Identity & Access">Identity & Access</button>
+      <button class="cat-btn" data-cat="Databases">Databases</button>
+      <button class="cat-btn" data-cat="Security Services">Security</button>
+      <button class="cat-btn" data-cat="Serverless">Serverless</button>
+      <button class="cat-btn" data-cat="CI/CD Pipelines">CI/CD Pipelines</button>
+      <button class="cat-btn" data-cat="Orchestration">Orchestration</button>
+      <button class="cat-btn" data-cat="Infrastructure as Code">IaC</button>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main" id="mainContent"></main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">Veera <span>Sir</span> · NareshIT</div>
+  <div class="footer-right">Azure with DevOps Integration · Hyderabad, India</div>
+</footer>
+
+<script>
+const modules = [
+  {
+    num: "01", cat: "Cloud Fundamentals", name: "Introduction to Cloud Computing",
+    icon: "☁️", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Why Cloud Computing?","Benefits of Cloud Computing","Types of Cloud Computing","Cloud Service Models","Scaling in Cloud Computing","Cloud Computing Issues","Security in the Cloud","Cloud Costing Models"]
+  },
+  {
+    num: "02", cat: "Cloud Fundamentals", name: "Virtualization",
+    icon: "🖥️", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["What is Virtualization?","Virtualization and Cloud Computing","Types of Virtualizations","Virtualization Terminologies","Hypervisor Concepts","Benefits","Vendors"]
+  },
+  {
+    num: "03", cat: "Linux Basics", name: "Linux",
+    icon: "🐧", iconBg: "rgba(255,220,50,0.1)",
+    topics: ["All-Important Linux Commands","The Linux Filesystem","File Permissions","Process Management","User Account Management","Software Management","Networking in Linux"]
+  },
+  {
+    num: "04", cat: "Compute Services", name: "Azure VM",
+    icon: "⚡", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Azure VM Overview","Instance Launch (Windows and Linux OS)"]
+  },
+  {
+    num: "05", cat: "Compute Services", name: "Azure VM Instance Management",
+    icon: "⚙️", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Instance Types","Key Pair Management","Security Groups & Firewalls","Storage and Snapshots","User Data and Metadata"]
+  },
+  {
+    num: "06", cat: "Compute Services", name: "Azure Load Balancer",
+    icon: "⚖️", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Azure Load Balancers — Overview & Configuration"]
+  },
+  {
+    num: "07", cat: "Compute Services", name: "Billing and Monitoring",
+    icon: "📊", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Billing and Monitoring","Alarms"]
+  },
+  {
+    num: "08", cat: "Compute Services", name: "Azure Auto Scaling",
+    icon: "🔄", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Auto Scaling","Scaling Types and Policies","Azure Auto-Scaling (VMSS)"]
+  },
+  {
+    num: "09", cat: "Storage Services", name: "Azure Managed Disks / File Share",
+    icon: "💾", iconBg: "rgba(52,168,83,0.1)",
+    topics: ["EBS Equivalent — Azure Managed Disks","EFS Equivalent — Azure File Share"]
+  },
+  {
+    num: "10", cat: "Networking", name: "VNET",
+    icon: "🌐", iconBg: "rgba(100,180,255,0.1)",
+    topics: ["Networking Basics","Public IPs & Private IPs","CIDR Range","Subnet Calculations","Creating Custom VNETs and Custom Subnets"]
+  },
+  {
+    num: "11", cat: "Networking", name: "VNET Controls",
+    icon: "🔀", iconBg: "rgba(100,180,255,0.1)",
+    topics: ["Network Security Groups (NSG / ACL Equivalent)","Route Tables & Gateways"]
+  },
+  {
+    num: "12", cat: "Object Storage", name: "Blob Storage",
+    icon: "🪣", iconBg: "rgba(52,168,83,0.1)",
+    topics: ["What is Blob Storage?","Storage Classes (Tiers)","Versioning","Blob Container ACL and Permissions"]
+  },
+  {
+    num: "13", cat: "Object Storage", name: "Blob Advanced",
+    icon: "🗄️", iconBg: "rgba(52,168,83,0.1)",
+    topics: ["Data Partition","Data Copying and Moving","Cross-Region/Same-Region Replication","Lifecycle Management","Security & Encryption","Azure Key Vault (KMS Equivalent)","Static Web Hosting with Blob Storage","Events Configuration on Blob Containers"]
+  },
+  {
+    num: "14", cat: "Object Storage", name: "Blob Access",
+    icon: "🔑", iconBg: "rgba(52,168,83,0.1)",
+    topics: ["Enabling Cross-Account Access for Blob Storage"]
+  },
+  {
+    num: "15", cat: "Identity & Access", name: "Azure AD / Entra ID",
+    icon: "🛡️", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Root Account vs. User","Multi-Factor Authentication for Users","Password Policies","Keys Configuration and Access Approaches","User, Groups, and Role Concepts","Creating Managed Policies","Auditing User Activity"]
+  },
+  {
+    num: "16", cat: "Databases", name: "Azure SQL Database",
+    icon: "🗃️", iconBg: "rgba(167,139,250,0.1)",
+    topics: ["Launching Azure SQL Instances","Difference: DB on VM vs Managed Azure SQL","Proxy Configuration Process","Azure Cache for Redis (ElastiCache Equivalent)"]
+  },
+  {
+    num: "17", cat: "Databases", name: "Azure SQL Operations",
+    icon: "🔍", iconBg: "rgba(167,139,250,0.1)",
+    topics: ["Connection from Azure SQL to VM","Connection from Azure SQL to Local Machine (Workbench)","Creating DB and Tables, Running Queries","Configuring Read Replicas with Masters and Accessing Tables"]
+  },
+  {
+    num: "18", cat: "Databases", name: "Cosmos DB & API Management",
+    icon: "🌌", iconBg: "rgba(167,139,250,0.1)",
+    topics: ["Cosmos DB Overview","Cosmos DB Security Options","Cosmos DB Integration to Azure Functions","Azure Functions and API Management","Project: Azure Functions + API Management + Cosmos DB"]
+  },
+  {
+    num: "19", cat: "Security Services", name: "Azure Security Tools",
+    icon: "🔒", iconBg: "rgba(255,100,100,0.1)",
+    topics: ["Azure Key Vault","Microsoft Defender for Cloud (Inspector Equivalent)","Azure Advisor (Trusted Advisor Equivalent)","Azure Front Door (Global Accelerator Equivalent)","Azure CDN","Azure DDoS Protection and WAF","Azure Monitor Logs","Azure Policy"]
+  },
+  {
+    num: "20", cat: "Serverless", name: "Azure App Service / Functions",
+    icon: "λ", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Overview of Azure App Services","Configuration with Different Services","Creation and Automation Using Azure Functions","General Configuration and Environment Setup","Layers Equivalent and Importance"]
+  },
+  {
+    num: "21", cat: "Serverless", name: "Azure App Service Integrations",
+    icon: "🔗", iconBg: "rgba(0,137,214,0.12)",
+    topics: ["Azure Functions Limitations","Azure Functions to Azure SQL Connection","Azure Functions to Cosmos DB and API Management Connection"]
+  },
+  {
+    num: "22", cat: "CI/CD Pipelines", name: "Azure DevOps",
+    icon: "🚀", iconBg: "rgba(0,200,150,0.1)",
+    badge: "DevOps",
+    topics: ["Azure CI/CD Pipelines — Full Configuration & Integration"]
+  },
+  {
+    num: "23", cat: "Orchestration", name: "AKS (Azure Kubernetes Service)",
+    icon: "☸️", iconBg: "rgba(50,108,229,0.1)",
+    badge: "DevOps",
+    topics: ["AKS Overview and Deployment"]
+  },
+  {
+    num: "24", cat: "Infrastructure as Code", name: "Terraform with Azure",
+    icon: "🔧", iconBg: "rgba(123,66,188,0.1)",
+    topics: ["Terraform with Azure — Full Configuration and Automation"]
+  }
+];
+
+const catOrder = [
+  "Cloud Fundamentals","Linux Basics","Compute Services","Storage Services",
+  "Networking","Object Storage","Identity & Access","Databases","Security Services",
+  "Serverless","CI/CD Pipelines","Orchestration","Infrastructure as Code"
+];
+
+let activeFilter = 'all';
+
+function render(filter) {
+  const container = document.getElementById('mainContent');
+  container.innerHTML = '';
+
+  const grouped = {};
+  catOrder.forEach(c => { grouped[c] = []; });
+  modules.forEach(m => { if(grouped[m.cat]) grouped[m.cat].push(m); });
+
+  catOrder.forEach(cat => {
+    const items = grouped[cat];
+    if(!items.length) return;
+    const filtered = filter === 'all' ? items : items.filter(m => m.cat === filter);
+    if(!filtered.length) return;
+
+    const groupEl = document.createElement('div');
+    groupEl.className = 'reveal';
+
+    const headerEl = document.createElement('div');
+    headerEl.className = 'group-header';
+    headerEl.innerHTML = `<div class="group-line"></div><div class="group-label">${cat}</div><div class="group-line"></div>`;
+    groupEl.appendChild(headerEl);
+
+    filtered.forEach(mod => {
+      const card = document.createElement('div');
+      card.className = 'module-card';
+      const badgeHtml = mod.badge ? `<span class="badge-devops">⚡ ${mod.badge}</span>` : '';
+      card.innerHTML = `
+        <div class="module-header">
+          <div class="module-num">${mod.num}</div>
+          <div class="module-icon" style="background:${mod.iconBg}">${mod.icon}</div>
+          <div class="module-meta">
+            <div class="module-category">${mod.cat}</div>
+            <div class="module-name">${mod.name}${badgeHtml}</div>
+          </div>
+          <div class="module-right">
+            <span class="topic-count">${mod.topics.length} topic${mod.topics.length > 1 ? 's' : ''}</span>
+            <span class="chevron">▾</span>
+          </div>
+        </div>
+        <div class="module-body">
+          <div class="module-body-inner">
+            ${mod.topics.map(t => `<div class="topic-item"><div class="topic-dot"></div>${t}</div>`).join('')}
+          </div>
+        </div>
+      `;
+
+      const header = card.querySelector('.module-header');
+      const body = card.querySelector('.module-body');
+      const inner = card.querySelector('.module-body-inner');
+
+      header.addEventListener('click', () => {
+        const isOpen = card.classList.contains('open');
+        card.classList.toggle('open');
+        body.style.maxHeight = isOpen ? '0' : inner.scrollHeight + 'px';
+      });
+
+      groupEl.appendChild(card);
+    });
+
+    container.appendChild(groupEl);
+  });
+
+  setTimeout(() => {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('up'); obs.unobserve(e.target); } });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  }, 50);
+}
+
+document.getElementById('catRow').addEventListener('click', e => {
+  const btn = e.target.closest('.cat-btn');
+  if(!btn) return;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = btn.dataset.cat;
+  render(activeFilter);
+});
+
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+  document.getElementById('progressBar').style.width = scrolled + '%';
+});
+
+render('all');
+</script>
+</body>
+</html>

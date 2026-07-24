@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <!-- boxicon css link -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="overlay"></div>
+    <header>
+        <a href="#" class="logo"><span>V</span>eera</a>
+        <ul class="navlist">
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li class="dropdown">
+                <a href="#services" id="services-link">Syllabus<i class='bx bx-chevron-down'></i></a>
+                <ul class="dropdown-menu" id="services-dropdown" style="display:none; position:absolute; background:#fff; color:#333; border-radius:6px; margin-top:8px; box-shadow:0 4px 24px rgba(0,0,0,0.10); min-width:150px; z-index:100;">
+                    <li><a href="Aws.html">AWS</a></li>
+                    <li><a href="Azure.html">Azure</a></li>
+                    <li><a href="Gcp.html">GCP</a></li>
+                    <li><a href="DevOps.html">DevOps</a></li>
+                    <li><a href="Ai.html">AI and ML</a></li>
+                </ul>
+                <script>
+                    // Only runs after DOM loaded
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const link = document.getElementById('services-link');
+                        const menu = document.getElementById('services-dropdown');
+                        link.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            menu.style.display = (menu.style.display === 'none' || !menu.style.display) ? 'block' : 'none';
+                        });
+                        document.addEventListener('click', function(e) {
+                            if (!link.contains(e.target) && !menu.contains(e.target)) {
+                                menu.style.display = 'none';
+                            }
+                        });
+                    });
+                </script>
+            </li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="https://medium.com/@veerababu.narni232">Blog</a></li>
+            <li><a href="https://youtube.com/playlist?list=PLVlQHNRLflP8bi2KI_wyZiQPS5Wg6Lxkr&si=h_rypnLVqln60Nv-">Workshops</a></li>
+        </ul>
+        
+    </header>
+
+    <section class="home" id="home">
+        <div class="hero-info">
+            <h3>Welcome  , </h3>
+            <h1>Hi I'm veerababu</h1>
+
+            <div class="text-animate">
+                <h2>multi cloud DevOps</h2>
+            </div>
+
+            <p>A complete, hands-on curriculum covering AWS, Azure, GCP, DevOps tools, AI/ML and 30 real-world projects — crafted and delivered by veera sir | NareshIT..</p>
+
+            <div class="btn-box">
+                <a href="about.html" target="_blank" class="btn d-CV">Let's begin <i class='bx bx-download'></i></a>
+            </div>
+
+            <div class="social-media">
+                <div class="bg-icon">
+                    <a href="https://www.instagram.com/its_veera_narni/"><i class='bx bxl-instagram'></i></a>
+                    <span></span>
+                </div>
+
+                <div class="bg-icon">
+                    <a href="https://github.com/CloudTechDevOps"><i class='bx bxl-github'></i></a>
+                    <span></span>
+                </div>
+
+                <div class="bg-icon">
+                    <a href="https://www.linkedin.com/in/veerababu-narni-b99b05256?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank"><i class='bx bxl-linkedin'></i></a>
+                    <span></span>
+                </div>
+
+                <div class="bg-icon">
+                    <a href="https://t.me/+H9xPrsPlcVE3NGFl" target="_blank"><i class='bx bxl-telegram'></i></a>
+                    <span></span>
+                </div>
+
+                
+            </div>
+        </div>
+        <div class="img-hero" style="width: 400px; height: 400px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; margin: 0 auto; background: #f8f8f8;">
+            <img src="img/main.png" alt="" style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 50%;">
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

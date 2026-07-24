@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI & ML for DevOps · Veera Sir · NareshIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ai:       #a855f7;
+  --ai-light: #d8b4fe;
+  --ai-pale:  #f3e8ff;
+  --ai-dim:   rgba(168,85,247,0.10);
+  --ml:       #ec4899;
+  --ml-light: #f9a8d4;
+  --ml-dim:   rgba(236,72,153,0.10);
+  --cyan:     #22d3ee;
+  --cyan-dim: rgba(34,211,238,0.08);
+  --dark:  #070610;
+  --dark2: #0d0b1a;
+  --dark3: #130f22;
+  --border:      rgba(168,85,247,0.18);
+  --border-soft: rgba(255,255,255,0.05);
+  --text:   #ddd6f0;
+  --muted:  #5a4e75;
+  --white:  #ffffff;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* neural net background */
+.bg-neural {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(168,85,247,0.07) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(236,72,153,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 60% 20%, rgba(34,211,238,0.04) 0%, transparent 40%);
+}
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(168,85,247,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168,85,247,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 0%, transparent 100%);
+}
+
+/* animated glowing orbs */
+.orb {
+  position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0;
+  animation: orb-drift 20s ease-in-out infinite;
+}
+.orb1 { width: 500px; height: 500px; top: -150px; left: -100px; background: rgba(168,85,247,0.06); animation-delay: 0s; }
+.orb2 { width: 400px; height: 400px; bottom: -100px; right: -80px; background: rgba(236,72,153,0.06); animation-delay: -7s; }
+.orb3 { width: 300px; height: 300px; top: 40%; right: 20%; background: rgba(34,211,238,0.04); animation-delay: -14s; }
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, 60px) scale(1.05); }
+  66% { transform: translate(-30px, 30px) scale(0.95); }
+}
+
+/* top stripe */
+.stripe {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 3px;
+  background: linear-gradient(90deg, var(--ai) 0%, var(--ml) 40%, var(--cyan) 70%, var(--ai) 100%);
+  background-size: 200% 100%;
+  animation: stripe-flow 4s linear infinite;
+}
+@keyframes stripe-flow { from{background-position:0% 0%} to{background-position:200% 0%} }
+
+/* progress */
+.progress-bar-wrap {
+  position: fixed; top: 67px; left: 0; right: 0; z-index: 99;
+  height: 2px; background: rgba(255,255,255,0.04);
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ai), var(--ml), var(--cyan));
+  width: 0%; transition: width 0.1s;
+}
+
+/* nav */
+.nav {
+  position: sticky; top: 3px; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 60px; height: 64px;
+  background: rgba(7,6,16,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand { display: flex; align-items: center; gap: 12px; }
+.nav-logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--ai), #7c22b0);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.nav-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+.nav-name span { color: var(--ai-light); }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-tag { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.nav-badge {
+  background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.3);
+  color: var(--ai-light); font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  padding: 5px 14px; border-radius: 100px; text-transform: uppercase;
+}
+
+/* hero */
+.hero {
+  position: relative; z-index: 1;
+  padding: 90px 60px 80px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.hero::before {
+  content: 'AI';
+  position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(180px, 28vw, 340px); font-weight: 800;
+  color: rgba(168,85,247,0.04); line-height: 1;
+  pointer-events: none; letter-spacing: -0.04em; user-select: none;
+}
+
+.hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; margin-bottom: 52px; }
+
+.overline {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ai-light); font-weight: 600; margin-bottom: 20px;
+}
+.overline::before { content:''; width: 24px; height: 1px; background: var(--ai-light); display: block; }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 5vw, 4.8rem);
+  font-weight: 800; line-height: 1; letter-spacing: -0.02em; margin-bottom: 10px;
+}
+.title-ai { color: var(--ai-light); }
+.title-amp { color: rgba(255,255,255,0.2); margin: 0 10px; font-weight: 300; }
+.title-ml { color: var(--ml-light); }
+.title-sub {
+  display: block; margin-top: 8px;
+  font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 600;
+  background: linear-gradient(135deg, var(--ai-light), var(--ml-light), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-sub { font-size: 15px; color: var(--muted); margin-top: 14px; line-height: 1.7; max-width: 500px; }
+
+/* AI tool chips */
+.tool-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }
+.tool-chip {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 600;
+  border: 1px solid; letter-spacing: 0.05em; white-space: nowrap;
+  transition: transform 0.2s;
+}
+.tool-chip:hover { transform: translateY(-2px); }
+
+/* stats */
+.hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-width: 280px; }
+.hstat {
+  background: var(--dark2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 20px; text-align: center;
+  transition: border-color 0.3s, background 0.3s;
+}
+.hstat:hover { border-color: rgba(168,85,247,0.45); background: var(--ai-dim); }
+.hstat-num {
+  font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;
+  color: var(--ai-light); display: block; line-height: 1; margin-bottom: 5px;
+}
+.hstat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 500; }
+
+/* cat filter */
+.cat-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.cat-btn {
+  padding: 8px 18px; border-radius: 100px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  cursor: pointer; transition: all 0.25s;
+}
+.cat-btn:hover, .cat-btn.active {
+  background: var(--ai-dim); border-color: rgba(168,85,247,0.45); color: var(--ai-light);
+}
+.cat-btn.active { font-weight: 600; }
+
+/* main */
+.main { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 60px 60px 100px; }
+
+.group-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; margin-top: 48px; }
+.group-header:first-child { margin-top: 0; }
+.group-line { flex: 1; height: 1px; background: var(--border); }
+.group-label {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ai-light); font-weight: 600; white-space: nowrap;
+  padding: 4px 14px; border: 1px solid var(--border);
+  border-radius: 100px; background: var(--ai-dim);
+}
+
+/* module cards */
+.module-card {
+  background: var(--dark2); border: 1px solid var(--border-soft);
+  border-radius: 16px; margin-bottom: 8px; overflow: hidden;
+  transition: border-color 0.3s;
+  position: relative;
+}
+/* glowing left accent on hover */
+.module-card::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  border-radius: 16px 0 0 16px;
+  background: linear-gradient(180deg, var(--ai), var(--ml));
+  opacity: 0; transition: opacity 0.3s;
+}
+.module-card:hover { border-color: rgba(168,85,247,0.28); }
+.module-card:hover::before { opacity: 1; }
+.module-card.open { border-color: rgba(168,85,247,0.4); }
+.module-card.open::before { opacity: 1; }
+
+/* special project card */
+.module-card.project-card { border-color: rgba(236,72,153,0.2); }
+.module-card.project-card::before { background: linear-gradient(180deg, var(--ml), var(--cyan)); }
+.module-card.project-card:hover { border-color: rgba(236,72,153,0.4); }
+.module-card.project-card.open { border-color: rgba(236,72,153,0.5); }
+
+.module-header {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px 28px; cursor: pointer; user-select: none;
+  transition: background 0.2s;
+}
+.module-header:hover { background: rgba(255,255,255,0.02); }
+
+.module-num {
+  font-family: 'Playfair Display', serif; font-size: 12px; font-weight: 700;
+  min-width: 28px; letter-spacing: 0.06em; color: var(--ai-light);
+}
+.module-num.proj { color: var(--ml-light); }
+
+.module-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.06);
+}
+
+.module-meta { flex: 1; }
+.module-category { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 500; margin-bottom: 3px; }
+.module-name { font-size: 15px; font-weight: 600; color: var(--white); line-height: 1.3; }
+
+/* NEW badge */
+.new-badge {
+  display: inline-flex; align-items: center;
+  background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(236,72,153,0.2));
+  border: 1px solid rgba(168,85,247,0.3);
+  color: var(--ai-light); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 100px; margin-left: 10px;
+  vertical-align: middle;
+}
+.hot-badge {
+  background: linear-gradient(135deg, rgba(236,72,153,0.2), rgba(249,115,22,0.2));
+  border-color: rgba(236,72,153,0.3); color: var(--ml-light);
+}
+
+.module-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.topic-count {
+  font-size: 11px; color: var(--muted);
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft);
+  padding: 4px 12px; border-radius: 100px; font-weight: 500;
+}
+.chevron {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; transition: transform 0.3s, background 0.3s; color: var(--muted);
+}
+.module-card.open .chevron { transform: rotate(180deg); background: var(--ai-dim); color: var(--ai-light); border-color: rgba(168,85,247,0.3); }
+.module-card.project-card.open .chevron { background: var(--ml-dim); color: var(--ml-light); border-color: rgba(236,72,153,0.3); }
+
+.module-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  border-top: 1px solid transparent;
+}
+.module-card.open .module-body { border-top-color: var(--border); }
+.module-card.project-card.open .module-body { border-top-color: rgba(236,72,153,0.18); }
+
+.module-body-inner {
+  padding: 24px 28px 28px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px;
+}
+
+.topic-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.02); border: 1px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
+  font-size: 13px; color: #7060a0; line-height: 1.5;
+}
+.topic-item:hover { background: var(--ai-dim); border-color: rgba(168,85,247,0.22); color: var(--ai-pale); }
+.topic-item.proj-topic:hover { background: var(--ml-dim); border-color: rgba(236,72,153,0.22); color: #ffe4f0; }
+.topic-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ai); flex-shrink: 0; margin-top: 7px; }
+.topic-dot.proj { background: var(--ml); }
+
+/* footer */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border); padding: 36px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--dark2);
+}
+.footer-left { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--white); font-weight: 700; }
+.footer-left span { color: var(--ai-light); }
+.footer-right { font-size: 12px; color: var(--muted); }
+
+/* reveal */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.up { opacity: 1; transform: none; }
+
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-tag { display: none; }
+  .hero { padding: 60px 20px 50px; }
+  .hero-top { flex-direction: column; }
+  .hero-stats { grid-template-columns: repeat(4,1fr); min-width: auto; }
+  .hstat-num { font-size: 1.4rem; }
+  .main { padding: 40px 20px 80px; }
+  .module-header { padding: 16px 18px; gap: 12px; }
+  .module-body-inner { grid-template-columns: 1fr; padding: 18px 18px 22px; }
+  footer { flex-direction: column; gap: 10px; padding: 28px 20px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-neural"></div>
+<div class="bg-grid"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="stripe"></div>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🤖</div>
+    <div class="nav-name">Veera <span>Sir</span></div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag">NareshIT · Hyderabad</span>
+    <span class="nav-badge">🤖 AI & ML for DevOps</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-left">
+        <div class="overline">Cutting-Edge AI Integration · NareshIT</div>
+        <h1 class="hero-title">
+          <span class="title-ai">AI</span><span class="title-amp">&</span><span class="title-ml">ML</span>
+          <span class="title-sub">for DevOps Engineers</span>
+        </h1>
+        <p class="hero-sub">
+          From AIOps monitoring and LLM-powered log analysis to KubeGPT and real-world
+          AI-driven CI/CD pipelines — the next evolution of DevOps is here.
+        </p>
+        <!-- AI tool chips -->
+        <div class="tool-chips">
+          <span class="tool-chip" style="color:#a855f7;border-color:rgba(168,85,247,0.3);background:rgba(168,85,247,0.08)">🤖 ChatGPT</span>
+          <span class="tool-chip" style="color:#f9a8d4;border-color:rgba(236,72,153,0.3);background:rgba(236,72,153,0.08)">🐙 GitHub Copilot</span>
+          <span class="tool-chip" style="color:#67e8f9;border-color:rgba(34,211,238,0.3);background:rgba(34,211,238,0.08)">☸️ KubeGPT</span>
+          <span class="tool-chip" style="color:#fdba74;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.08)">🔷 Azure Copilot</span>
+          <span class="tool-chip" style="color:#86efac;border-color:rgba(134,239,172,0.3);background:rgba(134,239,172,0.08)">🦙 Ollama</span>
+          <span class="tool-chip" style="color:#fde68a;border-color:rgba(253,230,138,0.3);background:rgba(253,230,138,0.08)">⛓️ LangChain</span>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-stats">
+          <div class="hstat"><span class="hstat-num">8</span><span class="hstat-label">Modules</span></div>
+          <div class="hstat"><span class="hstat-num">5</span><span class="hstat-label">Projects</span></div>
+          <div class="hstat"><span class="hstat-num">LLM</span><span class="hstat-label">Powered</span></div>
+          <div class="hstat"><span class="hstat-num">100%</span><span class="hstat-label">Hands-On</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-row" id="catRow">
+      <button class="cat-btn active" data-cat="all">All Modules</button>
+      <button class="cat-btn" data-cat="AI & ML for DevOps">AI & ML Intro</button>
+      <button class="cat-btn" data-cat="Machine Learning">Machine Learning</button>
+      <button class="cat-btn" data-cat="AIOps Monitoring">AIOps Monitoring</button>
+      <button class="cat-btn" data-cat="AI for Code">AI for Code Writing</button>
+      <button class="cat-btn" data-cat="AI Analysis">AI Analysis</button>
+      <button class="cat-btn" data-cat="AI Tools">AI Tools</button>
+      <button class="cat-btn" data-cat="Kubernetes AI">Kubernetes AI</button>
+      <button class="cat-btn" data-cat="Real-Time Projects">Real-Time Projects</button>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main" id="mainContent"></main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">Veera <span>Sir</span> · NareshIT</div>
+  <div class="footer-right">AI & ML for DevOps · Cutting-Edge AI Integration · Hyderabad, India</div>
+</footer>
+
+<script>
+const modules = [
+  {
+    num: "01", cat: "AI & ML for DevOps", name: "AI & ML for DevOps",
+    icon: "🤖", iconBg: "rgba(168,85,247,0.14)",
+    badge: "NEW", badgeClass: "",
+    topics: [
+      "What is AI / ML — Use for DevOps",
+      "Introduction of AI Tools for DevOps"
+    ]
+  },
+  {
+    num: "02", cat: "Machine Learning", name: "Types of Machine Learning",
+    icon: "🧠", iconBg: "rgba(168,85,247,0.12)",
+    badge: null,
+    topics: [
+      "Supervised Learning",
+      "Unsupervised Learning",
+      "Reinforcement Learning"
+    ]
+  },
+  {
+    num: "03", cat: "AIOps Monitoring", name: "AIOps Monitoring",
+    icon: "📡", iconBg: "rgba(34,211,238,0.12)",
+    badge: "HOT", badgeClass: "hot-badge",
+    topics: [
+      "Dynatrace (AI Davis Engine)",
+      "New Relic AI",
+      "Splunk ITSI"
+    ]
+  },
+  {
+    num: "04", cat: "AI for Code", name: "AI for Code Writing",
+    icon: "💻", iconBg: "rgba(168,85,247,0.12)",
+    badge: null,
+    topics: [
+      "Writing Dockerfiles with AI",
+      "Terraform Scripts via AI",
+      "Helm Charts Generation",
+      "Jenkins Pipelines with AI Assistance"
+    ]
+  },
+  {
+    num: "05", cat: "AI Analysis", name: "AI Analysis",
+    icon: "🔬", iconBg: "rgba(236,72,153,0.12)",
+    badge: null,
+    topics: [
+      "Log Analysis Using LLMs",
+      "Incident Auto-Resolution",
+      "Capacity Prediction",
+      "Cost Optimization (FinOps + AI)"
+    ]
+  },
+  {
+    num: "06", cat: "AI Tools", name: "AI Tools for DevOps",
+    icon: "🛠️", iconBg: "rgba(168,85,247,0.12)",
+    badge: "NEW", badgeClass: "",
+    topics: [
+      "ChatGPT / GitHub Copilot",
+      "Azure Copilot",
+      "Open-Source LLMs — Ollama",
+      "LangChain for DevOps Automation"
+    ]
+  },
+  {
+    num: "07", cat: "Kubernetes AI", name: "Kubernetes AI — KubeGPT",
+    icon: "☸️", iconBg: "rgba(34,211,238,0.12)",
+    badge: "HOT", badgeClass: "hot-badge",
+    topics: [
+      "What is KubeGPT?",
+      "Installation of KubeGPT",
+      "Use Cases of KubeGPT",
+      "KubeGPT & OpenAI Integration"
+    ]
+  },
+  {
+    num: "08", cat: "Real-Time Projects", name: "Real-Time Projects",
+    icon: "🚀", iconBg: "rgba(236,72,153,0.14)",
+    badge: "LIVE", badgeClass: "hot-badge",
+    isProject: true,
+    topics: [
+      "CI/CD Pipeline with AI Failure Analysis",
+      "AI-Based Log Monitoring System",
+      "Terraform Infra + AI Validation",
+      "Cloud Cost Optimization Using AI",
+      "Loan Prediction System Using ML Model"
+    ]
+  }
+];
+
+const catOrder = [
+  "AI & ML for DevOps","Machine Learning","AIOps Monitoring",
+  "AI for Code","AI Analysis","AI Tools","Kubernetes AI","Real-Time Projects"
+];
+
+function render(filter) {
+  const container = document.getElementById('mainContent');
+  container.innerHTML = '';
+
+  const filtered = filter === 'all' ? modules : modules.filter(m => m.cat === filter);
+  if (!filtered.length) return;
+
+  // group by cat if showing all
+  if (filter === 'all') {
+    catOrder.forEach(cat => {
+      const items = filtered.filter(m => m.cat === cat);
+      if (!items.length) return;
+      const groupEl = document.createElement('div');
+      groupEl.className = 'reveal';
+      groupEl.innerHTML = `<div class="group-header"><div class="group-line"></div><div class="group-label">${cat}</div><div class="group-line"></div></div>`;
+      items.forEach(mod => groupEl.appendChild(buildCard(mod)));
+      container.appendChild(groupEl);
+    });
+  } else {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'reveal';
+    filtered.forEach(mod => groupEl.appendChild(buildCard(mod)));
+    container.appendChild(groupEl);
+  }
+
+  setTimeout(() => {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('up'); obs.unobserve(e.target); } });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  }, 50);
+}
+
+function buildCard(mod) {
+  const card = document.createElement('div');
+  card.className = `module-card${mod.isProject ? ' project-card' : ''}`;
+
+  const badgeHtml = mod.badge
+    ? `<span class="new-badge ${mod.badgeClass || ''}">${mod.badge}</span>`
+    : '';
+
+  card.innerHTML = `
+    <div class="module-header">
+      <div class="module-num${mod.isProject ? ' proj' : ''}">${mod.num}</div>
+      <div class="module-icon" style="background:${mod.iconBg}">${mod.icon}</div>
+      <div class="module-meta">
+        <div class="module-category">${mod.cat}</div>
+        <div class="module-name">${mod.name}${badgeHtml}</div>
+      </div>
+      <div class="module-right">
+        <span class="topic-count">${mod.topics.length} topic${mod.topics.length > 1 ? 's' : ''}</span>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+    <div class="module-body">
+      <div class="module-body-inner">
+        ${mod.topics.map(t => `
+          <div class="topic-item${mod.isProject ? ' proj-topic' : ''}">
+            <div class="topic-dot${mod.isProject ? ' proj' : ''}"></div>${t}
+          </div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  const header = card.querySelector('.module-header');
+  const body   = card.querySelector('.module-body');
+  const inner  = card.querySelector('.module-body-inner');
+  header.addEventListener('click', () => {
+    const open = card.classList.contains('open');
+    card.classList.toggle('open');
+    body.style.maxHeight = open ? '0' : inner.scrollHeight + 'px';
+  });
+  return card;
+}
+
+document.getElementById('catRow').addEventListener('click', e => {
+  const btn = e.target.closest('.cat-btn');
+  if (!btn) return;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render(btn.dataset.cat);
+});
+
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  document.getElementById('progressBar').style.width =
+    (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%';
+});
+
+render('all');
+</script>
+</body>
+</html>

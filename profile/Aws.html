@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Complete Syllabus · Veera Sir · NareshIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-pale: #f5e9c8;
+  --gold-dim: rgba(201,168,76,0.12);
+  --dark: #0c0c0c;
+  --dark2: #131313;
+  --dark3: #1a1a1a;
+  --border: rgba(201,168,76,0.15);
+  --border-soft: rgba(255,255,255,0.05);
+  --text: #ddd5c5;
+  --muted: #6b6355;
+  --white: #ffffff;
+  --aws: #FF9900;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* noise texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* ─── TOP NAV ─── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 60px;
+  height: 64px;
+  background: rgba(12,12,12,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 12px;
+}
+.nav-logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold), #8b5e1a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.nav-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem; font-weight: 700; color: var(--white);
+}
+.nav-name span { color: var(--gold); }
+.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-tag {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); font-weight: 500;
+}
+.nav-badge {
+  background: rgba(255,153,0,0.12); border: 1px solid rgba(255,153,0,0.25);
+  color: var(--aws); font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  padding: 5px 14px; border-radius: 100px; text-transform: uppercase;
+}
+
+/* ─── HERO BANNER ─── */
+.hero {
+  position: relative; z-index: 1;
+  padding: 90px 60px 80px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* big bg text */
+.hero::before {
+  content: 'AWS';
+  position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(160px, 22vw, 280px); font-weight: 800;
+  color: rgba(255,153,0,0.04); line-height: 1; pointer-events: none;
+  letter-spacing: -0.04em; user-select: none;
+}
+
+.hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+
+.hero-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 40px;
+  margin-bottom: 56px;
+}
+
+.hero-left {}
+
+.overline {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold); font-weight: 600; margin-bottom: 20px;
+}
+.overline::before { content:''; width: 24px; height: 1px; background: var(--gold); display: block; }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-weight: 800; line-height: 1.05;
+  color: var(--white); margin-bottom: 10px; letter-spacing: -0.02em;
+}
+.hero-title span {
+  background: linear-gradient(135deg, var(--aws) 0%, #ffb733 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.hero-sub {
+  font-size: 15px; color: var(--muted);
+  margin-top: 14px; line-height: 1.7; max-width: 500px;
+}
+
+.hero-right {}
+
+.hero-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  min-width: 280px;
+}
+.hstat {
+  background: var(--dark2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 20px; text-align: center;
+  transition: border-color 0.3s, background 0.3s;
+}
+.hstat:hover { border-color: rgba(201,168,76,0.35); background: var(--gold-dim); }
+.hstat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700; color: var(--gold-light);
+  display: block; line-height: 1; margin-bottom: 5px;
+}
+.hstat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 500; }
+
+/* module category tabs */
+.cat-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.cat-btn {
+  padding: 8px 18px; border-radius: 100px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+  border: 1px solid var(--border);
+  background: transparent; color: var(--muted);
+  cursor: pointer; transition: all 0.25s;
+}
+.cat-btn:hover, .cat-btn.active {
+  background: var(--gold-dim); border-color: rgba(201,168,76,0.4); color: var(--gold-light);
+}
+.cat-btn.active { font-weight: 600; }
+
+/* ─── MAIN CONTENT ─── */
+.main {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto;
+  padding: 60px 60px 100px;
+}
+
+/* module group header */
+.group-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 16px; margin-top: 48px;
+}
+.group-header:first-child { margin-top: 0; }
+.group-line { flex: 1; height: 1px; background: var(--border); }
+.group-label {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold); font-weight: 600; white-space: nowrap;
+  padding: 4px 14px; border: 1px solid var(--border);
+  border-radius: 100px; background: var(--gold-dim);
+}
+
+/* module cards */
+.module-card {
+  background: var(--dark2); border: 1px solid var(--border-soft);
+  border-radius: 16px; margin-bottom: 8px; overflow: hidden;
+  transition: border-color 0.3s;
+}
+.module-card:hover { border-color: rgba(201,168,76,0.2); }
+.module-card.open { border-color: rgba(201,168,76,0.3); }
+
+.module-header {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px 28px;
+  cursor: pointer; user-select: none;
+  transition: background 0.2s;
+}
+.module-header:hover { background: rgba(255,255,255,0.02); }
+
+.module-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 12px; font-weight: 700; color: var(--gold);
+  min-width: 28px; letter-spacing: 0.06em;
+}
+
+.module-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.module-meta { flex: 1; }
+.module-category {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted); font-weight: 500; margin-bottom: 3px;
+}
+.module-name {
+  font-size: 15px; font-weight: 600; color: var(--white); line-height: 1.3;
+}
+
+.module-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.topic-count {
+  font-size: 11px; color: var(--muted);
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft);
+  padding: 4px 12px; border-radius: 100px; font-weight: 500;
+}
+.chevron {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; transition: transform 0.3s, background 0.3s;
+  color: var(--muted);
+}
+.module-card.open .chevron { transform: rotate(180deg); background: var(--gold-dim); color: var(--gold-light); border-color: rgba(201,168,76,0.3); }
+
+/* accordion body */
+.module-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  border-top: 1px solid transparent;
+}
+.module-card.open .module-body {
+  border-top-color: var(--border);
+}
+
+.module-body-inner {
+  padding: 24px 28px 28px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px;
+}
+
+.topic-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
+  font-size: 13px; color: #a09080; line-height: 1.5;
+}
+.topic-item:hover { background: var(--gold-dim); border-color: rgba(201,168,76,0.2); color: var(--gold-pale); }
+.topic-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold); flex-shrink: 0; margin-top: 7px;
+}
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar-wrap {
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 99;
+  height: 2px; background: rgba(255,255,255,0.04);
+}
+.progress-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--aws), var(--gold));
+  width: 0%; transition: width 0.1s;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 36px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--dark2);
+}
+.footer-left { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--white); font-weight: 700; }
+.footer-left span { color: var(--gold); }
+.footer-right { font-size: 12px; color: var(--muted); }
+
+/* ─── REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.up { opacity: 1; transform: none; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-tag { display: none; }
+  .hero { padding: 60px 20px 50px; }
+  .hero-top { flex-direction: column; }
+  .hero-stats { grid-template-columns: repeat(4,1fr); min-width: auto; }
+  .hstat-num { font-size: 1.4rem; }
+  .main { padding: 40px 20px 80px; }
+  .module-header { padding: 16px 18px; gap: 12px; }
+  .module-body-inner { grid-template-columns: 1fr; padding: 18px 18px 22px; }
+  footer { flex-direction: column; gap: 10px; padding: 28px 20px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">☁️</div>
+    <div class="nav-name">Veera <span>Sir</span></div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag">NareshIT · Hyderabad</span>
+    <span class="nav-badge">☁️ AWS Course</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-left">
+        <div class="overline">Complete Curriculum</div>
+        <h1 class="hero-title">
+          Amazon Web<br><span>Services</span>
+        </h1>
+        <p class="hero-sub">
+          A comprehensive program covering Cloud Fundamentals, Compute, Networking, Storage,
+          Security, Serverless, IaC and more — all with 100% hands-on, production-grade projects.
+        </p>
+      </div>
+      <div class="hero-right">
+        <div class="hero-stats">
+          <!-- Removed 59 Days stat -->
+          <div class="hstat"><span class="hstat-num">29</span><span class="hstat-label">Modules</span></div>
+          <div class="hstat"><span class="hstat-num">10+</span><span class="hstat-label">Services</span></div>
+          <div class="hstat"><span class="hstat-num">100%</span><span class="hstat-label">Hands-On</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-row" id="catRow">
+      <button class="cat-btn active" data-cat="all">All Modules</button>
+      <button class="cat-btn" data-cat="Cloud Fundamentals">Cloud Fundamentals</button>
+      <button class="cat-btn" data-cat="Linux Basics">Linux Basics</button>
+      <button class="cat-btn" data-cat="Compute Services">Compute Services</button>
+      <button class="cat-btn" data-cat="Networking">Networking</button>
+      <button class="cat-btn" data-cat="Storage Services">Storage</button>
+      <button class="cat-btn" data-cat="Object Storage">Object Storage</button>
+      <button class="cat-btn" data-cat="Identity & Access">Identity & Access</button>
+      <button class="cat-btn" data-cat="Databases">Databases</button>
+      <button class="cat-btn" data-cat="Security Services">Security</button>
+      <button class="cat-btn" data-cat="Monitoring">Monitoring</button>
+      <button class="cat-btn" data-cat="Serverless">Serverless</button>
+      <button class="cat-btn" data-cat="DNS & CDN">DNS & CDN</button>
+      <button class="cat-btn" data-cat="Infrastructure as Code">IaC</button>
+      <button class="cat-btn" data-cat="Scripting">Scripting</button>
+      <button class="cat-btn" data-cat="Migration">Migration</button>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main" id="mainContent">
+  <!-- JS renders modules here -->
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">Veera <span>Sir</span> · NareshIT</div>
+  <div class="footer-right">AWS Complete Syllabus · Hyderabad, India</div>
+</footer>
+
+<script>
+const modules = [
+  {
+    num: "01", cat: "Cloud Fundamentals", name: "Introduction to Cloud Computing",
+    icon: "☁️", iconBg: "rgba(91,143,255,0.1)",
+    topics: ["Why Cloud Computing?","Benefits of Cloud Computing","Types of Cloud Computing","Cloud Service Models","Scaling in Cloud Computing","Cloud Computing Issues","Security in the Cloud","Cloud Costing Models"]
+  },
+  {
+    num: "02", cat: "Cloud Fundamentals", name: "Virtualization",
+    icon: "🖥️", iconBg: "rgba(91,143,255,0.1)",
+    topics: ["What is Virtualization?","Virtualization and Cloud Computing","Types of Virtualizations","Virtualization Terminologies","Hypervisor Concepts","Benefits","Vendors"]
+  },
+  {
+    num: "03", cat: "Linux Basics", name: "Linux",
+    icon: "🐧", iconBg: "rgba(255,200,50,0.1)",
+    topics: ["All-Important Linux Commands","The Linux Filesystem","File Permissions","Process Management","User Account Management","Software Management","Backup and Restore Management","systemd and Monitoring Management","Storage Management","Networking in Linux"]
+  },
+  {
+    num: "04", cat: "Compute Services", name: "EC2",
+    icon: "⚡", iconBg: "rgba(255,153,0,0.1)",
+    topics: ["EC2 Overview","Instance Launch (Windows and Linux OS)"]
+  },
+  {
+    num: "05", cat: "Compute Services", name: "EC2 Instance Management",
+    icon: "⚙️", iconBg: "rgba(255,153,0,0.1)",
+    topics: ["Instance Types","Key Pair Management","Security Groups & Firewalls","EC2 Connect Methods","EC2 Security Group Management","Creation of AMI and Launch Template","Elastic IP","Storage and Snapshots","User Data and Metadata"]
+  },
+  {
+    num: "06", cat: "Compute Services", name: "Elastic Load Balancing (ELB)",
+    icon: "⚖️", iconBg: "rgba(255,153,0,0.1)",
+    topics: ["Load Balancers Introduction","Application Load Balancer (ALB)","Network Load Balancer (NLB)","Path-Based Routing (ALB)","ALB and NLB Target Groups","ALB and NLB Integration"]
+  },
+  {
+    num: "07", cat: "Compute Services", name: "Billing and Monitoring",
+    icon: "📊", iconBg: "rgba(255,153,0,0.1)",
+    topics: ["Billing and Monitoring","CloudWatch Alarms"]
+  },
+  {
+    num: "08", cat: "Compute Services", name: "Auto Scaling",
+    icon: "🔄", iconBg: "rgba(255,153,0,0.1)",
+    topics: ["Auto Scaling","Scaling Types and Policies","Target Tracking Policy","Step and Scheduled Scaling"]
+  },
+  {
+    num: "09", cat: "Storage Services", name: "EBS / EFS",
+    icon: "💾", iconBg: "rgba(52,168,83,0.1)",
+    topics: ["EBS (Elastic Block Storage)","EFS (Elastic File Storage)"]
+  },
+  {
+    num: "10", cat: "Networking", name: "VPC",
+    icon: "🌐", iconBg: "rgba(100,180,255,0.1)",
+    topics: ["Networking Basics","Public IPs & Private IPs","CIDR Range","Subnet Calculations","Public Subnet and Private Subnets","Internet Gateway and NAT Gateway","Creating Custom VPCs and Custom Subnets"]
+  },
+  {
+    num: "11", cat: "Networking", name: "VPC Controls",
+    icon: "🔀", iconBg: "rgba(100,180,255,0.1)",
+    topics: ["Network ACLs","VPC Peering (Same Region, Cross Region, Different Account)","VPC Endpoint","Transit Gateway","VPC Endpoint to Connect Private EC2","Route Tables & IGW"]
+  },
+  {
+    num: "12", cat: "Object Storage", name: "S3",
+    icon: "🪣", iconBg: "rgba(52,168,83,0.1)",
+    topics: ["What is S3?","Storage Classes","Versioning","S3 Bucket ACL and Bucket Permissions"]
+  },
+  {
+    num: "13", cat: "Object Storage", name: "S3 Advanced",
+    icon: "🗄️", iconBg: "rgba(52,168,83,0.1)",
+    topics: ["S3 Data Partition","Data Copying and Moving","Cross-Region/Same-Region Replication","Lifecycle Management","Security & Encryption","KMS (Key Management Service)","Static Web Hosting with S3","Events Configuration on S3 Buckets"]
+  },
+  {
+    num: "14", cat: "Object Storage", name: "S3 Access",
+    icon: "🔑", iconBg: "rgba(52,168,83,0.1)",
+    topics: ["Enabling Cross-Account Access for S3"]
+  },
+  {
+    num: "15", cat: "Identity & Access", name: "IAM",
+    icon: "🛡️", iconBg: "rgba(201,168,76,0.1)",
+    topics: ["Root Account vs. IAM User","Multi-Factor Authentication","IAM Password Policies","Keys Configuration & Different Access Approaches","User, Groups, and Role Concepts","AWS CLI and IAM Roles","IAM Policies — AWS Managed, Custom, Inline","Creating Customer-Managed Policies","Auditing User Activity"]
+  },
+  {
+    num: "16", cat: "Databases", name: "RDS",
+    icon: "🗃️", iconBg: "rgba(167,139,250,0.1)",
+    topics: ["Launching RDS Instances","Difference: DB on EC2 vs Managed RDS","RDS Proxy Configuration","ElastiCache Overview"]
+  },
+  {
+    num: "17", cat: "Databases", name: "RDS Operations",
+    icon: "🔍", iconBg: "rgba(167,139,250,0.1)",
+    topics: ["Connection from RDS to EC2","Connection from RDS to Local Machine (Workbench)","Creating DB and Tables, Running Queries","Read Replicas with Masters and Accessing Tables"]
+  },
+  {
+    num: "18", cat: "Databases", name: "DynamoDB & API Gateway",
+    icon: "⚡", iconBg: "rgba(167,139,250,0.1)",
+    topics: ["DynamoDB Overview","DynamoDB Security Options","DynamoDB Integration to Lambda","Lambda and API Gateway","Project: Lambda + API Gateway + DynamoDB"]
+  },
+  {
+    num: "19", cat: "Security Services", name: "Secrets & Keys",
+    icon: "🔐", iconBg: "rgba(255,100,100,0.1)",
+    topics: ["AWS Secrets Manager","Key Management Services (KMS)"]
+  },
+  {
+    num: "20", cat: "Monitoring", name: "CloudWatch",
+    icon: "📡", iconBg: "rgba(50,200,150,0.1)",
+    topics: ["CloudWatch Overview"]
+  },
+  {
+    num: "21", cat: "Monitoring", name: "CloudWatch Advanced",
+    icon: "🔔", iconBg: "rgba(50,200,150,0.1)",
+    topics: ["CloudWatch EventBridge","CloudWatch Alarms"]
+  },
+  {
+    num: "22", cat: "Security Services", name: "AWS Security Tools",
+    icon: "🔒", iconBg: "rgba(255,100,100,0.1)",
+    topics: ["AWS Certificate Manager","AWS Inspector","AWS Trusted Advisor","AWS Global Accelerator","CloudFront / CDN","AWS Shield and WAF","CloudTrail","AWS Config","SNS"]
+  },
+  {
+    num: "23", cat: "Serverless", name: "Lambda",
+    icon: "λ", iconBg: "rgba(255,153,0,0.1)",
+    topics: ["Overview of Lambda","Configuration with Different Services","Creation and Automation Using Lambda Boto3","General Configuration & Environment Setup","Lambda Layers and Importance"]
+  },
+  {
+    num: "24", cat: "Serverless", name: "Lambda Integrations",
+    icon: "🔗", iconBg: "rgba(255,153,0,0.1)",
+    topics: ["Lambda Limitations","Lambda to RDS Connection","Lambda to DynamoDB and API Gateway Connection"]
+  },
+  {
+    num: "25", cat: "DNS & CDN", name: "Route 53",
+    icon: "🌍", iconBg: "rgba(91,143,255,0.1)",
+    topics: ["DNS Records Overview","Alias Configuration to ELB, Static Hosting & CloudFront","Hosting Sample Website & Configuring Policies","Simple RP, Weighted RP","Failover RP, Geo Location RP, Latency-Based Routing","Cross-Region High Availability"]
+  },
+  {
+    num: "26", cat: "DNS & CDN", name: "CloudFront",
+    icon: "🚀", iconBg: "rgba(91,143,255,0.1)",
+    topics: ["Overview of CloudFront","CloudFront Distribution and Invalidations","Origins and Origin Groups","CloudFront Invalidations"]
+  },
+  {
+    num: "27", cat: "Infrastructure as Code", name: "Terraform with AWS",
+    icon: "🔧", iconBg: "rgba(123,66,188,0.1)",
+    topics: ["Setting up the System for AWS","S3 Bucket and Random ID","The Root Module","AMI Data, Key Pair, and File Function","EC2 Instance","User Data and Template Files","Compute Root Module"]
+  },
+  {
+    num: "28", cat: "Scripting", name: "Python Boto3",
+    icon: "🐍", iconBg: "rgba(255,220,50,0.1)",
+    topics: ["Python Boto3 for AWS Automation"]
+  },
+  {
+    num: "29", cat: "Migration", name: "Database Migration Service (DMS)",
+    icon: "🔃", iconBg: "rgba(50,200,150,0.1)",
+    topics: ["Introduction to DMS","Database Migration from EC2 to RDS"]
+  }
+];
+
+// Group categories
+const catOrder = [
+  "Cloud Fundamentals","Linux Basics","Compute Services","Storage Services",
+  "Networking","Object Storage","Identity & Access","Databases","Security Services",
+  "Monitoring","Serverless","DNS & CDN","Infrastructure as Code","Scripting","Migration"
+];
+
+let activeFilter = 'all';
+
+function render(filter) {
+  const container = document.getElementById('mainContent');
+  container.innerHTML = '';
+
+  const grouped = {};
+  catOrder.forEach(c => { grouped[c] = []; });
+  modules.forEach(m => { if(grouped[m.cat]) grouped[m.cat].push(m); });
+
+  let totalRendered = 0;
+  catOrder.forEach(cat => {
+    const items = grouped[cat];
+    if(!items.length) return;
+    const filtered = filter === 'all' ? items : items.filter(m => m.cat === filter);
+    if(!filtered.length) return;
+
+    const groupEl = document.createElement('div');
+    groupEl.className = 'reveal';
+
+    const headerEl = document.createElement('div');
+    headerEl.className = 'group-header';
+    headerEl.innerHTML = `<div class="group-line"></div><div class="group-label">${cat}</div><div class="group-line"></div>`;
+    groupEl.appendChild(headerEl);
+
+    filtered.forEach(mod => {
+      const card = document.createElement('div');
+      card.className = 'module-card';
+      card.innerHTML = `
+        <div class="module-header">
+          <div class="module-num">${mod.num}</div>
+          <div class="module-icon" style="background:${mod.iconBg}">${mod.icon}</div>
+          <div class="module-meta">
+            <div class="module-category">${mod.cat}</div>
+            <div class="module-name">${mod.name}</div>
+          </div>
+          <div class="module-right">
+            <span class="topic-count">${mod.topics.length} topics</span>
+            <span class="chevron">▾</span>
+          </div>
+        </div>
+        <div class="module-body">
+          <div class="module-body-inner">
+            ${mod.topics.map(t => `<div class="topic-item"><div class="topic-dot"></div>${t}</div>`).join('')}
+          </div>
+        </div>
+      `;
+
+      const header = card.querySelector('.module-header');
+      const body = card.querySelector('.module-body');
+      const inner = card.querySelector('.module-body-inner');
+
+      header.addEventListener('click', () => {
+        const isOpen = card.classList.contains('open');
+        card.classList.toggle('open');
+        body.style.maxHeight = isOpen ? '0' : inner.scrollHeight + 'px';
+      });
+
+      groupEl.appendChild(card);
+      totalRendered++;
+    });
+
+    container.appendChild(groupEl);
+  });
+
+  // trigger reveals
+  setTimeout(() => {
+    const revealEls = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('up'); obs.unobserve(e.target); } });
+    }, { threshold: 0.05 });
+    revealEls.forEach(el => obs.observe(el));
+  }, 50);
+}
+
+// Category filter
+document.getElementById('catRow').addEventListener('click', e => {
+  const btn = e.target.closest('.cat-btn');
+  if(!btn) return;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = btn.dataset.cat;
+  render(activeFilter);
+});
+
+// Scroll progress
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scrolled = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+  document.getElementById('progressBar').style.width = scrolled + '%';
+});
+
+render('all');
+</script>
+</body>
+</html>
