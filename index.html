@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Cloud iNIT — the boot sequence for your infrastructure. Encrypted, distributed, AI-managed cloud services with an open API."/>
+<link rel="icon" type="image/png" href="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" />
+<title>Cloud iNIT — boot sequence for your infrastructure</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div id="prog" aria-hidden="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<div class="site-orbs" aria-hidden="true">
+  <span class="site-orb site-orb-a"></span>
+  <span class="site-orb site-orb-b"></span>
+  <span class="site-orb site-orb-c"></span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">
+    <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+    <span>cloud<em>init</em></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">home</a>
+    <a href="why.html">why</a>
+    <a href="stages.html">stages</a>
+    <a href="status.html">status</a>
+    <a href="download.html">download</a>
+    <a href="https://github.com/abinashkumar19" target="_blank" rel="noopener">api</a>
+    <a href="/profile/">about</a>
+    <button type="button" class="nav-cta" data-toast="On the roadmap — iOS and Android builds are compiling." data-toast-ms="3500">get the app</button>
+    <a class="nav-profile-btn magnetic" href="/profile/" aria-label="Profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO : boot terminal -->
+<section class="hero" id="top">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-orb hero-orb-a" aria-hidden="true"></div>
+  <div class="hero-orb hero-orb-b" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div class="hero-badge"><span class="dot"></span>system online — v3.0.0</div>
+      <h1>Cloud <em>iNIT</em></h1>
+      <p class="hero-tag">Every infrastructure starts with a boot sequence.<br class="br-desktop"/> This is ours.</p>
+
+      <div class="hero-btns">
+        <a href="download.html" class="btn-primary magnetic">Download Cloud iNIT</a>
+        <a href="stages.html" class="btn-ghost magnetic">Read the boot log</a>
+      </div>
+
+      <div class="hero-pills">
+        <span class="pill">multi‑cloud</span>
+        <span class="pill">ai‑managed</span>
+        <span class="pill">aes‑256</span>
+        <span class="pill">open api</span>
+        <span class="pill">99.9% sla</span>
+      </div>
+    </div>
+
+    <div class="terminal glass-shine" role="img" aria-label="Boot log showing Cloud iNIT starting successfully">
+      <div class="terminal-bar">
+        <span class="term-dot term-dot--r"></span>
+        <span class="term-dot term-dot--y"></span>
+        <span class="term-dot term-dot--g"></span>
+        <span class="term-title">/var/log/cloudinit.boot</span>
+      </div>
+      <div class="terminal-body" id="bootLog"></div>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- TEASERS : one card per page -->
+<section class="teaser-wrap section">
+  <div class="teaser-grid">
+    <a href="why.html" class="teaser-card glass-shine">
+      <span class="teaser-num">01 · why</span>
+      <h3>Why iNIT</h3>
+      <p>What starting from the boot sequence actually buys you — and the principles that don't move.</p>
+      <span class="teaser-go">Read the case →</span>
+    </a>
+    <a href="stages.html" class="teaser-card glass-shine">
+      <span class="teaser-num">02 · stages</span>
+      <h3>The boot sequence</h3>
+      <p>Nine stages between "cloud iNIT start" and a running platform, walked one at a time.</p>
+      <span class="teaser-go">Walk the sequence →</span>
+    </a>
+    <a href="status.html" class="teaser-card glass-shine">
+      <span class="teaser-num">03 · status</span>
+      <h3>System status</h3>
+      <p>Live regions, 60‑day uptime, and the incident log — nothing hidden behind a support ticket.</p>
+      <span class="teaser-go">Check status →</span>
+    </a>
+    <a href="download.html" class="teaser-card glass-shine">
+      <span class="teaser-num">04 · install</span>
+      <h3>Get Cloud iNIT</h3>
+      <p>Windows or macOS, online sandbox or offline build, by release window.</p>
+      <span class="teaser-go">Download →</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <a class="logo logo--footer" href="index.html">
+    <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+    <span>cloud<em>init</em></span>
+  </a>
+
+  <div class="social-row">
+    <a class="icon-btn glass-shine magnetic" href="https://github.com/abinashkumar19" target="_blank" rel="noopener" aria-label="GitHub — Abinash Kumar">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.27 5.68.42.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+      <span class="icon-tip">Abinash Kumar</span>
+    </a>
+    <a class="icon-btn glass-shine magnetic" href="https://x.com/AbinashKumar192" target="_blank" rel="noopener" aria-label="X (Twitter) — @AbinashKumar192">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-6.9l-5.4-7.06L4.8 22H1.7l8.14-9.3L1 2h7.1l4.9 6.47L18.9 2Zm-1.2 18h1.9L7.4 3.9H5.36L17.7 20Z"/></svg>
+      <span class="icon-tip">@AbinashKumar192</span>
+    </a>
+  </div>
+
+  <p class="footer-credit">cloudinit boots clean, every time. — developed by Abinash Kumar</p>
+</footer>
+
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-7732013841415004"
+     data-ad-slot="3782740987"></ins>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7732013841415004" crossorigin="anonymous"></script>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="script.js" defer></script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"22188c7db1bf43e28939ffcdafe1a591","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Download Cloud iNIT for Windows or macOS — online sandbox or offline build."/>
+<link rel="icon" type="image/png" href="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" />
+<title>Download — Cloud iNIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div id="prog" aria-hidden="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<div class="site-orbs" aria-hidden="true">
+  <span class="site-orb site-orb-a"></span>
+  <span class="site-orb site-orb-b"></span>
+  <span class="site-orb site-orb-c"></span>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+    <span>cloud<em>init</em></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">home</a>
+    <a href="why.html">why</a>
+    <a href="stages.html">stages</a>
+    <a href="status.html">status</a>
+    <a href="download.html">download</a>
+    <a href="https://github.com/abinashkumar19" target="_blank" rel="noopener">api</a>
+    <a href="/profile/">about</a>
+    <button type="button" class="nav-cta" data-toast="On the roadmap — iOS and Android builds are compiling." data-toast-ms="3500">get the app</button>
+    <a class="nav-profile-btn magnetic" href="/profile/" aria-label="Profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<header class="page-head section" style="padding-bottom:30px">
+  <div class="breadcrumb"><a href="index.html">cloudinit</a><span>/</span><em>download</em></div>
+  <div class="mono-tag mono-tag--ok" style="margin-bottom:18px">04 — INSTALL</div>
+  <h1>Get <em>Cloud iNIT</em></h1>
+  <p>Pick a platform and a release window. Online sandboxes activate after a short review; offline builds unlock everything immediately.</p>
+  <div class="dl-detect" id="dlDetect" style="display:none">
+    <span class="mono-tag mono-tag--ok" id="dlDetectTag"><i class="dl-detect-dot"></i><b id="dlDetectLabel">detecting device…</b></span>
+    <button type="button" class="dl-detect-toggle" id="dlDetectToggle">show all platforms</button>
+  </div>
+</header>
+
+<section class="dl-wrap section" style="padding-top:0">
+  <div class="dl-grid" id="dlGrid">
+    <article class="dl-card glass-shine" id="dlpc">
+      <div class="dl-screen">
+        <img src="https://blogs.windows.com/wp-content/uploads/prod/sites/2/2021/06/WIN_Start_GenZ_Light_16x10_en-US-1024x640.png" alt="Windows desktop"/>
+        <span class="dl-screen-tag">Windows</span>
+      </div>
+      <div class="dl-body">
+        <div class="dl-plat-title">cloudinit <em>· win64</em></div>
+        <div id="pc-batches"></div>
+      </div>
+    </article>
+
+    <article class="dl-card glass-shine" id="dlmac">
+      <div class="dl-screen">
+        <img src="https://seeddownload.cdn-apple.com/s3/prod/ATLC/package/T024582A-en_US/0267d20c-4cbb-4f3d-beee-0f8820381866/31.0/T024582A-mac-mac-desktop/images/gallery_1_poster.jpg" alt="macOS desktop"/>
+        <span class="dl-screen-tag">macOS</span>
+      </div>
+      <div class="dl-body">
+        <div class="dl-plat-title">cloudinit <em>· macos</em></div>
+        <div id="mac-batches"></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="section" style="max-width:1040px;margin:0 auto;padding:0 32px 40px">
+  <div class="eyebrow" style="text-align:center">system requirements</div>
+  <table class="req-table">
+    <thead>
+      <tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>OS</td><td>Windows 10 / macOS 12</td><td>Windows 11 / macOS 14+</td></tr>
+      <tr><td>RAM</td><td>4 GB</td><td>8 GB+</td></tr>
+      <tr><td>Storage</td><td>1.2 GB free</td><td>3 GB free (offline build)</td></tr>
+      <tr><td>Network</td><td>Required for online sandbox</td><td>Not required for offline build</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="cta-banner section" style="padding-top:0">
+  <div class="cta-banner-inner">
+    <h2>Not sure which <em>build</em>?</h2>
+    <p>Online sandboxes are free and reviewed within your batch window. Offline builds skip the queue entirely.</p>
+    <div class="hero-btns">
+      <a href="status.html" class="btn-primary magnetic">Check live status</a>
+      <a href="why.html" class="btn-ghost magnetic">Read the principles</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a class="logo logo--footer" href="index.html">
+    <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+    <span>cloud<em>init</em></span>
+  </a>
+  <div class="social-row">
+    <a class="icon-btn glass-shine magnetic" href="https://github.com/abinashkumar19" target="_blank" rel="noopener" aria-label="GitHub — Abinash Kumar">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.27 5.68.42.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+      <span class="icon-tip">Abinash Kumar</span>
+    </a>
+    <a class="icon-btn glass-shine magnetic" href="https://x.com/AbinashKumar192" target="_blank" rel="noopener" aria-label="X (Twitter) — @AbinashKumar192">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-6.9l-5.4-7.06L4.8 22H1.7l8.14-9.3L1 2h7.1l4.9 6.47L18.9 2Zm-1.2 18h1.9L7.4 3.9H5.36L17.7 20Z"/></svg>
+      <span class="icon-tip">@AbinashKumar192</span>
+    </a>
+  </div>
+  <p class="footer-credit">cloudinit boots clean, every time. — developed by Abinash Kumar</p>
+</footer>
+
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-7732013841415004"
+     data-ad-slot="3782740987"></ins>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7732013841415004" crossorigin="anonymous"></script>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="script.js" defer></script>
+</body>
+</html>
