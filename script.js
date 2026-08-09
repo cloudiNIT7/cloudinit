@@ -11,6 +11,38 @@
   });
 })();
 
+/* ---------- mobile nav toggle ---------- */
+(() => {
+  const burger = document.getElementById('navBurger');
+  const links = document.getElementById('navLinks');
+  const scrim = document.getElementById('navScrim');
+  if (!burger || !links || !scrim) return;
+
+  let open = false;
+
+  function setOpen(next) {
+    open = next;
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    links.classList.toggle('open', open);
+    scrim.classList.toggle('show', open);
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open && window.gsap) {
+      gsap.fromTo(
+        links.querySelectorAll('a, .nav-cta'),
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: .35, stagger: .045, ease: 'power3.out' }
+      );
+    }
+  }
+
+  burger.addEventListener('click', () => setOpen(!open));
+  scrim.addEventListener('click', () => setOpen(false));
+  links.querySelectorAll('a, .nav-cta').forEach(el => el.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && open) setOpen(false); });
+  window.addEventListener('resize', () => { if (open && window.innerWidth > 768) setOpen(false); });
+})();
+
 /* ---------- uptime bar chart (status.html) ---------- */
 (() => {
   const el = document.getElementById('uptimeBars');
@@ -537,13 +569,13 @@ document.querySelectorAll('.icon-btn').forEach(btn => {
 /* profile button — entrance pop + click ripple */
 const navProfileBtn = document.querySelector('.nav-profile-btn');
 if (navProfileBtn) {
-  gsap.from(navProfileBtn, { opacity: 0, scale: .4, rotate: -60, duration: .7, delay: .5, ease: 'back.out(2.4)' });
+  gsap.from(navProfileBtn, { opacity: 0, scale: .4, duration: .7, delay: .5, ease: 'back.out(2.4)', clearProps: 'transform' });
   navProfileBtn.addEventListener('click', e => {
     const ripple = document.createElement('span');
     ripple.style.cssText = 'position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(78,230,160,.55),transparent 70%);pointer-events:none;';
     navProfileBtn.appendChild(ripple);
     gsap.fromTo(ripple, { scale: .2, opacity: 1 }, { scale: 1.8, opacity: 0, duration: .6, ease: 'power2.out', onComplete: () => ripple.remove() });
-    gsap.to(navProfileBtn, { rotate: '+=360', duration: .6, ease: 'power3.inOut' });
+    gsap.to(navProfileBtn, { rotate: '+=360', duration: .6, ease: 'power3.inOut', onComplete: () => gsap.set(navProfileBtn, { rotate: 0 }) });
   });
 }
 
