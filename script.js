@@ -367,7 +367,6 @@ Object.entries(platforms).forEach(([cid, plat]) => {
     <div class="batch-row">
       <button class="btn-tog btn-online" type="button" data-target="${onId}">Online</button>
       <button class="btn-tog btn-offline" type="button" data-target="${offId}">Offline</button>
-      <a class="btn-tog btn-test" href="https://test.cloudinit.online" target="_blank" rel="noopener">Test</a>
     </div>
     <div class="reveal" id="${onId}"><a class="dl-link" href="${onH}" target="_blank" rel="noopener">Download from GitHub →</a></div>
     <div class="reveal" id="${offId}"><a class="dl-link" href="${offH}" target="_blank" rel="noopener">Download from GitHub →</a></div>
