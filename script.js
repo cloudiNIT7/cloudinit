@@ -352,6 +352,29 @@ Object.entries(platforms).forEach(([cid, plat]) => {
   `;
   container.appendChild(block);
 })();
+
+/* macOS-only 7:30 PM release window (explicit URLs — no platform suffix) */
+(() => {
+  const container = document.getElementById('mac-batches');
+  if (!container) return;
+  const onId = 'r-mac-730pm-on', offId = 'r-mac-730pm-off';
+  const onH = 'https://github.com/CloudTechDevOps/CloudTechDevOps/releases/tag/730pmonlinemac';
+  const offH = 'https://github.com/CloudTechDevOps/CloudTechDevOps/releases/tag/730pmmacoffline';
+  const block = document.createElement('div');
+  block.className = 'batch-block';
+  block.innerHTML = `
+    <div class="batch-head">RELEASE WINDOW · 7:30 PM</div>
+    <div class="batch-row">
+      <button class="btn-tog btn-online" type="button" data-target="${onId}">Online</button>
+      <button class="btn-tog btn-offline" type="button" data-target="${offId}">Offline</button>
+      <a class="btn-tog btn-test" href="https://test.cloudinit.online" target="_blank" rel="noopener">Test</a>
+    </div>
+    <div class="reveal" id="${onId}"><a class="dl-link" href="${onH}" target="_blank" rel="noopener">Download from GitHub →</a></div>
+    <div class="reveal" id="${offId}"><a class="dl-link" href="${offH}" target="_blank" rel="noopener">Download from GitHub →</a></div>
+  `;
+  container.appendChild(block);
+})();
+
 document.addEventListener('click', e => {
   const btn = e.target.closest('.btn-tog');
   if (!btn) return;
