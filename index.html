@@ -126,6 +126,85 @@
   </div>
 </section>
 
+<!-- WHAT IT IS -->
+<section class="section">
+  <div class="feat-intro">
+    <div class="eyebrow" style="text-align:center">the concept</div>
+    <h2>What <em>"boot sequence first"</em> actually means</h2>
+  </div>
+  <div class="copy-block">
+    <p>Most cloud tooling treats infrastructure like a pile of resources you provision and then wire together afterward — a VPC here, an IAM role there, a database bolted on once someone remembers it's needed. Cloud iNIT inverts that. It treats a running platform the same way a Linux kernel treats a running machine: as a sequence of stages that has to complete, in order, before anything is considered "up."</p>
+    <p>In practice that means every environment — a student's sandbox, a demo, a production rollout — comes online through the same nine-stage path: base image, network, identity, secrets, compute, data, observability, ingress, and finally traffic. Nothing downstream of a stage starts until that stage reports healthy. There's no "it's probably fine, the app started" — the boot log either shows a stage completing or it doesn't.</p>
+    <p>The payoff of that constraint is boring on purpose. Drift becomes visible because every re-run reproduces the same order. Debugging a broken environment means reading the log backward from the first stage that didn't come up clean, instead of guessing across a dozen dashboards. And because the same sequence runs for a solo sandbox as for a multi-region deployment, what you practice on a laptop is exactly what runs later — not a simplified stand-in for it.</p>
+  </div>
+
+  <div class="principle-grid">
+    <div class="principle-card glass-shine">
+      <span class="principle-tag">engine</span>
+      <h3>Ordered state machine</h3>
+      <p>Every stage declares what it depends on and what it exposes. The engine won't start stage 5 (compute) until stage 4 (secrets) has written its output — so a missing credential fails loudly at stage 4, not as a mystery crash three stages later.</p>
+    </div>
+    <div class="principle-card glass-shine">
+      <span class="principle-tag">console</span>
+      <h3>One pane across three clouds</h3>
+      <p>AWS, Azure, and GCP each expose the same nine stages under provider-specific plumbing. The console normalizes the differences — you learn the sequence once and it maps onto whichever provider a project actually uses.</p>
+    </div>
+    <div class="principle-card glass-shine">
+      <span class="principle-tag">safety net</span>
+      <h3>Drift correction, not just detection</h3>
+      <p>A background reconciler re-walks the boot sequence on a schedule. If stage 6 (data) has quietly diverged from what stage 4 last wrote to secrets, it's flagged and, where policy allows, corrected automatically rather than left for someone to notice in an incident.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="section" style="padding-top:0">
+  <div class="copy-cols">
+    <div>
+      <h3>Students and career-switchers</h3>
+      <p>If you're working through an AWS, Azure, or GCP curriculum, the sandbox gives you a disposable environment that behaves like production instead of a cut-down teaching stand-in — the same IAM, networking, and observability stages you'd hit on the job, without a cloud bill you have to babysit.</p>
+    </div>
+    <div>
+      <h3>Solo builders and small teams</h3>
+      <p>Without a dedicated platform engineer, most small teams either over-provision "just in case" or under-provision and get paged at 2am. A fixed boot sequence means the same nine stages run whether it's one service or twelve, so the platform doesn't get more fragile as it grows.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0">
+  <div class="feat-intro" style="padding-top:0">
+    <div class="eyebrow" style="text-align:center">questions</div>
+    <h2>Before you <em>install</em></h2>
+  </div>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>Is Cloud iNIT a replacement for Terraform, Pulumi, or CloudFormation?</summary>
+      <div class="faq-a">No — it sits on top of them. The boot sequence engine calls your existing IaC modules as part of each stage; it doesn't reimplement provisioning. If you already have Terraform for the compute stage, Cloud iNIT runs that module at the right point in the sequence and waits for it to report healthy before moving on.</div>
+    </details>
+    <details class="faq-item">
+      <summary>What's the actual difference between the online sandbox and the offline build?</summary>
+      <div class="faq-a">The online sandbox runs the full nine-stage sequence against shared, rate-limited cloud accounts we manage — good for learning and short demos, and it goes through a short review before activating. The offline build runs against your own cloud credentials with no queue and no rate limits, meant for real projects and coursework you'll keep iterating on.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Which regions and providers are supported today?</summary>
+      <div class="faq-a">AWS us-east-1, Azure eastus2, and GCP us-central1 are fully supported across all nine stages. ap-south-1 on AWS is live for compute, storage, and networking stages, with the remaining stages rolling out — check the status page for the current state of each region.</div>
+    </details>
+    <details class="faq-item">
+      <summary>What happens if a stage fails halfway through?</summary>
+      <div class="faq-a">The sequence halts at the failed stage rather than continuing past it. Everything that completed successfully stays up; nothing downstream starts. The boot log shows exactly which stage failed and why, and re-running only re-attempts from that stage forward.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Do I need to know all three cloud providers to use it?</summary>
+      <div class="faq-a">No. The nine stages are the same regardless of provider, so most people learn the sequence on whichever provider their course or job uses first, then pick up the other two faster because the mental model already transfers.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Is my data or credentials ever shared between sandboxes?</summary>
+      <div class="faq-a">No. Each sandbox gets its own isolated credential set generated at the identity stage and rotated on teardown. Secrets never persist beyond the sandbox's lifetime, and cross-account access is off by default.</div>
+    </details>
+  </div>
+</section>
+
 <footer>
   <a class="logo logo--footer" href="index.html">
     <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>

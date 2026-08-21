@@ -102,6 +102,102 @@
   </table>
 </section>
 
+<section class="section">
+  <div class="feat-intro">
+    <div class="eyebrow" style="text-align:center">choosing a build</div>
+    <h2>Online sandbox <em>or</em> offline build</h2>
+  </div>
+  <div class="copy-block">
+    <p>Both builds run the identical nine-stage boot sequence — the difference is whose cloud accounts they run against and how much you can push through them.</p>
+    <p>The <b>online sandbox</b> runs against shared accounts we manage across AWS, Azure, and GCP. It's rate-limited and goes through a short automated review before it activates, because it's sharing capacity with everyone else on the same release window. That trade-off is what makes it free — it's built for coursework, demos, and trying out a stage you haven't used before without touching your own billing.</p>
+    <p>The <b>offline build</b> installs locally and runs the same sequence against your own cloud credentials. There's no shared capacity, so no queue and no rate limit — the boot log reflects your actual account limits, not ours. It's the version to use once you're past learning the sequence and are building something you intend to keep.</p>
+  </div>
+
+  <div class="steps-list">
+    <div class="steps-row">
+      <div class="steps-num">1</div>
+      <div><h4>Pick a platform</h4><p>Windows 10/11 or macOS 12+. The installer detects your OS automatically above, but both are available from either card.</p></div>
+    </div>
+    <div class="steps-row">
+      <div class="steps-num">2</div>
+      <div><h4>Choose sandbox or offline</h4><p>Sandbox needs nothing else to start. Offline asks for cloud credentials on first launch — these stay local and are never sent to us.</p></div>
+    </div>
+    <div class="steps-row">
+      <div class="steps-num">3</div>
+      <div><h4>Watch the first boot</h4><p>The terminal view streams all nine stages live. A clean first boot ends with stage 9 (traffic) reporting healthy — anything short of that means a stage needs attention before you continue.</p></div>
+    </div>
+    <div class="steps-row">
+      <div class="steps-num">4</div>
+      <div><h4>Tear down when you're done</h4><p>Sandboxes auto-expire at the end of their release window. Offline builds tear down on command, rotating any credentials the identity stage generated.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="feat-intro" style="padding-top:0">
+    <div class="eyebrow" style="text-align:center">release notes</div>
+    <h2>Recent <em>changelog</em></h2>
+  </div>
+  <div class="changelog-list">
+    <div class="changelog-row">
+      <div class="changelog-ver">v3.0.0</div>
+      <div class="changelog-body">
+        <h4>Nine-stage sequence, AI-managed drift correction</h4>
+        <ul>
+          <li>Reconciler now auto-corrects drift between the secrets and data stages where policy allows</li>
+          <li>ap-south-1 added for compute, storage, and networking stages</li>
+          <li>Boot log export to JSON for CI pipelines</li>
+        </ul>
+      </div>
+    </div>
+    <div class="changelog-row">
+      <div class="changelog-ver">v2.4.0</div>
+      <div class="changelog-body">
+        <h4>Offline build credential isolation</h4>
+        <ul>
+          <li>Offline builds now store cloud credentials in an OS-native secret store instead of a local config file</li>
+          <li>Reduced cold-boot time for the identity stage by roughly a third</li>
+        </ul>
+      </div>
+    </div>
+    <div class="changelog-row">
+      <div class="changelog-ver">v2.3.0</div>
+      <div class="changelog-body">
+        <h4>macOS support, sandbox review window</h4>
+        <ul>
+          <li>Native macOS build, previously Windows-only</li>
+          <li>Sandbox activation review shortened from 24h to the current short window</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="feat-intro" style="padding-top:0">
+    <div class="eyebrow" style="text-align:center">before you install</div>
+    <h2>Install <em>FAQ</em></h2>
+  </div>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>Do I need admin rights to install the offline build?</summary>
+      <div class="faq-a">On Windows, yes — the installer registers a local service that runs the boot engine. On macOS, a standard user account is enough; no root privileges are required.</div>
+    </details>
+    <details class="faq-item">
+      <summary>Can I switch from the sandbox to an offline build later without starting over?</summary>
+      <div class="faq-a">Yes. Boot logs and stage configuration export from a sandbox session and import into an offline build, so you don't have to re-walk the sequence from stage 1 — only the credentials at the identity stage need to be re-issued against your own accounts.</div>
+    </details>
+    <details class="faq-item">
+      <summary>What if the installer fails partway through?</summary>
+      <div class="faq-a">Re-running the installer resumes from the last completed step rather than starting over. If a step keeps failing, the installer log (written next to the installer) will show which prerequisite — usually available disk space or a blocked network port — is missing.</div>
+    </details>
+    <details class="faq-item">
+      <summary>How do I uninstall cleanly?</summary>
+      <div class="faq-a">Uninstalling tears down any active sandboxes first, rotates or revokes credentials the identity stage issued, then removes the local install. Running the uninstaller directly — rather than deleting the app folder by hand — is what triggers that teardown.</div>
+    </details>
+  </div>
+</section>
+
 <section class="cta-banner section" style="padding-top:0">
   <div class="cta-banner-inner">
     <h2>Not sure which <em>build</em>?</h2>

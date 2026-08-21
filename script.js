@@ -168,7 +168,7 @@ window.addEventListener('scroll', () => {
   window.addEventListener('resize', resize);
 
   const density = isMobile ? 0.55 : 1;
-  const colOk = 0x4ee6a0, colInfo = 0x6fd3ff;
+  const colOk = 0x8b6cf0, colInfo = 0x0ea5d6;
 
   const gridSize = 70, gridSeg = isMobile ? 24 : 40;
   const waveGeo = new THREE.PlaneGeometry(gridSize, gridSize * 0.75, gridSeg, Math.round(gridSeg * 0.75));
@@ -615,7 +615,7 @@ if (navProfileBtn) {
   gsap.from(navProfileBtn, { opacity: 0, scale: .4, duration: .7, delay: .5, ease: 'back.out(2.4)', clearProps: 'transform' });
   navProfileBtn.addEventListener('click', e => {
     const ripple = document.createElement('span');
-    ripple.style.cssText = 'position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(78,230,160,.55),transparent 70%);pointer-events:none;';
+    ripple.style.cssText = 'position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(139,108,240,.45),transparent 70%);pointer-events:none;';
     navProfileBtn.appendChild(ripple);
     gsap.fromTo(ripple, { scale: .2, opacity: 1 }, { scale: 1.8, opacity: 0, duration: .6, ease: 'power2.out', onComplete: () => ripple.remove() });
     gsap.to(navProfileBtn, { rotate: '+=360', duration: .6, ease: 'power3.inOut', onComplete: () => gsap.set(navProfileBtn, { rotate: 0 }) });
