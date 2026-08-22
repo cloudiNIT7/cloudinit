@@ -466,9 +466,13 @@ gsap.registerPlugin(ScrollTrigger);
 if (document.querySelector('.hero-badge')) {
   gsap.timeline({ defaults: { ease: 'power3.out' } })
     .from('.hero-badge', { opacity: 0, y: -16, scale: .92, duration: .7 })
-    .from('.hero h1', { opacity: 0, y: 30, duration: .8 }, '-=.35')
-    .from('.hero-tag', { opacity: 0, y: 16, duration: .7 }, '-=.5')
-    .from('.hero-btns > *', { opacity: 0, y: 16, scale: .95, duration: .55, stagger: .1 }, '-=.4')
+    .from('.hero-c', { opacity: 0, y: 24, duration: .55 }, '-=.35')
+    .from('.hero-rest', { xPercent: -100, opacity: 0, duration: .9, ease: 'power4.out' }, '-=.15')
+    .fromTo('.hero-tag',
+        { opacity: 0, y: 10, filter: 'blur(16px)' },
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.5, ease: 'power2.out' },
+        '-=.5')
+    .from('.hero-btns > *', { opacity: 0, y: 16, scale: .95, duration: .55, stagger: .1 }, '-=.9')
     .from('.pill', { opacity: 0, y: 14, duration: .5, stagger: .06 }, '-=.35')
     .from('.terminal', { opacity: 0, y: 24, scale: .97, duration: .8 }, '-=.7')
     .from('.scroll-cue', { opacity: 0, duration: .6 }, '-=.2')

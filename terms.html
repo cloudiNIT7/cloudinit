@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Terms of service for Cloud iNIT — the site, test sandbox, open API, and downloadable client."/>
+<link rel="icon" type="image/png" href="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" />
+<title>Terms of Service — Cloud iNIT</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div id="prog" aria-hidden="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<div class="site-orbs" aria-hidden="true">
+  <span class="site-orb site-orb-a"></span>
+  <span class="site-orb site-orb-b"></span>
+  <span class="site-orb site-orb-c"></span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">
+    <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+    <span>cloud<em>init</em></span>
+  </a>
+  <div class="nav-end">
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">home</a>
+    <a href="why.html">why</a>
+    <a href="stages.html">stages</a>
+    <a href="status.html">status</a>
+    <a href="download.html">download</a>
+    <a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">api</a>
+    <a href="https://test.cloudinit.online" target="_blank" rel="noopener">test</a>
+    <a href="/profile/">profile</a>
+    <button type="button" class="nav-cta" data-toast="On the roadmap — iOS and Android builds are compiling." data-toast-ms="3500">get the app</button>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  </div>
+</nav>
+<div class="nav-scrim" id="navScrim"></div>
+
+<header class="page-head section">
+  <div class="breadcrumb"><a href="index.html">cloudinit</a><span>/</span><em>terms</em></div>
+  <div class="mono-tag mono-tag--ok" style="margin-bottom:18px">LEGAL — 02</div>
+  <h1>Terms of <em>service</em></h1>
+  <p>The rules for using Cloud iNIT — the site, the test sandbox, the open API, and the downloadable client.</p>
+  <div class="legal-updated"><span class="dot"></span>Last updated: August 21, 2026 · Effective on publish</div>
+</header>
+
+<section class="legal-wrap section">
+  <aside class="legal-toc">
+    <h4>On this page</h4>
+    <ol>
+      <li><a href="#acceptance">Acceptance of terms</a></li>
+      <li><a href="#service">The service</a></li>
+      <li><a href="#eligibility">Eligibility</a></li>
+      <li><a href="#accounts">Accounts &amp; security</a></li>
+      <li><a href="#acceptable-use">Acceptable use</a></li>
+      <li><a href="#sandbox">Sandboxes &amp; the test environment</a></li>
+      <li><a href="#downloads">Downloads &amp; license</a></li>
+      <li><a href="#ip">Intellectual property</a></li>
+      <li><a href="#third-party">Third-party links</a></li>
+      <li><a href="#availability">Availability &amp; SLA</a></li>
+      <li><a href="#fees">Fees</a></li>
+      <li><a href="#termination">Termination</a></li>
+      <li><a href="#disclaimer">Disclaimer of warranties</a></li>
+      <li><a href="#liability">Limitation of liability</a></li>
+      <li><a href="#indemnity">Indemnification</a></li>
+      <li><a href="#law">Governing law</a></li>
+      <li><a href="#changes">Changes to these terms</a></li>
+      <li><a href="#contact">Contact us</a></li>
+    </ol>
+  </aside>
+
+  <div class="legal-body">
+    <div class="legal-note">These terms are a plain-language agreement, not a wall of boilerplate. If a stage of the boot sequence can't be explained in one sentence, it doesn't ship — we try to hold these terms to a similar standard.</div>
+
+    <div class="legal-section" id="acceptance">
+      <h2><em>01</em> Acceptance of terms</h2>
+      <p>By accessing cloudinit.online, requesting a sandbox on test.cloudinit.online, calling the API, downloading the client, or using the training materials at <code>/profile/</code>, you agree to these Terms of Service. If you don't agree, please don't use the service.</p>
+    </div>
+
+    <div class="legal-section" id="service">
+      <h2><em>02</em> The service</h2>
+      <p>Cloud iNIT is a platform that boots cloud infrastructure across AWS, Azure, and Google Cloud through a fixed, auditable sequence of stages — from base image through identity, networking, and service startup to a running sandbox. The service includes:</p>
+      <ul>
+        <li>A public marketing and documentation site (cloudinit.online).</li>
+        <li>A test sandbox environment (test.cloudinit.online) for trying the boot sequence.</li>
+        <li>An open API, documented on GitHub, for programmatic access.</li>
+        <li>Downloadable client software for supported platforms.</li>
+        <li>A public status page reporting uptime and incidents.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="eligibility">
+      <h2><em>03</em> Eligibility</h2>
+      <p>You must be at least 13 years old, or the minimum age of digital consent in your country, to use Cloud iNIT. If you use the service on behalf of an organization, you confirm you have authority to bind that organization to these terms.</p>
+    </div>
+
+    <div class="legal-section" id="accounts">
+      <h2><em>04</em> Accounts &amp; security</h2>
+      <p>Some features require an email address to issue a sandbox or API key. You're responsible for keeping any credentials we issue confidential and for all activity that happens under them. Tell us immediately at <a href="mailto:cloudgcp08@gmail.com">cloudgcp08@gmail.com</a> if you suspect unauthorized use.</p>
+    </div>
+
+    <div class="legal-section" id="acceptable-use">
+      <h2><em>05</em> Acceptable use</h2>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Use the sandbox or API to store or process production data, real customer data, or anything you can't afford to lose — sandboxes are ephemeral by design.</li>
+        <li>Attempt to bypass rate limits, resource quotas, or credential rotation.</li>
+        <li>Use the service to mine cryptocurrency, launch attacks against third parties, distribute malware, or violate any applicable law.</li>
+        <li>Reverse-engineer the client beyond what's permitted by applicable law, or resell access to the sandbox without our written consent.</li>
+        <li>Interfere with or disrupt the integrity or performance of the service, including the status page or API.</li>
+      </ul>
+      <p>We reserve the right to suspend or terminate access for any account or sandbox that violates this section, without prior notice where abuse is ongoing.</p>
+    </div>
+
+    <div class="legal-section" id="sandbox">
+      <h2><em>06</em> Sandboxes &amp; the test environment</h2>
+      <p>Sandboxes provisioned through test.cloudinit.online are ephemeral, isolated, and intended for evaluation and learning only. Credentials are generated at the identity boot stage, scoped to that sandbox, and rotated or destroyed on teardown. We may reclaim idle sandboxes, cap concurrent sandboxes per user, and reset the test environment at any time without notice.</p>
+    </div>
+
+    <div class="legal-section" id="downloads">
+      <h2><em>07</em> Downloads &amp; software license</h2>
+      <p>Where we provide downloadable client software, we grant you a limited, non-exclusive, non-transferable, revocable license to install and use it for its intended purpose — connecting to and managing Cloud iNIT sandboxes and deployments. You may not sublicense, sell, or redistribute the client without our written permission. This license ends automatically if you violate these terms.</p>
+    </div>
+
+    <div class="legal-section" id="ip">
+      <h2><em>08</em> Intellectual property</h2>
+      <p>The Cloud iNIT name, logo, boot-sequence documentation, and site design are owned by us or our licensors. Open API code published on GitHub is licensed under the terms stated in that repository, which take precedence over this section for that code. You retain ownership of anything you build using the sandbox or API.</p>
+    </div>
+
+    <div class="legal-section" id="third-party">
+      <h2><em>09</em> Third-party links &amp; services</h2>
+      <p>The site links to third-party destinations including GitHub, our test sandbox subdomain, and social profiles. We don't control and aren't responsible for the content, policies, or practices of any third-party site or service.</p>
+    </div>
+
+    <div class="legal-section" id="availability">
+      <h2><em>10</em> Availability &amp; SLA</h2>
+      <p>We publish uptime and incident history on our <a href="status.html">status page</a> in good faith. Figures shown there (including any stated SLA percentage) are informational targets for the free and test tiers, not a contractual guarantee, unless you have a separate signed agreement with us stating otherwise. We aim for high availability but the service is provided on an "as available" basis as described in the Disclaimer section below.</p>
+    </div>
+
+    <div class="legal-section" id="fees">
+      <h2><em>11</em> Fees</h2>
+      <p>The test sandbox, documentation, and current API access are provided free of charge. If we introduce paid plans in the future, pricing, billing terms, and cancellation details will be posted at the time of launch, and our <a href="refund.html">Refund Policy</a> will govern eligibility for refunds on any paid plan.</p>
+    </div>
+
+    <div class="legal-section" id="termination">
+      <h2><em>12</em> Termination</h2>
+      <p>You may stop using the service at any time. We may suspend or terminate your access to the sandbox, API, or downloads if you violate these terms, misuse shared resources, or if we discontinue the service or a feature of it. Provisions that by their nature should survive termination — including intellectual property, disclaimers, and limitation of liability — will survive.</p>
+    </div>
+
+    <div class="legal-section" id="disclaimer">
+      <h2><em>13</em> Disclaimer of warranties</h2>
+      <p>The service is provided "as is" and "as available," without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose, and non-infringement. We do not warrant that the service will be uninterrupted, error-free, or completely secure, or that the boot sequence will be free of defects.</p>
+    </div>
+
+    <div class="legal-section" id="liability">
+      <h2><em>14</em> Limitation of liability</h2>
+      <p>To the maximum extent permitted by law, Cloud iNIT and its maintainers will not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of data, profits, or goodwill, arising from your use of — or inability to use — the service, even if advised of the possibility of such damages. Our total liability for any claim relating to the service is limited to the amount you paid us, if any, in the twelve months before the claim arose.</p>
+    </div>
+
+    <div class="legal-section" id="indemnity">
+      <h2><em>15</em> Indemnification</h2>
+      <p>You agree to indemnify and hold harmless Cloud iNIT and its maintainers from claims, damages, and expenses (including reasonable legal fees) arising from your misuse of the service or violation of these terms.</p>
+    </div>
+
+    <div class="legal-section" id="law">
+      <h2><em>16</em> Governing law</h2>
+      <p>These terms are governed by the laws of India, without regard to conflict-of-law principles. Any dispute arising from these terms will be subject to the exclusive jurisdiction of the courts located in Hyderabad, Telangana, India, unless applicable local law requires otherwise.</p>
+    </div>
+
+    <div class="legal-section" id="changes">
+      <h2><em>17</em> Changes to these terms</h2>
+      <p>We may revise these terms as the product evolves. We'll update the "Last updated" date above when we do. Continued use of the service after changes take effect means you accept the revised terms.</p>
+    </div>
+
+    <div class="legal-section" id="contact">
+      <h2><em>18</em> Contact us</h2>
+      <div class="legal-contact-card glass-shine">
+        <p>Questions about these terms, or about anything you're building on the sandbox or API?</p>
+        <a class="btn-primary magnetic" href="mailto:cloudgcp08@gmail.com">cloudgcp08@gmail.com</a>
+      </div>
+      <div class="legal-crosslinks">
+        <a class="dl-link" href="privacy.html">Privacy policy →</a>
+        <a class="dl-link" href="cookies.html">Cookie policy →</a>
+        <a class="dl-link" href="refund.html">Refund policy →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand-col">
+      <a class="logo logo--footer" href="index.html">
+        <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+        <span>cloud<em>init</em></span>
+      </a>
+      <p>The boot sequence for your infrastructure — encrypted, multi‑cloud, AI‑managed, with an open API and a public status page. Built and maintained by Abinash Kumar.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="why.html">Why iNIT</a></li>
+        <li><a href="stages.html">Boot stages</a></li>
+        <li><a href="status.html">System status</a></li>
+        <li><a href="download.html">Download</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">API &amp; GitHub</a></li>
+        <li><a href="https://test.cloudinit.online" target="_blank" rel="noopener">Test sandbox</a></li>
+        <li><a href="/profile/">Training &amp; profile</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="privacy.html">Privacy policy</a></li>
+        <li><a href="terms.html">Terms of service</a></li>
+        <li><a href="cookies.html">Cookie policy</a></li>
+        <li><a href="refund.html">Refund policy</a></li>
+        <li><a class="footer-mail" href="mailto:cloudgcp08@gmail.com">cloudgcp08@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-credit">cloudinit boots clean, every time. — developed by Abinash Kumar</p>
+    <div class="social-row">
+      <a class="icon-btn glass-shine magnetic" href="https://github.com/abinashkumar19" target="_blank" rel="noopener" aria-label="GitHub — Abinash Kumar">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.27 5.68.42.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+        <span class="icon-tip">Abinash Kumar</span>
+      </a>
+      <a class="icon-btn glass-shine magnetic" href="https://x.com/AbinashKumar192" target="_blank" rel="noopener" aria-label="X (Twitter) — @AbinashKumar192">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-6.9l-5.4-7.06L4.8 22H1.7l8.14-9.3L1 2h7.1l4.9 6.47L18.9 2Zm-1.2 18h1.9L7.4 3.9H5.36L17.7 20Z"/></svg>
+        <span class="icon-tip">@AbinashKumar192</span>
+      </a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="script.js" defer></script>
+</body>
+</html>
