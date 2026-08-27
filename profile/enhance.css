@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Cloud iNIT · profile — shared performance + cross-navigation enhancements
+   Linked by every page in /profile/ to keep behaviour consistent and smooth.
+   ========================================================================== */
+
+/* Scroll progress bar → GPU-composited transform instead of animating width
+   (width animation forces a layout + paint on every scroll frame). */
+.progress-bar-fill{
+  width:100% !important;
+  transform:scaleX(0);
+  transform-origin:0 50%;
+  transition:none !important;
+  will-change:transform;
+}
+
+/* The single biggest scroll-FPS killer is real-time backdrop-filter blur:
+   the GPU re-blurs the backdrop behind every glass element on every frame.
+   Suspend all blur while actively scrolling; it returns the instant you stop. */
+body.is-scrolling *,
+body.is-scrolling *::before,
+body.is-scrolling *::after{
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* Cross-site navigation links (Profile home / back to main Cloud iNIT site). */
+.nav-x{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font:600 13px/1 'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  color:var(--text,#e8e0d0);
+  text-decoration:none;
+  padding:8px 13px;
+  border-radius:9px;
+  border:1px solid var(--border,rgba(201,168,76,.25));
+  background:rgba(201,168,76,.05);
+  transition:color .2s ease,background .2s ease,border-color .2s ease,transform .2s ease;
+  white-space:nowrap;
+}
+.nav-x:hover{
+  color:var(--gold-light,#e8c97a);
+  background:rgba(201,168,76,.12);
+  border-color:var(--gold,#c9a84c);
+  transform:translateY(-1px);
+}
+.nav-x + .nav-x{margin-left:8px}
+
+/* Lightweight sticky cross-nav bar (used on pages without their own navbar). */
+.xnav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 24px;
+  position:sticky;
+  top:0;
+  z-index:200;
+  background:rgba(13,13,13,.72);
+  border-bottom:1px solid var(--border,rgba(201,168,76,.18));
+}
+
+/* Honour users who prefer reduced motion (accessibility + low-power devices). */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}

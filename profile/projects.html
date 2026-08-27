@@ -400,6 +400,8 @@ footer {
   .hstat { flex: 1 1 45%; }
 }
 </style>
+<link rel="stylesheet" href="enhance.css"/>
+<script src="enhance.js" defer></script>
 </head>
 <body>
 
@@ -413,7 +415,7 @@ footer {
     <div class="nav-logo">🚀</div>
     <div class="nav-name">Veera <span>Sir</span></div>
   </div>
-  <div class="nav-right">
+  <div class="nav-right"><a class="nav-x" href="index.html">Profile</a><a class="nav-x" href="../index.html">Cloud iNIT ↗</a>
     <div class="nav-clouds">
       <div class="nc-dot" style="background:var(--aws);animation-delay:0s"></div>
       <div class="nc-dot" style="background:var(--azure);animation-delay:0.4s"></div>
@@ -786,12 +788,6 @@ document.querySelector('.filter-bar').addEventListener('click', e => {
   document.querySelectorAll('.filt-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderProjects(btn.dataset.f);
-});
-
-window.addEventListener('scroll', () => {
-  const doc = document.documentElement;
-  document.getElementById('progressBar').style.width =
-    (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%';
 });
 
 renderProjects('all');

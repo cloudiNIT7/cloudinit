@@ -278,6 +278,8 @@ footer {
   .pipeline-row { display: none; }
 }
 </style>
+<link rel="stylesheet" href="enhance.css"/>
+<script src="enhance.js" defer></script>
 </head>
 <body>
 
@@ -291,7 +293,7 @@ footer {
     <div class="nav-logo">⚙️</div>
     <div class="nav-name">Veera <span>Sir</span></div>
   </div>
-  <div class="nav-right">
+  <div class="nav-right"><a class="nav-x" href="index.html">Profile</a><a class="nav-x" href="../index.html">Cloud iNIT ↗</a>
     <span class="nav-tag">NareshIT · Hyderabad</span>
     <span class="nav-badge">⚙️ DevOps Course</span>
   </div>
@@ -637,12 +639,6 @@ document.getElementById('catRow').addEventListener('click', e => {
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   render(btn.dataset.cat);
-});
-
-window.addEventListener('scroll', () => {
-  const doc = document.documentElement;
-  document.getElementById('progressBar').style.width =
-    (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%';
 });
 
 render('all');

@@ -308,6 +308,8 @@ footer {
   footer { flex-direction: column; gap: 10px; padding: 28px 20px; text-align: center; }
 }
 </style>
+<link rel="stylesheet" href="enhance.css"/>
+<script src="enhance.js" defer></script>
 </head>
 <body>
 
@@ -320,7 +322,7 @@ footer {
     <div class="nav-logo">☁️</div>
     <div class="nav-name">Veera <span>Sir</span></div>
   </div>
-  <div class="nav-right">
+  <div class="nav-right"><a class="nav-x" href="index.html">Profile</a><a class="nav-x" href="../index.html">Cloud iNIT ↗</a>
     <span class="nav-tag">NareshIT · Hyderabad</span>
     <span class="nav-badge">☁️ AWS Course</span>
   </div>
@@ -628,13 +630,6 @@ document.getElementById('catRow').addEventListener('click', e => {
   btn.classList.add('active');
   activeFilter = btn.dataset.cat;
   render(activeFilter);
-});
-
-// Scroll progress
-window.addEventListener('scroll', () => {
-  const doc = document.documentElement;
-  const scrolled = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
-  document.getElementById('progressBar').style.width = scrolled + '%';
 });
 
 render('all');

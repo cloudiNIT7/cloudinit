@@ -403,6 +403,8 @@ footer {
   .btn-primary, .btn-secondary { justify-content: center; }
 }
 </style>
+<link rel="stylesheet" href="enhance.css"/>
+<script src="enhance.js" defer></script>
 </head>
 <body>
 
@@ -426,6 +428,7 @@ footer {
     <li><a href="projects.html">Projects</a></li>
     <li><a href="https://medium.com/@veerababu.narni232" target="_blank" rel="noopener">Blog</a></li>
     <li><a href="https://youtube.com/playlist?list=PLVlQHNRLflP8bi2KI_wyZiQPS5Wg6Lxkr&si=h_rypnLVqln60Nv-" target="_blank" rel="noopener">Workshops</a></li>
+    <li><a href="../index.html">Cloud iNIT ↗</a></li>
     <li><a href="about.html" class="nav-cta">Enroll Now <i class='bx bx-right-arrow-alt'></i></a></li>
   </ul>
 
@@ -647,11 +650,6 @@ footer {
       el.childNodes[0].nodeValue = roles[i];
     }, 3200);
 
-    // nav shrink on scroll
-    const nav = document.getElementById('siteNav');
-    window.addEventListener('scroll', () => {
-      nav.style.padding = window.scrollY > 40 ? '14px 64px' : '22px 64px';
-    });
   });
 </script>
 </body>
