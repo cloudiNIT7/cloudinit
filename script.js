@@ -75,11 +75,36 @@ document.querySelectorAll('[data-toast]').forEach(el => {
   el.addEventListener('click', () => toast(el.dataset.toast, parseInt(el.dataset.toastMs || '3500', 10)));
 });
 
-/* ---------- scroll progress bar ---------- */
-window.addEventListener('scroll', () => {
-  const p = scrollY / (document.body.scrollHeight - innerHeight) * 100;
-  document.getElementById('prog').style.width = Math.min(p, 100) + '%';
-}, { passive: true });
+/* ---------- scroll progress bar (rAF-throttled, GPU transform, cached layout) ---------- */
+(() => {
+  const prog = document.getElementById('prog');
+  if (!prog) return;
+  let maxScroll = 0, ticking = false;
+  const measure = () => { maxScroll = document.documentElement.scrollHeight - innerHeight; };
+  const update = () => {
+    ticking = false;
+    const p = maxScroll > 0 ? scrollY / maxScroll : 0;
+    prog.style.transform = 'scaleX(' + Math.min(Math.max(p, 0), 1) + ')';
+  };
+  measure();
+  update();
+  window.addEventListener('load', measure);
+  window.addEventListener('resize', measure, { passive: true });
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+})();
+
+/* ---------- suspend expensive backdrop-filter blur while scrolling ---------- */
+(() => {
+  const body = document.body;
+  let scrollTimer = 0;
+  window.addEventListener('scroll', () => {
+    if (!body.classList.contains('is-scrolling')) body.classList.add('is-scrolling');
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => body.classList.remove('is-scrolling'), 160);
+  }, { passive: true });
+})();
 
 /* ---------- boot log terminal ---------- */
 (() => {
@@ -258,6 +283,7 @@ const stageCard = document.getElementById('stageCard');
 const sdots = document.querySelectorAll('#sideDots .sdot');
 const sideDotsEl = document.getElementById('sideDots');
 let curStage = -1;
+let stageTicking = false;
 
 function showStage(i) {
   if (!stageCard || i === curStage) return;
@@ -286,7 +312,11 @@ function onScroll() {
   sideDotsEl.classList.toggle('vis', inSticky);
   if (inSticky) showStage(idx);
 }
-window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('scroll', () => {
+  if (stageTicking) return;
+  stageTicking = true;
+  requestAnimationFrame(() => { stageTicking = false; onScroll(); });
+}, { passive: true });
 showStage(0);
 
 sdots.forEach(d => {
