@@ -1,0 +1,13 @@
+/* TEAM */
+  Creator & Maintainer: Abinash Kumar
+  GitHub: @abinashkumar19
+  X: @AbinashKumar192
+
+  Training & Curriculum: Veera Sir (Veerababu Narni)
+  Org: NareshIT · Hyderabad
+
+/* SITE */
+  Product: Cloud iNIT — the boot sequence for your infrastructure
+  Standards: HTML5, CSS3, JavaScript (ES2020), PWA (service worker + manifest)
+  Components: multi-cloud boot-sequence engine, live status, open API
+  Contact: cloudgcp08@gmail.com

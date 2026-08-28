@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="That route didn't boot — the page isn't part of the sequence."/>
+<link rel="icon" type="image/png" href="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" />
+<title>404 — stage not found · Cloud iNIT</title>
+<meta name="robots" content="noindex,follow"/>
+<meta name="theme-color" content="#faf3e3"/>
+<link rel="manifest" href="/site.webmanifest"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div id="prog" aria-hidden="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<div class="site-orbs" aria-hidden="true"><span class="site-orb site-orb-a"></span><span class="site-orb site-orb-b"></span><span class="site-orb site-orb-c"></span></div>
+
+<nav>
+  <a class="logo" href="index.html"><img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/><span>cloud<em>init</em></span></a>
+  <div class="nav-end">
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">home</a>
+    <a href="why.html">why</a>
+    <a href="stages.html">stages</a>
+    <a href="status.html">status</a>
+    <a href="download.html">download</a>
+    <a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">api</a>
+    <a href="https://test.cloudinit.online" target="_blank" rel="noopener">test</a>
+    <a href="/profile/">profile</a>
+    <button type="button" class="nav-cta" data-toast="On the roadmap — iOS and Android builds are compiling." data-toast-ms="3500">get the app</button>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  </div>
+</nav>
+<div class="nav-scrim" id="navScrim"></div>
+
+<header class="page-head" style="text-align:center;min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+  <div class="mono-tag mono-tag--warn" style="margin-bottom:22px">EXIT CODE 404</div>
+  <h1 style="font-size:clamp(64px,14vw,150px);line-height:.9;letter-spacing:-.04em;margin-bottom:10px">4<em>0</em>4</h1>
+  <h2 style="font-size:clamp(20px,3vw,30px);font-weight:800;letter-spacing:-.02em;margin-bottom:14px">This stage didn't come up clean</h2>
+  <p style="max-width:520px;margin:0 auto 34px">The route you requested isn't part of the boot sequence. It may have been moved, renamed, or never existed. The rest of the platform is still running.</p>
+
+  <div class="terminal" style="max-width:560px;width:100%;text-align:left;margin-bottom:34px">
+    <div class="terminal-bar">
+      <span class="term-dot term-dot--r"></span><span class="term-dot term-dot--y"></span><span class="term-dot term-dot--g"></span>
+      <span class="term-title">/var/log/cloudinit.boot</span>
+    </div>
+    <div class="terminal-body">
+      <div class="boot-line" style="opacity:1"><span class="dim">[ resolve ] </span><span class="tag tag--warn">[ WARN ]</span><span> route lookup failed — 404</span></div>
+      <div class="boot-line" style="opacity:1"><span class="dim">[ resolve ] </span><span class="tag tag--info">[ INFO ]</span><span> falling back to a known-good stage</span></div>
+      <div class="boot-line" style="opacity:1"><span class="dim">[ resolve ] </span><span class="tag tag--ok">[ OK ]</span><span> suggested target: /index.html</span></div>
+    </div>
+  </div>
+
+  <div class="hero-btns" style="justify-content:center">
+    <a href="index.html" class="btn-primary magnetic">Back to home</a>
+    <a href="status.html" class="btn-ghost magnetic">Check system status</a>
+  </div>
+</header>
+
+<footer>
+  <div class="footer-bottom" style="border-top:none;justify-content:center">
+    <p class="footer-credit">cloudinit boots clean, every time. — developed by Abinash Kumar</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="script.js" defer></script>
+</body>
+</html>

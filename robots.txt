@@ -1,0 +1,6 @@
+# Cloud iNIT — robots.txt
+User-agent: *
+Allow: /
+Disallow: /profile/index.html.old_backup
+
+Sitemap: https://cloudinit.online/sitemap.xml

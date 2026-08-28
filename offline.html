@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex"/>
+<meta name="theme-color" content="#faf3e3"/>
+<title>Offline — Cloud iNIT</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#faf3e3;color:#1d1d1f;
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;line-height:1.6}
+  .tag{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+       color:#6b6b6b;border:1px solid rgba(107,107,107,.35);background:rgba(107,107,107,.08);padding:5px 12px;border-radius:6px;margin-bottom:24px}
+  h1{font-size:clamp(48px,12vw,110px);line-height:.9;letter-spacing:-.04em;margin-bottom:12px}
+  h1 em{font-style:normal;color:#b8912b}
+  h2{font-size:clamp(19px,3vw,26px);font-weight:800;margin-bottom:12px}
+  p{max-width:460px;color:#6e6e73;margin-bottom:30px}
+  button{font:600 14px/1 'Inter',sans-serif;color:#fff;background:#b8912b;border:none;padding:14px 26px;border-radius:10px;cursor:pointer;transition:.2s}
+  button:hover{background:#9c7a22;transform:translateY(-2px)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#6b6b6b;margin-right:7px}
+</style>
+</head>
+<body>
+  <div class="tag"><span class="dot"></span>No network · offline</div>
+  <h1>0<em>ff</em>line</h1>
+  <h2>The boot sequence can't reach the network</h2>
+  <p>You appear to be offline. Cloud iNIT will reconnect automatically the moment your connection returns — or you can retry now.</p>
+  <button onclick="location.reload()">Retry connection</button>
+  <script>window.addEventListener('online', () => location.reload());</script>
+</body>
+</html>

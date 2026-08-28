@@ -2,6 +2,13 @@
    Cloud iNIT — behavior
    ========================================================================== */
 
+/* ---------- service worker (PWA + offline page) ---------- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+
 /* ---------- nav active state ---------- */
 (() => {
   const here = location.pathname.split('/').pop() || 'index.html';

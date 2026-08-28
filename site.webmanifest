@@ -1,0 +1,17 @@
+{
+  "name": "Cloud iNIT — boot sequence for your infrastructure",
+  "short_name": "Cloud iNIT",
+  "description": "Encrypted, distributed, AI-managed cloud services with an open API. The boot sequence for your infrastructure.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#faf3e3",
+  "theme_color": "#faf3e3",
+  "categories": ["developer", "productivity", "utilities"],
+  "lang": "en",
+  "icons": [
+    { "src": "https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
