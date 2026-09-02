@@ -184,6 +184,19 @@ body::after {
 /* ─── MAIN ─── */
 .main { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 60px 60px 100px; }
 
+/* curriculum overview */
+.intro-wrap { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
+.intro-inner { max-width: 1100px; margin: 0 auto; padding: 56px 60px; }
+.intro-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 700;
+  color: var(--white); margin: 8px 0 20px; letter-spacing: -0.01em;
+}
+.intro-inner p { font-size: 15px; line-height: 1.85; color: #9a9080; max-width: 820px; margin-bottom: 16px; }
+.intro-inner p:last-child { margin-bottom: 0; }
+.intro-inner em { color: var(--gcp-pale); font-style: italic; }
+@media (max-width: 768px) { .intro-inner { padding: 40px 20px; } }
+
 /* group headers */
 .group-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; margin-top: 48px; }
 .group-header:first-child { margin-top: 0; }
@@ -262,6 +275,13 @@ body::after {
 }
 .topic-item:hover { background: var(--gcp-dim); border-color: rgba(52,168,83,0.25); color: var(--gcp-pale); }
 .topic-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gcp-green); flex-shrink: 0; margin-top: 7px; }
+.module-desc {
+  grid-column: 1 / -1;
+  margin: 0 0 10px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--border-soft);
+  color: #b7a988; font-size: 13.5px; line-height: 1.75;
+}
 
 /* GCP 4-color dot accent */
 .module-card:nth-child(4n+1) .topic-dot { background: var(--gcp-blue); }
@@ -379,6 +399,16 @@ footer {
   </div>
 </section>
 
+<!-- CURRICULUM OVERVIEW (static, original) -->
+<section class="intro-wrap">
+  <div class="intro-inner">
+    <div class="overline">How to read this syllabus</div>
+    <h2 class="intro-title">Built the way you would actually deploy on GCP</h2>
+    <p>A lot of Google Cloud outlines are nothing more than a wall of product names. This one is ordered the way a real project comes together: you begin with the cloud and virtualization concepts every workload sits on, get comfortable on Linux, spin up Compute Engine, wrap it in a VPC network, attach persistent disks and Cloud Storage, add managed databases, then tighten everything with IAM and GCP's security tools before moving into serverless Cloud Functions and Terraform automation. Each module opens to a short note on <em>why</em> it lands where it does and what you will have running by the end of it — not just the list of topics inside.</p>
+    <p>The 22 modules are organised into eleven tracks. New to Google Cloud? Follow it straight through, top to bottom. Already shipping on GCP and just closing gaps? Use the filters above to jump directly to Networking, Databases, Security or Infrastructure as Code. Every module is taught hands-on against a live project, and the sequence mirrors how production environments are genuinely assembled in NareshIT's cloud labs in Hyderabad.</p>
+  </div>
+</section>
+
 <!-- MAIN -->
 <main class="main" id="mainContent"></main>
 
@@ -400,111 +430,133 @@ const modules = [
   {
     num: "01", cat: "Cloud Fundamentals", name: "Introduction to Cloud Computing",
     icon: "☁️", iconBg: "rgba(66,133,244,0.12)",
+    desc: "Before opening a single console, this module frames why organisations move to the cloud in the first place — trading racks of owned hardware for on-demand, pay-for-what-you-use infrastructure, and the compromises that come with that shift. You finish able to explain IaaS, PaaS and SaaS clearly and judge which model actually suits a given workload.",
     topics: ["Why Cloud Computing?","Benefits of Cloud Computing","Types of Cloud Computing","Cloud Service Models","Scaling in Cloud Computing","Cloud Computing Issues","Security in the Cloud","Cloud Costing Models"]
   },
   {
     num: "02", cat: "Cloud Fundamentals", name: "Virtualization",
     icon: "🖥️", iconBg: "rgba(66,133,244,0.12)",
+    desc: "Every Compute Engine VM you launch later is really a slice of a physical machine partitioned by a hypervisor. This module opens that black box so nothing later feels like magic — you learn what a hypervisor does, how virtual machines share the same hardware, and why virtualization is the bedrock the whole cloud stands on.",
     topics: ["What is Virtualization?","Virtualization and Cloud Computing","Types of Virtualizations","Virtualization Terminologies","Hypervisor Concepts","Benefits","Vendors"]
   },
   {
     num: "03", cat: "Linux Basics", name: "Linux",
     icon: "🐧", iconBg: "rgba(251,188,4,0.1)",
+    desc: "Most of the servers you run on Google Cloud will be Linux, so this is a hands-on grounding in the command line you touch every day — moving around the filesystem, fixing permissions, managing users and processes, installing software, and sorting out networking straight from the shell rather than a graphical console.",
     topics: ["All-Important Linux Commands","The Linux Filesystem","File Permissions","Process Management","User Account Management","Software Management","Networking in Linux"]
   },
   {
     num: "04", cat: "Compute Services", name: "Compute Engine",
     icon: "⚡", iconBg: "rgba(52,168,83,0.12)",
+    desc: "Your first real server on Google Cloud. You launch both Windows and Linux VMs from scratch and learn what each option on the creation screen actually does, so a Compute Engine instance stops being a form to fill in and becomes something you understand.",
     topics: ["Compute Engine Overview","Instance Launch (Windows and Linux OS)"]
   },
   {
     num: "05", cat: "Compute Services", name: "Compute Engine Instance Management",
     icon: "⚙️", iconBg: "rgba(52,168,83,0.12)",
+    desc: "Launching a VM is the easy part; running it safely and repeatably is the real skill. This module covers the day-2 work — picking the right machine type, controlling access with SSH keys and firewall rules, and handling disks, snapshots and startup metadata so instances behave predictably.",
     topics: ["Instance Types","Key Pair Management","Firewall Rules (Security Groups Equivalent)","Storage and Snapshots","User Data and Metadata"]
   },
   {
     num: "06", cat: "Compute Services", name: "Load Balancing",
     icon: "⚖️", iconBg: "rgba(52,168,83,0.12)",
+    desc: "One server is a single point of failure. Here you place a Google Cloud load balancer in front of your instances so traffic is spread across healthy backends, and learn how health checks and backend services keep users off any VM that has fallen over.",
     topics: ["GCP Load Balancers — Overview & Configuration"]
   },
   {
     num: "07", cat: "Compute Services", name: "Billing and Monitoring",
     icon: "📊", iconBg: "rgba(52,168,83,0.12)",
+    desc: "Cloud bills catch out people who do not keep an eye on them. This short module builds the habit early — reading the billing reports, understanding what actually drives spend, and setting Cloud Monitoring alerts so you hear about a runaway resource well before the invoice arrives.",
     topics: ["Billing and Monitoring","Cloud Monitoring Alarms"]
   },
   {
     num: "08", cat: "Compute Services", name: "Autoscaler",
     icon: "🔄", iconBg: "rgba(52,168,83,0.12)",
+    desc: "Traffic is never flat, so your fleet should not be either. You configure a managed instance group with the autoscaler so VMs are added and removed automatically, and learn which scaling signals and policies keep capacity tracking demand instead of relying on guesswork.",
     topics: ["Auto Scaling","Scaling Types and Policies","GCP Managed Instance Group Auto-Scaling"]
   },
   {
     num: "09", cat: "Storage Services", name: "Persistent Disk / Cloud Filestore",
     icon: "💾", iconBg: "rgba(234,67,53,0.1)",
+    desc: "Servers need disks. This module contrasts block storage on a Persistent Disk that attaches to a single VM with shared file storage on Cloud Filestore that many VMs can mount at once, so you choose the right one for the job instead of defaulting to the familiar.",
     topics: ["EBS Equivalent — Google Persistent Disk","EFS Equivalent — Cloud Filestore"]
   },
   {
     num: "10", cat: "Networking", name: "VPC Network",
     icon: "🌐", iconBg: "rgba(66,133,244,0.12)",
+    desc: "This is the networking module everything else leans on. Starting from IP addressing and CIDR maths, you build your own VPC network with custom subnets — the private space inside Google Cloud where your resources actually live and talk to each other.",
     topics: ["Networking Basics","Public IPs & Private IPs","CIDR Range","Subnet Calculations","Creating Custom VPCs and Custom Subnets"]
   },
   {
     num: "11", cat: "Networking", name: "VPC Controls",
     icon: "🔀", iconBg: "rgba(66,133,244,0.12)",
+    desc: "Once you can build a network you need to control how traffic flows through it. Here you write firewall rules that allow or block traffic at the VPC level and use route tables with Cloud Router to steer packets where they should go.",
     topics: ["Firewall Rules (ACL Equivalent)","Route Tables & Cloud Router"]
   },
   {
     num: "12", cat: "Object Storage", name: "Cloud Storage",
     icon: "🪣", iconBg: "rgba(52,168,83,0.12)",
+    desc: "Google Cloud's default place to keep files. You learn how Cloud Storage holds objects in buckets, how storage classes trade cost against how quickly you can retrieve data, and how versioning and permissions keep that data both safe and reachable.",
     topics: ["What is Cloud Storage?","Storage Classes","Versioning","Bucket ACL and Permissions"]
   },
   {
     num: "13", cat: "Object Storage", name: "Cloud Storage Advanced",
     icon: "🗄️", iconBg: "rgba(52,168,83,0.12)",
+    desc: "Past the basics, Cloud Storage becomes a serious data platform. This module covers replication for durability, lifecycle rules that shift cold data to cheaper classes on their own, encryption with Cloud KMS, static website hosting, and event triggers that fire off downstream work when objects change.",
     topics: ["Data Partition","Data Copying and Moving","Cross-Region/Same-Region Replication","Lifecycle Management","Security & Encryption","Cloud KMS","Static Web Hosting with Cloud Storage","Events Configuration on Buckets"]
   },
   {
     num: "14", cat: "Object Storage", name: "Cloud Storage Access",
     icon: "🔑", iconBg: "rgba(52,168,83,0.12)",
+    desc: "A tight deep-dive on something people get wrong all the time — granting another Google Cloud project or account access to your bucket safely, using the right IAM bindings instead of making data public by mistake.",
     topics: ["Enabling Cross-Account Access for Cloud Storage"]
   },
   {
     num: "15", cat: "Identity & Access", name: "IAM",
     icon: "🛡️", iconBg: "rgba(251,188,4,0.1)",
+    desc: "Identity is the real security perimeter on Google Cloud. You move beyond the owner account, set up users, groups and service accounts, enforce MFA and strong password policies, and write least-privilege roles — the line between a project that is locked down and one that is an incident waiting to happen.",
     topics: ["Root Account vs. IAM User","Multi-Factor Authentication for Users","IAM Password Policies","Keys Configuration and Different Access Approaches","User, Groups, and Role Concepts","Creating Customer-Managed Policies","Auditing User Activity"]
   },
   {
     num: "16", cat: "Databases", name: "Cloud SQL",
     icon: "🗃️", iconBg: "rgba(66,133,244,0.12)",
+    desc: "Running a database yourself is a lot of thankless work. This module shows what managed Cloud SQL takes off your plate compared with a database you install on Compute Engine, and introduces the Cloud SQL proxy and Memorystore for secure connections and caching.",
     topics: ["Launching Cloud SQL Instances","Difference: DB on Compute Engine vs Managed Cloud SQL","Proxy Configuration Process","Memorystore (ElastiCache Equivalent)"]
   },
   {
     num: "17", cat: "Databases", name: "Cloud SQL Operations",
     icon: "🔍", iconBg: "rgba(66,133,244,0.12)",
+    desc: "The practical side of databases — connecting to Cloud SQL from an app on Compute Engine and from a local workbench, creating schemas and running queries, and offloading reads onto replicas so a busy database stays responsive.",
     topics: ["Connection from Cloud SQL to Compute Engine","Connection from Cloud SQL to Local Machine (Workbench)","Creating DB and Tables, Running Queries","Configuring Read Replicas with Masters and Accessing Tables"]
   },
   {
     num: "18", cat: "Databases", name: "Firestore & API Gateway",
     icon: "🌌", iconBg: "rgba(234,67,53,0.1)",
+    desc: "A shift from relational tables to serverless NoSQL. You model data in Firestore, secure it with rules, and wire it to Cloud Functions behind an API Gateway — ending in a project that builds a real serverless API from front to back.",
     topics: ["Firestore Overview","Firestore Security Options","Firestore Integration to Cloud Functions","Cloud Functions and API Gateway","Project: Cloud Functions + API Gateway + Firestore"]
   },
   {
     num: "19", cat: "Security Services", name: "GCP Security Tools",
     icon: "🔒", iconBg: "rgba(234,67,53,0.1)",
+    desc: "A tour of the services that harden a production project — certificate management, threat detection with Security Command Center, cost and security tips from Recommender, edge protection with Cloud CDN and Cloud Armor, and audit trails through Cloud Audit Logs and Organization Policy. This is the toolkit that turns a working project into a defensible one.",
     topics: ["Certificate Manager","Security Command Center (Inspector Equivalent)","Recommender (Trusted Advisor Equivalent)","Cloud Load Balancing (Global Accelerator Equivalent)","Cloud CDN","Cloud Armor (WAF Equivalent)","Cloud Audit Logs","Organization Policy"]
   },
   {
     num: "20", cat: "Serverless", name: "Cloud Functions / App Engine",
     icon: "λ", iconBg: "rgba(52,168,83,0.12)",
+    desc: "Code that runs without a server to babysit. You write and deploy Cloud Functions and App Engine services, wire them to other GCP products, and set up their environment and configuration — the entry point into serverless architecture on Google Cloud.",
     topics: ["Overview of Cloud Functions / App Engine","Configuration with Different Services","Creation and Automation Using Cloud Functions","General Configuration and Environment Setup","Layers Equivalent and Importance"]
   },
   {
     num: "21", cat: "Serverless", name: "Cloud Functions Integrations",
     icon: "🔗", iconBg: "rgba(52,168,83,0.12)",
+    desc: "Where serverless meets the rest of your stack. You connect Cloud Functions to Cloud SQL, Firestore and API Gateway, and learn their real limits up front so you design around them rather than discovering them in production.",
     topics: ["Cloud Functions Limitations","Cloud Functions to Cloud SQL Connection","Cloud Functions to Firestore and API Gateway Connection"]
   },
   {
     num: "22", cat: "Infrastructure as Code", name: "Terraform with GCP",
     icon: "🔧", iconBg: "rgba(123,66,188,0.1)",
+    desc: "Clicking through the console does not scale. This capstone module introduces infrastructure as code with Terraform — describing your Google Cloud resources in files you can version, review and reproduce, then automating full environments end to end.",
     topics: ["Terraform with GCP — Full Configuration and Automation"]
   }
 ];
@@ -554,6 +606,7 @@ function render(filter) {
         </div>
         <div class="module-body">
           <div class="module-body-inner">
+            ${mod.desc ? `<p class="module-desc">${mod.desc}</p>` : ''}
             ${mod.topics.map(t => `<div class="topic-item"><div class="topic-dot"></div>${t}</div>`).join('')}
           </div>
         </div>

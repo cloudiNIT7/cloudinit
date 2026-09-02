@@ -170,6 +170,19 @@ body::after {
   padding: 60px 60px 100px;
 }
 
+/* curriculum overview */
+.intro-wrap { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
+.intro-inner { max-width: 1100px; margin: 0 auto; padding: 56px 60px; }
+.intro-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 700;
+  color: var(--white); margin: 8px 0 20px; letter-spacing: -0.01em;
+}
+.intro-inner p { font-size: 15px; line-height: 1.85; color: #9a9080; max-width: 820px; margin-bottom: 16px; }
+.intro-inner p:last-child { margin-bottom: 0; }
+.intro-inner em { color: var(--gold-pale); font-style: italic; }
+@media (max-width: 768px) { .intro-inner { padding: 40px 20px; } }
+
 /* module group header */
 .group-header {
   display: flex; align-items: center; gap: 16px;
@@ -266,6 +279,13 @@ body::after {
 .topic-dot {
   width: 5px; height: 5px; border-radius: 50%;
   background: var(--gold); flex-shrink: 0; margin-top: 7px;
+}
+.module-desc {
+  grid-column: 1 / -1;
+  margin: 0 0 10px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--border-soft);
+  color: #b7a988; font-size: 13.5px; line-height: 1.75;
 }
 
 /* ─── PROGRESS BAR ─── */
@@ -373,6 +393,16 @@ footer {
   </div>
 </section>
 
+<!-- CURRICULUM OVERVIEW (static, original) -->
+<section class="intro-wrap">
+  <div class="intro-inner">
+    <div class="overline">How to read this syllabus</div>
+    <h2 class="intro-title">A build order, not a glossary</h2>
+    <p>Most AWS course outlines are just a list of service names. This one is sequenced the way you would actually stand up a real system: you start with the concepts and the Linux fundamentals every server rests on, bring up compute, give it a network to live in, add storage and databases, lock it down with identity and security, then layer on serverless, DNS, automation and migration. Each module below opens to a short explanation of <em>why</em> it sits where it does and what you will have built by the end of it — not just the topics it covers.</p>
+    <p>The 29 modules are grouped into fifteen tracks. If you are brand new, work top to bottom. If you already run workloads on AWS and want to fill gaps, use the filters above to jump straight to Networking, Security or Infrastructure as Code. Every module is taught hands-on against a live account, and the ordering mirrors the way production environments are actually assembled at NareshIT's project labs in Hyderabad.</p>
+  </div>
+</section>
+
 <!-- MAIN -->
 <main class="main" id="mainContent">
   <!-- JS renders modules here -->
@@ -396,146 +426,175 @@ const modules = [
   {
     num: "01", cat: "Cloud Fundamentals", name: "Introduction to Cloud Computing",
     icon: "☁️", iconBg: "rgba(91,143,255,0.1)",
+    desc: "Before touching a single service, this module frames why teams move to the cloud at all — the shift from capital-heavy data centres to pay-as-you-go infrastructure, and the trade-offs that come with it. You leave able to explain IaaS, PaaS and SaaS in plain language and reason about when each model actually fits.",
     topics: ["Why Cloud Computing?","Benefits of Cloud Computing","Types of Cloud Computing","Cloud Service Models","Scaling in Cloud Computing","Cloud Computing Issues","Security in the Cloud","Cloud Costing Models"]
   },
   {
     num: "02", cat: "Cloud Fundamentals", name: "Virtualization",
     icon: "🖥️", iconBg: "rgba(91,143,255,0.1)",
+    desc: "Every EC2 instance you launch later is really a slice of a physical server carved up by a hypervisor. This module opens that black box so the rest of the course is not magic — you understand what a hypervisor does, how virtual machines share hardware, and why virtualization is the foundation the entire cloud is built on.",
     topics: ["What is Virtualization?","Virtualization and Cloud Computing","Types of Virtualizations","Virtualization Terminologies","Hypervisor Concepts","Benefits","Vendors"]
   },
   {
     num: "03", cat: "Linux Basics", name: "Linux",
     icon: "🐧", iconBg: "rgba(255,200,50,0.1)",
+    desc: "AWS runs on Linux, and so will most of the servers you manage. This is a hands-on grounding in the command line you actually use daily — navigating the filesystem, fixing permissions, managing processes and services with systemd, and troubleshooting networking from the shell instead of a console.",
     topics: ["All-Important Linux Commands","The Linux Filesystem","File Permissions","Process Management","User Account Management","Software Management","Backup and Restore Management","systemd and Monitoring Management","Storage Management","Networking in Linux"]
   },
   {
     num: "04", cat: "Compute Services", name: "EC2",
     icon: "⚡", iconBg: "rgba(255,153,0,0.1)",
+    desc: "Your first real server in the cloud. You launch both Windows and Linux instances from scratch and learn what every choice on the launch screen actually does, so an EC2 instance stops being a checkbox exercise and becomes something you can reason about.",
     topics: ["EC2 Overview","Instance Launch (Windows and Linux OS)"]
   },
   {
     num: "05", cat: "Compute Services", name: "EC2 Instance Management",
     icon: "⚙️", iconBg: "rgba(255,153,0,0.1)",
+    desc: "Launching an instance is easy; running it safely and repeatably is the real skill. This module covers the day-2 work — choosing instance types for a workload, locking down access with key pairs and security groups, baking reusable AMIs and launch templates, and handling storage, snapshots and boot-time user data.",
     topics: ["Instance Types","Key Pair Management","Security Groups & Firewalls","EC2 Connect Methods","EC2 Security Group Management","Creation of AMI and Launch Template","Elastic IP","Storage and Snapshots","User Data and Metadata"]
   },
   {
     num: "06", cat: "Compute Services", name: "Elastic Load Balancing (ELB)",
     icon: "⚖️", iconBg: "rgba(255,153,0,0.1)",
+    desc: "One server is a single point of failure. Here you put a load balancer in front of your instances and learn when to reach for an Application Load Balancer versus a Network Load Balancer, how target groups route traffic, and how path-based routing lets one endpoint serve many services.",
     topics: ["Load Balancers Introduction","Application Load Balancer (ALB)","Network Load Balancer (NLB)","Path-Based Routing (ALB)","ALB and NLB Target Groups","ALB and NLB Integration"]
   },
   {
     num: "07", cat: "Compute Services", name: "Billing and Monitoring",
     icon: "📊", iconBg: "rgba(255,153,0,0.1)",
+    desc: "Cloud bills surprise people who do not watch them. This short module builds the habit early — reading the billing console, understanding what drives cost, and wiring up CloudWatch alarms so you hear about a runaway resource before the invoice does.",
     topics: ["Billing and Monitoring","CloudWatch Alarms"]
   },
   {
     num: "08", cat: "Compute Services", name: "Auto Scaling",
     icon: "🔄", iconBg: "rgba(255,153,0,0.1)",
+    desc: "Traffic is not constant, so your fleet should not be either. You configure Auto Scaling to add and remove instances automatically, and learn the difference between target-tracking, step and scheduled policies so capacity follows demand instead of guesswork.",
     topics: ["Auto Scaling","Scaling Types and Policies","Target Tracking Policy","Step and Scheduled Scaling"]
   },
   {
     num: "09", cat: "Storage Services", name: "EBS / EFS",
     icon: "💾", iconBg: "rgba(52,168,83,0.1)",
+    desc: "Servers need disks. This module contrasts block storage (EBS) that attaches to a single instance with shared file storage (EFS) that many instances mount at once, so you pick the right one instead of defaulting to whatever is familiar.",
     topics: ["EBS (Elastic Block Storage)","EFS (Elastic File Storage)"]
   },
   {
     num: "10", cat: "Networking", name: "VPC",
     icon: "🌐", iconBg: "rgba(100,180,255,0.1)",
+    desc: "This is the networking module everything else depends on. Starting from IP addressing and CIDR maths, you build your own VPC with public and private subnets, gateways and routing — the private data centre inside AWS that your resources actually live in.",
     topics: ["Networking Basics","Public IPs & Private IPs","CIDR Range","Subnet Calculations","Public Subnet and Private Subnets","Internet Gateway and NAT Gateway","Creating Custom VPCs and Custom Subnets"]
   },
   {
     num: "11", cat: "Networking", name: "VPC Controls",
     icon: "🔀", iconBg: "rgba(100,180,255,0.1)",
+    desc: "Once you can build a network, you need to control and connect it. Here you layer on network ACLs, peer VPCs across regions and accounts, reach AWS services privately through endpoints, and centralise connectivity with a Transit Gateway.",
     topics: ["Network ACLs","VPC Peering (Same Region, Cross Region, Different Account)","VPC Endpoint","Transit Gateway","VPC Endpoint to Connect Private EC2","Route Tables & IGW"]
   },
   {
     num: "12", cat: "Object Storage", name: "S3",
     icon: "🪣", iconBg: "rgba(52,168,83,0.1)",
+    desc: "The internet's default place to put files. You learn how S3 stores objects, how storage classes trade cost against retrieval speed, and how versioning and permissions keep data both safe and accessible.",
     topics: ["What is S3?","Storage Classes","Versioning","S3 Bucket ACL and Bucket Permissions"]
   },
   {
     num: "13", cat: "Object Storage", name: "S3 Advanced",
     icon: "🗄️", iconBg: "rgba(52,168,83,0.1)",
+    desc: "Beyond the basics, S3 becomes a serious data platform. This module covers replication for durability, lifecycle rules that move cold data to cheaper tiers automatically, encryption with KMS, static website hosting, and event triggers that kick off downstream work.",
     topics: ["S3 Data Partition","Data Copying and Moving","Cross-Region/Same-Region Replication","Lifecycle Management","Security & Encryption","KMS (Key Management Service)","Static Web Hosting with S3","Events Configuration on S3 Buckets"]
   },
   {
     num: "14", cat: "Object Storage", name: "S3 Access",
     icon: "🔑", iconBg: "rgba(52,168,83,0.1)",
+    desc: "A focused deep-dive on one thing people get wrong constantly — granting another AWS account access to your bucket safely, using the right mix of bucket policies and roles instead of making data public by accident.",
     topics: ["Enabling Cross-Account Access for S3"]
   },
   {
     num: "15", cat: "Identity & Access", name: "IAM",
     icon: "🛡️", iconBg: "rgba(201,168,76,0.1)",
+    desc: "Identity is the real security perimeter in AWS. You move past the root account, set up users, groups and roles, enforce MFA and password policies, and write least-privilege policies — the difference between an account that is locked down and one that is an incident waiting to happen.",
     topics: ["Root Account vs. IAM User","Multi-Factor Authentication","IAM Password Policies","Keys Configuration & Different Access Approaches","User, Groups, and Role Concepts","AWS CLI and IAM Roles","IAM Policies — AWS Managed, Custom, Inline","Creating Customer-Managed Policies","Auditing User Activity"]
   },
   {
     num: "16", cat: "Databases", name: "RDS",
     icon: "🗃️", iconBg: "rgba(167,139,250,0.1)",
+    desc: "Running a database yourself is a lot of undifferentiated work. This module shows what managed RDS takes off your plate versus a database on EC2, and introduces RDS Proxy and ElastiCache for connection pooling and caching.",
     topics: ["Launching RDS Instances","Difference: DB on EC2 vs Managed RDS","RDS Proxy Configuration","ElastiCache Overview"]
   },
   {
     num: "17", cat: "Databases", name: "RDS Operations",
     icon: "🔍", iconBg: "rgba(167,139,250,0.1)",
+    desc: "The practical side of databases — connecting from an EC2 app and from a local workbench, creating schemas and running queries, and offloading reads to replicas so a busy database stays responsive.",
     topics: ["Connection from RDS to EC2","Connection from RDS to Local Machine (Workbench)","Creating DB and Tables, Running Queries","Read Replicas with Masters and Accessing Tables"]
   },
   {
     num: "18", cat: "Databases", name: "DynamoDB & API Gateway",
     icon: "⚡", iconBg: "rgba(167,139,250,0.1)",
+    desc: "A shift from relational to serverless NoSQL. You model data in DynamoDB, secure it, and wire it to Lambda behind API Gateway — culminating in a project that builds a real serverless API end to end.",
     topics: ["DynamoDB Overview","DynamoDB Security Options","DynamoDB Integration to Lambda","Lambda and API Gateway","Project: Lambda + API Gateway + DynamoDB"]
   },
   {
     num: "19", cat: "Security Services", name: "Secrets & Keys",
     icon: "🔐", iconBg: "rgba(255,100,100,0.1)",
+    desc: "Hard-coded credentials are how breaches happen. This module covers storing and rotating secrets with Secrets Manager and managing encryption keys with KMS, so sensitive values never live in your code.",
     topics: ["AWS Secrets Manager","Key Management Services (KMS)"]
   },
   {
     num: "20", cat: "Monitoring", name: "CloudWatch",
     icon: "📡", iconBg: "rgba(50,200,150,0.1)",
+    desc: "The eyes and ears of your infrastructure. A grounding in metrics, logs and dashboards so you can actually see what your systems are doing rather than guessing.",
     topics: ["CloudWatch Overview"]
   },
   {
     num: "21", cat: "Monitoring", name: "CloudWatch Advanced",
     icon: "🔔", iconBg: "rgba(50,200,150,0.1)",
+    desc: "Monitoring becomes useful when it acts. Here you use EventBridge to react to events automatically and tune alarms so alerts are signal, not noise.",
     topics: ["CloudWatch EventBridge","CloudWatch Alarms"]
   },
   {
     num: "22", cat: "Security Services", name: "AWS Security Tools",
     icon: "🔒", iconBg: "rgba(255,100,100,0.1)",
+    desc: "A tour of the services that harden a production account — certificate management, vulnerability scanning with Inspector, edge protection with CloudFront, Shield and WAF, and audit trails with CloudTrail and Config. This is the toolkit that turns a working account into a defensible one.",
     topics: ["AWS Certificate Manager","AWS Inspector","AWS Trusted Advisor","AWS Global Accelerator","CloudFront / CDN","AWS Shield and WAF","CloudTrail","AWS Config","SNS"]
   },
   {
     num: "23", cat: "Serverless", name: "Lambda",
     icon: "λ", iconBg: "rgba(255,153,0,0.1)",
+    desc: "Code that runs without a server to manage. You write and deploy functions, wire them to other services, and automate AWS itself with Boto3 — the entry point to serverless architecture.",
     topics: ["Overview of Lambda","Configuration with Different Services","Creation and Automation Using Lambda Boto3","General Configuration & Environment Setup","Lambda Layers and Importance"]
   },
   {
     num: "24", cat: "Serverless", name: "Lambda Integrations",
     icon: "🔗", iconBg: "rgba(255,153,0,0.1)",
+    desc: "Where serverless meets the rest of your stack. You connect Lambda to RDS, DynamoDB and API Gateway, and learn its real limits so you design around them instead of hitting them in production.",
     topics: ["Lambda Limitations","Lambda to RDS Connection","Lambda to DynamoDB and API Gateway Connection"]
   },
   {
     num: "25", cat: "DNS & CDN", name: "Route 53",
     icon: "🌍", iconBg: "rgba(91,143,255,0.1)",
+    desc: "DNS is how users find you. You manage records, alias traffic to load balancers and CloudFront, and use routing policies — weighted, failover, geolocation and latency-based — to build genuinely highly available, multi-region setups.",
     topics: ["DNS Records Overview","Alias Configuration to ELB, Static Hosting & CloudFront","Hosting Sample Website & Configuring Policies","Simple RP, Weighted RP","Failover RP, Geo Location RP, Latency-Based Routing","Cross-Region High Availability"]
   },
   {
     num: "26", cat: "DNS & CDN", name: "CloudFront",
     icon: "🚀", iconBg: "rgba(91,143,255,0.1)",
+    desc: "AWS's content delivery network. You distribute content close to users for speed, configure origins, and manage cache invalidation so updates actually reach visitors.",
     topics: ["Overview of CloudFront","CloudFront Distribution and Invalidations","Origins and Origin Groups","CloudFront Invalidations"]
   },
   {
     num: "27", cat: "Infrastructure as Code", name: "Terraform with AWS",
     icon: "🔧", iconBg: "rgba(123,66,188,0.1)",
+    desc: "Clicking through the console does not scale. This module introduces infrastructure as code with Terraform — describing your AWS resources in files you can version, review and reproduce, structured into reusable modules.",
     topics: ["Setting up the System for AWS","S3 Bucket and Random ID","The Root Module","AMI Data, Key Pair, and File Function","EC2 Instance","User Data and Template Files","Compute Root Module"]
   },
   {
     num: "28", cat: "Scripting", name: "Python Boto3",
     icon: "🐍", iconBg: "rgba(255,220,50,0.1)",
+    desc: "Automating AWS with real code. You use the Boto3 SDK to script repetitive operations in Python, the bridge between manual console work and full automation.",
     topics: ["Python Boto3 for AWS Automation"]
   },
   {
     num: "29", cat: "Migration", name: "Database Migration Service (DMS)",
     icon: "🔃", iconBg: "rgba(50,200,150,0.1)",
+    desc: "Getting existing data into AWS. A practical look at the Database Migration Service, moving a database from EC2 into managed RDS with minimal downtime.",
     topics: ["Introduction to DMS","Database Migration from EC2 to RDS"]
   }
 ];
@@ -590,6 +649,7 @@ function render(filter) {
         </div>
         <div class="module-body">
           <div class="module-body-inner">
+            ${mod.desc ? `<p class="module-desc">${mod.desc}</p>` : ''}
             ${mod.topics.map(t => `<div class="topic-item"><div class="topic-dot"></div>${t}</div>`).join('')}
           </div>
         </div>

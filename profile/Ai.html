@@ -200,6 +200,19 @@ body::after {
 /* main */
 .main { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 60px 60px 100px; }
 
+/* curriculum overview */
+.intro-wrap { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
+.intro-inner { max-width: 1100px; margin: 0 auto; padding: 56px 60px; }
+.intro-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 700;
+  color: var(--white); margin: 8px 0 20px; letter-spacing: -0.01em;
+}
+.intro-inner p { font-size: 15px; line-height: 1.85; color: #9a9080; max-width: 820px; margin-bottom: 16px; }
+.intro-inner p:last-child { margin-bottom: 0; }
+.intro-inner em { color: var(--ai-pale); font-style: italic; }
+@media (max-width: 768px) { .intro-inner { padding: 40px 20px; } }
+
 .group-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; margin-top: 48px; }
 .group-header:first-child { margin-top: 0; }
 .group-line { flex: 1; height: 1px; background: var(--border); }
@@ -313,6 +326,13 @@ body::after {
 .topic-item.proj-topic:hover { background: var(--ml-dim); border-color: rgba(236,72,153,0.22); color: #ffe4f0; }
 .topic-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ai); flex-shrink: 0; margin-top: 7px; }
 .topic-dot.proj { background: var(--ml); }
+.module-desc {
+  grid-column: 1 / -1;
+  margin: 0 0 10px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--border-soft);
+  color: #b7a988; font-size: 13.5px; line-height: 1.75;
+}
 
 /* footer */
 footer {
@@ -415,6 +435,16 @@ footer {
   </div>
 </section>
 
+<!-- CURRICULUM OVERVIEW (static, original) -->
+<section class="intro-wrap">
+  <div class="intro-inner">
+    <div class="overline">How to read this syllabus</div>
+    <h2 class="intro-title">Where AI actually earns its place in DevOps</h2>
+    <p>Most AI course outlines are a pile of tool names with no sense of when to use any of them. This one is sequenced the way the field is actually adopted on the job: you start by understanding what machine learning is and how it learns, then move outward into the places it genuinely pays off — watching noisy systems with AIOps, drafting infrastructure code, reading logs and forecasting cost with large language models, and debugging clusters with KubeGPT. Each module below opens to a short explanation of <em>why</em> it matters and what you will have built, not just the topics it lists.</p>
+    <p>The eight modules run from foundations through hands-on tooling and finish with five real-time projects you assemble yourself. If you are new to AI in operations, work top to bottom; if you already lean on Copilot or an observability platform, use the filters above to jump to AIOps, AI Analysis or Kubernetes AI. Everything is taught practically against live tools and pipelines, mirroring the way AI-assisted delivery is built in NareshIT's project labs in Hyderabad.</p>
+  </div>
+</section>
+
 <!-- MAIN -->
 <main class="main" id="mainContent"></main>
 
@@ -437,6 +467,7 @@ const modules = [
     num: "01", cat: "AI & ML for DevOps", name: "AI & ML for DevOps",
     icon: "🤖", iconBg: "rgba(168,85,247,0.14)",
     badge: "NEW", badgeClass: "",
+    desc: "This opening module sets the stage for the whole course, showing where artificial intelligence and machine learning genuinely change day-to-day DevOps work rather than just adding buzzwords. You come away with a clear map of which AI tools belong in a pipeline and a realistic sense of what they can and cannot do for you.",
     topics: [
       "What is AI / ML — Use for DevOps",
       "Introduction of AI Tools for DevOps"
@@ -446,6 +477,7 @@ const modules = [
     num: "02", cat: "Machine Learning", name: "Types of Machine Learning",
     icon: "🧠", iconBg: "rgba(168,85,247,0.12)",
     badge: null,
+    desc: "Before you trust any AI tool, it helps to understand how machines actually learn. This module breaks down the three core paradigms — learning from labelled examples, finding structure in unlabelled data, and learning by trial and reward — so you can tell which approach fits a given problem instead of treating ML as a black box.",
     topics: [
       "Supervised Learning",
       "Unsupervised Learning",
@@ -456,6 +488,7 @@ const modules = [
     num: "03", cat: "AIOps Monitoring", name: "AIOps Monitoring",
     icon: "📡", iconBg: "rgba(34,211,238,0.12)",
     badge: "HOT", badgeClass: "hot-badge",
+    desc: "Modern systems throw off far more telemetry than any human can watch, so this module puts AI-driven observability platforms to work spotting anomalies and root causes for you. Working hands-on with tools like Dynatrace, New Relic and Splunk, you learn to let the platform surface real incidents instead of drowning in dashboards.",
     topics: [
       "Dynatrace (AI Davis Engine)",
       "New Relic AI",
@@ -466,6 +499,7 @@ const modules = [
     num: "04", cat: "AI for Code", name: "AI for Code Writing",
     icon: "💻", iconBg: "rgba(168,85,247,0.12)",
     badge: null,
+    desc: "Here AI becomes your pair-programmer for infrastructure work, drafting Dockerfiles, Terraform, Helm charts and Jenkins pipelines from a plain-language prompt. You practise steering the model and, just as importantly, reviewing what it produces so the generated config is something you would actually ship.",
     topics: [
       "Writing Dockerfiles with AI",
       "Terraform Scripts via AI",
@@ -477,6 +511,7 @@ const modules = [
     num: "05", cat: "AI Analysis", name: "AI Analysis",
     icon: "🔬", iconBg: "rgba(236,72,153,0.12)",
     badge: null,
+    desc: "This module turns raw operational data into decisions, using large language models to read noisy logs, suggest fixes, forecast capacity and trim cloud spend. You build the habit of pointing AI at a real problem — a failing service or a runaway bill — and acting on what it finds.",
     topics: [
       "Log Analysis Using LLMs",
       "Incident Auto-Resolution",
@@ -488,6 +523,7 @@ const modules = [
     num: "06", cat: "AI Tools", name: "AI Tools for DevOps",
     icon: "🛠️", iconBg: "rgba(168,85,247,0.12)",
     badge: "NEW", badgeClass: "",
+    desc: "A practical survey of the assistants you will reach for every day, from ChatGPT and GitHub Copilot to cloud-native Copilots and self-hosted models run through Ollama. You also wire tools together with LangChain, so AI stops being a chat window and becomes part of your automation.",
     topics: [
       "ChatGPT / GitHub Copilot",
       "Azure Copilot",
@@ -499,6 +535,7 @@ const modules = [
     num: "07", cat: "Kubernetes AI", name: "Kubernetes AI — KubeGPT",
     icon: "☸️", iconBg: "rgba(34,211,238,0.12)",
     badge: "HOT", badgeClass: "hot-badge",
+    desc: "Debugging a broken cluster is where a lot of engineers lose hours, so this module installs KubeGPT and lets it explain failing pods and misconfigurations in plain English. Backed by an OpenAI integration, you learn to diagnose Kubernetes issues faster than trawling through kubectl output by hand.",
     topics: [
       "What is KubeGPT?",
       "Installation of KubeGPT",
@@ -511,6 +548,7 @@ const modules = [
     icon: "🚀", iconBg: "rgba(236,72,153,0.14)",
     badge: "LIVE", badgeClass: "hot-badge",
     isProject: true,
+    desc: "The course closes by tying everything together in five build-it-yourself projects, from a CI/CD pipeline that explains its own failures to a loan-prediction model trained end to end. These are the portfolio pieces that prove you can apply AI and ML to real DevOps and data problems, not just talk about them.",
     topics: [
       "CI/CD Pipeline with AI Failure Analysis",
       "AI-Based Log Monitoring System",
@@ -582,6 +620,7 @@ function buildCard(mod) {
     </div>
     <div class="module-body">
       <div class="module-body-inner">
+        ${mod.desc ? `<p class="module-desc">${mod.desc}</p>` : ''}
         ${mod.topics.map(t => `
           <div class="topic-item${mod.isProject ? ' proj-topic' : ''}">
             <div class="topic-dot${mod.isProject ? ' proj' : ''}"></div>${t}

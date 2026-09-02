@@ -170,6 +170,18 @@ body::after {
 .cat-btn.active { font-weight: 600; }
 /* main */
 .main { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 60px 60px 100px; }
+/* curriculum overview */
+.intro-wrap { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
+.intro-inner { max-width: 1100px; margin: 0 auto; padding: 56px 60px; }
+.intro-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 700;
+  color: var(--white); margin: 8px 0 20px; letter-spacing: -0.01em;
+}
+.intro-inner p { font-size: 15px; line-height: 1.85; color: #9a9080; max-width: 820px; margin-bottom: 16px; }
+.intro-inner p:last-child { margin-bottom: 0; }
+.intro-inner em { color: var(--dev-pale); font-style: italic; }
+@media (max-width: 768px) { .intro-inner { padding: 40px 20px; } }
 /* group */
 .group-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; margin-top: 48px; }
 .group-header:first-child { margin-top: 0; }
@@ -250,6 +262,13 @@ body::after {
 .topic-item.ops-topic:hover { background: var(--ops-dim); border-color: rgba(6,182,212,0.22); color: #c0f8ff; }
 .topic-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--dev); flex-shrink: 0; margin-top: 7px; }
 .topic-dot.ops { background: var(--ops); }
+.module-desc {
+  grid-column: 1 / -1;
+  margin: 0 0 10px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--border-soft);
+  color: #b7a988; font-size: 13.5px; line-height: 1.75;
+}
 /* footer */
 footer {
   position: relative; z-index: 1;
@@ -360,6 +379,16 @@ footer {
   </div>
 </section>
 
+<!-- CURRICULUM OVERVIEW (static, original) -->
+<section class="intro-wrap">
+  <div class="intro-inner">
+    <div class="overline">How to read this syllabus</div>
+    <h2 class="intro-title">A pipeline, read left to right</h2>
+    <p>A DevOps course can easily turn into a pile of tool logos with nothing tying them together. This one is sequenced the way work actually flows through a delivery pipeline: you start with the culture and the shell scripting that underpins everything, learn to serve and version code, wire up automated builds and quality gates, then package into containers, ship them onto Kubernetes, keep them healthy with monitoring, and finally automate the infrastructure itself with Ansible and Terraform. Every module below opens to a short note on <em>why</em> that tool sits where it does and what you will have built by the time you finish it — not just the features it exposes.</p>
+    <p>The 34 modules span sixteen tracks, from Git and Jenkins on the Dev side to Docker, Kubernetes and Terraform on the Ops side. If you are new, work top to bottom so each stage builds on the last. If you already run pipelines and want to close specific gaps, use the filters above to jump straight to Docker, Kubernetes, Ansible or Terraform. Everything is taught hands-on against real servers and clusters, mirroring the way production pipelines are assembled in NareshIT's project labs in Hyderabad.</p>
+  </div>
+</section>
+
 <!-- MAIN -->
 <main class="main" id="mainContent"></main>
 
@@ -387,171 +416,205 @@ const modules = [
   {
     num:"01", cat:"DevOps Fundamentals", name:"Overview of DevOps",
     icon:"⚙️", iconBg:"rgba(249,115,22,0.12)",
+    desc:"This module sets the mental model for everything that follows — DevOps as a way of working that collapses the wall between the people who write code and the people who run it. You leave able to describe the delivery pipeline end to end and explain where each tool in the course plugs into it, so the later modules feel like pieces of one system rather than isolated skills.",
     topics:["What is DevOps?","DevOps Market Trends","Shell Script Basics","DevOps Engineer Skills","DevOps Delivery Pipeline","DevOps Ecosystem"]
   },
   {
     num:"02", cat:"Shell Scripting", name:"Introduction to Shell",
     icon:"$_", iconBg:"rgba(251,191,36,0.1)",
+    desc:"The shell is the glue that holds a DevOps toolchain together, and this module gets you fluent in it. You learn how variables, operators and input arguments work so you can stop typing the same commands by hand and start writing small scripts that automate setup, deployment and cleanup tasks.",
     topics:["Types of Shells","Variables","Types of Variables","Operators","Input Arguments"]
   },
   {
     num:"03", cat:"Web Servers", name:"Apache & Tomcat",
     icon:"🌐", iconBg:"rgba(239,68,68,0.1)",
+    desc:"Before you can deploy applications, you need somewhere to run them. Here you install and configure Apache as a web server and Tomcat as a Java application server, then use the Tomcat Manager to deploy and manage real apps — the target environment your pipelines will later ship to.",
     topics:["Apache Webserver Installation","Apache Webserver Configuration","Tomcat Application Server: Installation & Configuration","Tomcat Manager","Application Management"]
   },
   {
     num:"04", cat:"Version Control", name:"Git Introduction",
     icon:"🔀", iconBg:"rgba(249,115,22,0.12)",
+    desc:"Git is where every pipeline begins, so this module makes sure you truly understand it rather than just memorising commands. You learn how Git tracks changes and how the working directory and staging area fit together, which is the foundation for every commit, branch and merge you make later.",
     topics:["What is Git?","How Git Works","Features","Git Workflow: Working Directory","Staging"]
   },
   {
     num:"05", cat:"Version Control", name:"Git Repositories",
     icon:"📦", iconBg:"rgba(249,115,22,0.12)",
+    desc:"A short but important distinction: the repository on your machine versus the shared one on a server like GitHub. Understanding how local and remote repositories relate is what lets a whole team collaborate on the same codebase without stepping on each other.",
     topics:["Local Repository","Remote Repository"]
   },
   {
     num:"06", cat:"Version Control", name:"Git Setup",
     icon:"🛠️", iconBg:"rgba(249,115,22,0.12)",
+    desc:"The practical first steps: installing Git, configuring your identity so your commits are attributed correctly, and initialising or cloning a repository. Getting this right once saves a lot of confusion later when your name and settings show up across every project.",
     topics:["Installing Git","First-Time Git Setup","Getting a Git Repository"]
   },
   {
     num:"07", cat:"Version Control", name:"Git Commands",
     icon:"💻", iconBg:"rgba(249,115,22,0.12)",
+    desc:"This is where Git becomes muscle memory. You practise the everyday workflow — staging and recording changes, reading history to understand what happened and when, undoing mistakes safely, and forking to contribute to projects you do not own.",
     topics:["Working with Various Commands in Git","Recording Changes to the Repository","Viewing the Commit History","Undoing Things","Git Forking"]
   },
   {
     num:"08", cat:"Version Control", name:"Git Remotes",
     icon:"☁️", iconBg:"rgba(249,115,22,0.12)",
+    desc:"Working with a team means syncing your work with shared servers. This module covers the full remote workflow — adding remotes, fetching and pulling others' changes, pushing your own, and inspecting or renaming remotes so your local repo stays connected to the right place.",
     topics:["Showing Your Remotes","Adding Remote Repositories","Fetching and Pulling from Remotes","Pushing to Remotes","Inspecting a Remote","Removing and Renaming Remotes"]
   },
   {
     num:"09", cat:"Version Control", name:"Branching and Merging in Git",
     icon:"🌿", iconBg:"rgba(249,115,22,0.12)",
+    desc:"Branching is what lets many people build features in parallel without breaking the main line. You learn what a branch really is under the hood, how to merge and rebase cleanly, and which branching workflow to adopt — the habits that keep a shared repository sane as a team grows.",
     topics:["What a Branch Is","Basics in Branching and Merging","Branch Management in Git","Branching Workflows and Usage","Remote Branches: Create and Delete","Rebasing"]
   },
   {
     num:"10", cat:"Build Tools", name:"Maven",
     icon:"🔨", iconBg:"rgba(239,68,68,0.1)",
+    desc:"Maven turns source code into a deployable artifact in a repeatable way. You learn how the pom.xml describes a build, how the lifecycle phases run in order, and how dependencies and plugins are resolved — so your CI server can build a project the exact same way every time.",
     topics:["Maven Installation","Maven Build Requirements","Maven POM Builds (pom.xml)","Maven Build Lifecycle","Maven Local Repository (.m2)","Maven Global Repository","Group ID, Artifact ID, Snapshot","Maven Dependencies","Maven Plugins"]
   },
   {
     num:"11", cat:"Code Quality", name:"SonarQube",
     icon:"🔍", iconBg:"rgba(59,130,246,0.12)",
+    desc:"A build that compiles is not the same as good code. SonarQube scans your source for bugs, vulnerabilities and code smells, and here you wire it into Maven so every build gets a quality report — the automated gate that stops risky code from moving down the pipeline.",
     topics:["Overview","Installation & Configuration","Initiate Code Scan","SonarQube Dashboard","Sample Project Code Scan","Maven Integration with SonarQube","Real-Time Use Cases"]
   },
   {
     num:"12", cat:"CI/CD", name:"Jenkins Introduction",
     icon:"⚡", iconBg:"rgba(234,179,8,0.12)",
+    desc:"Jenkins is the automation engine that ties Git, Maven and SonarQube together into continuous integration. You set up your first jobs and learn how to trigger builds automatically — polling for changes or running on a schedule — so code is built and tested the moment it lands.",
     topics:["Introduction to Jenkins","Continuous Integration with Jenkins","Configure Jenkins","Jenkins Management","Scheduling Build Jobs: POLL SCM","Build Periodically"]
   },
   {
     num:"13", cat:"CI/CD", name:"Jenkins Advanced",
     icon:"🔧", iconBg:"rgba(234,179,8,0.12)",
+    desc:"A single Jenkins server does not scale for long. This module shows how to distribute work across master and agent nodes, manage workspaces cleanly, and start securing the system — the steps that take Jenkins from a personal tool to a shared build platform.",
     topics:["Jenkins Master & Slave Node Configuration","Jenkins Workspace Management","Securing Jenkins: Authentication"]
   },
   {
     num:"14", cat:"CI/CD", name:"Jenkins Security & Plugins",
     icon:"🔐", iconBg:"rgba(234,179,8,0.12)",
+    desc:"Jenkins is only as useful as the plugins it runs and only as safe as its access controls. Here you lock down who can do what with authorization and user management, then extend Jenkins with plugins to pull source and run builds and tests — turning it into a pipeline tailored to your stack.",
     topics:["Authorization","Confidentiality","Creating Users","Installing Jenkins Plugins","SCM Plugin","Build and Test"]
   },
   {
     num:"15", cat:"CI/CD", name:"Jenkins Integrations",
     icon:"🔗", iconBg:"rgba(234,179,8,0.12)",
+    desc:"This is where the whole toolchain comes together. You connect Jenkins to GitHub, Docker, SonarQube, JFrog, Trivy, Kubernetes, ArgoCD and AWS services, building an end-to-end pipeline that pulls code, scans it, packages it and deploys it — the practical payoff of every earlier module.",
     topics:["Jenkins with EC2","Jenkins with Lambda","Jenkins with S3","Jenkins with GitHub","Jenkins with Docker","Jenkins with JFrog","Jenkins with SonarQube","Jenkins with Kubernetes","Jenkins with Trivy","Jenkins with ArgoCD"]
   },
   {
     num:"16", cat:"CI/CD Pipelines", name:"GitLab CI/CD",
     icon:"🦊", iconBg:"rgba(249,115,22,0.12)",
+    desc:"Not every team runs Jenkins. GitLab bakes CI/CD right into the repository, and here you set up a full pipeline in a .gitlab-ci file so builds, tests and deploys run automatically on every push — a modern, config-as-code alternative to a standalone build server.",
     topics:["GitLab CI/CD Pipeline — Full Setup & Configuration"]
   },
   {
     num:"17", cat:"CI/CD Pipelines", name:"GitHub Actions",
     icon:"🐙", iconBg:"rgba(255,255,255,0.06)",
+    desc:"GitHub Actions lets you automate directly from where most code already lives. You write workflow files that react to events like pushes and pull requests, so testing and deployment happen automatically without any separate CI server to maintain.",
     topics:["GitHub Actions — Workflow Setup & Automation"]
   },
   {
     num:"18", cat:"Containerization", name:"Docker",
     icon:"🐳", iconBg:"rgba(6,182,212,0.12)",
+    desc:"Docker solves the it-works-on-my-machine problem by packaging an app with everything it needs into a portable image. This is a deep, hands-on module — you write Dockerfiles, run and network containers, use volumes for persistent data, and orchestrate a full-stack app with Docker Compose, ending with something you could ship anywhere.",
     topics:["Docker Introduction","What is a Docker Image","How to Get Docker Images","Docker Installation","Working with Docker Containers","Docker Engine","Creating Containers from Images","Docker CLI","Docker Compose","Docker Hub","Docker Networking","Multi-Stage and Single-Stage Dockerfiles","Docker Volumes","Full-Stack App Deployment with Docker Compose"]
   },
   {
     num:"19", cat:"Artifact Management", name:"JFrog",
     icon:"🐸", iconBg:"rgba(64,196,99,0.1)",
+    desc:"Builds produce artifacts, and those need a proper home. JFrog Artifactory gives you a versioned repository to store and share build outputs, and here you learn to push and pull them so your pipeline always deploys a known, traceable version rather than a freshly rebuilt one.",
     topics:["JFrog Installation","Storing Artifacts into JFrog Repo","Push and Pull Steps"]
   },
   {
     num:"20", cat:"Orchestration", name:"Kubernetes",
     icon:"☸️", iconBg:"rgba(6,182,212,0.12)",
+    desc:"Running one container is easy; running hundreds reliably is why Kubernetes exists. This module builds your mental map of the cluster — its control plane and worker architecture, RBAC, and the YAML that describes everything — and has you stand up a real cluster on EC2 so the abstractions are grounded in something you built.",
     topics:["Revisiting Kubernetes","Cluster Architecture","Spinning Up a Kubernetes Cluster on EC2 VMs","RBAC Process","Exploring Your Cluster","Understanding YAML"]
   },
   {
     num:"21", cat:"Orchestration", name:"Kubernetes Deployments",
     icon:"🚀", iconBg:"rgba(6,182,212,0.12)",
+    desc:"Now you actually run workloads. You write Deployments and Services, expose apps through Ingress, keep them healthy with probes, and let them scale automatically with the horizontal pod and cluster autoscalers — then roll out updates with zero downtime. This is day-to-day Kubernetes operation.",
     topics:["Creating a Deployment Using YAML","Creating a Service in Kubernetes","Installing Kubernetes Dashboard","Kubernetes Service Accounts","Pod Autoscaler (HPA)","Cluster Autoscaler","Ingress Controller","Kubernetes Probes","Deploying an App Using Dashboard","Rolling Updates in Kubernetes","Containers and Container Orchestration"]
   },
   {
     num:"22", cat:"Orchestration", name:"Kubernetes Advanced",
     icon:"🌐", iconBg:"rgba(6,182,212,0.12)",
+    desc:"The topics that separate a demo cluster from a production one. You package apps with Helm charts, handle persistent storage and scheduling, centralise logs with the EFK stack, and see how managed offerings like EKS, AKS and GKE take the cluster maintenance off your hands.",
     topics:["Helm Charts","Schedulers","Metric Server Deployment","Kubernetes Volumes","EKS / AKS / GKE Overview","EFK Stack","Helm Install & Deploy Application","K8s Logs View on EFK Stack"]
   },
   {
     num:"23", cat:"GitOps", name:"ArgoCD",
     icon:"🔄", iconBg:"rgba(249,115,22,0.12)",
+    desc:"GitOps flips deployment around — instead of pushing changes to a cluster, ArgoCD watches your Git repo and makes the cluster match what is declared there. You install and configure it to get continuous delivery where Git is the single source of truth and every change is auditable.",
     topics:["ArgoCD Installation","ArgoCD Configurations","Continuous Delivery with ArgoCD"]
   },
   {
     num:"24", cat:"Monitoring", name:"Continuous Monitoring with Grafana",
     icon:"📊", iconBg:"rgba(249,115,22,0.14)",
+    desc:"Once something is running, you need to see how it behaves. Here you pair Prometheus for collecting metrics with Grafana for visualising them, and wire the pair into Kubernetes so you get live dashboards of cluster and application health instead of finding out about problems from users.",
     topics:["Introduction to Continuous Monitoring","Introduction to Grafana","Installing Grafana","Grafana Prometheus and Objects","Grafana Prometheus Configuration to Kubernetes"]
   },
   {
     num:"25", cat:"Configuration Management", name:"Ansible Introduction",
     icon:"🤖", iconBg:"rgba(239,68,68,0.1)",
+    desc:"Configuring servers by hand does not scale and drifts over time. Ansible fixes that by letting you describe the desired state of a machine and enforce it automatically over SSH. This module sets up the control node and its connection to the servers it will manage.",
     topics:["Introduction to Ansible","Ansible Server Configuration","Infrastructure Management","SSH Connection in Ansible Master"]
   },
   {
     num:"26", cat:"Configuration Management", name:"Ansible Inventory & Commands",
     icon:"📋", iconBg:"rgba(239,68,68,0.1)",
+    desc:"Ansible needs to know which machines it manages and how to group them. You learn to build inventories with hosts, groups and variables, and run ad-hoc commands to push quick changes across many servers at once — the fast path before you graduate to full playbooks.",
     topics:["YAML Scripts","Host Inventory: Hosts and Groups","Host Variables","Group Variables","Host and Group Specific Data","Ad-hoc Commands"]
   },
   {
     num:"27", cat:"Configuration Management", name:"Ansible Playbooks",
     icon:"📝", iconBg:"rgba(239,68,68,0.1)",
+    desc:"Playbooks are where Ansible becomes real automation. You write reusable YAML that combines variables, conditionals, loops, templates and handlers, then organise it into roles — turning a pile of one-off commands into a documented, repeatable way to provision entire environments.",
     topics:["Playbooks","Variables","Conditionals","Loops","Blocks","Handlers","Templates","Core Modules","Extra Modules","Ansible Roles"]
   },
   {
     num:"28", cat:"Infrastructure as Code", name:"Terraform Introduction",
     icon:"🔧", iconBg:"rgba(123,66,188,0.12)",
+    desc:"Terraform lets you define cloud infrastructure in code instead of clicking through consoles. This module covers the core building blocks — providers, resources and basic syntax — and walks you through your first main.tf, so you can create real infrastructure from a file you can version and review.",
     topics:["Introduction to Terraform","Infrastructure Automation","Install Terraform","Providers","Resources","Basic Syntax","Exercise: Your First Script (main.tf)"]
   },
   {
     num:"29", cat:"Infrastructure as Code", name:"Terraform Basics",
     icon:"📦", iconBg:"rgba(123,66,188,0.12)",
+    desc:"With the syntax in hand, you learn the workflow that makes Terraform safe to use — plan, apply and destroy — and how to keep configs clean by splitting variables and outputs into their own files. You build a custom network and EC2 setup that you can reproduce with a single command.",
     topics:["Terraform Installation","Exploring Terraform Registry","Terraform Workflow Commands","Custom Network Creation and EC2","Terraform Console and Output","Terraform Variables & Outputs","EC2 User Data","Lab: Breaking Down main.tf into variables.tf, output.tf"]
   },
   {
     num:"30", cat:"Infrastructure as Code", name:"Terraform Modules",
     icon:"🗂️", iconBg:"rgba(123,66,188,0.12)",
+    desc:"Copy-pasting Terraform between projects gets messy fast. Modules let you package a piece of infrastructure once and reuse it everywhere, whether you write your own or pull them from the Terraform and Git registries. This module is about writing infrastructure that stays maintainable as it grows.",
     topics:["Introduction to Modules","Module Repositories","First Basic Module","Modules from Terraform Registry","Modules from Git Registry","Lab: Modules — The Root Module"]
   },
   {
     num:"31", cat:"Infrastructure as Code", name:"Terraform State & Advanced",
     icon:"💾", iconBg:"rgba(123,66,188,0.12)",
+    desc:"State is the heart of Terraform and the thing teams most often get wrong. You learn to store state remotely so a team can share it safely, pull in existing infrastructure with data sources, and provision across RDS, Lambda, S3 and IAM — the techniques that make Terraform usable beyond a solo demo.",
     topics:["Terraform State: Remote State","Data Sources","lifecycle_rules","Conditionals","Terraform with RDS, Lambda, S3 and IAM","Provisioners","Null Resources"]
   },
   {
     num:"32", cat:"Infrastructure as Code", name:"Terraform Troubleshooting & Best Practices",
     icon:"🛡️", iconBg:"rgba(123,66,188,0.12)",
+    desc:"The final Terraform module pulls everything into production-grade practice. You use loops, locals and conditionals to keep code DRY, follow best practices for structuring real projects, and provision heavier workloads like EKS, ECS and Fargate — the difference between scripts that work and scripts a team can trust.",
     topics:["Multi Providers","Multi-SG Rules with For Loop","Conditionals","Locals","Lab: Testing with Docker","Best Practices in Writing Terraform Scripts","Terraform Workflow","Terraform Projects","Other HashiCorp Tools","EKS with Terraform","ECS and Fargate with Terraform","New Features of Terraform"]
   },
   {
     num:"33", cat:"Infrastructure as Code", name:"OpenTofu",
     icon:"🟩", iconBg:"rgba(74,222,128,0.1)",
+    desc:"OpenTofu is the community-driven, open-source fork of Terraform, and it is increasingly relevant given licensing changes in the ecosystem. This module shows how it relates to Terraform and where it fits, so you can make an informed choice rather than being locked into one tool.",
     topics:["OpenTofu Overview — Open-Source Terraform Alternative"]
   },
   {
     num:"34", cat:"Scripting", name:"Python for DevOps",
     icon:"🐍", iconBg:"rgba(251,191,36,0.1)",
+    desc:"When shell scripts get too gnarly, Python takes over. This closing module gives you enough Python — data structures, I/O, objects and regular expressions — to write real automation, from parsing logs to calling cloud APIs, rounding out your toolkit as a well-equipped DevOps engineer.",
     topics:["Introduction to Python","Lists, Ranges & Tuples","Input and Output in Python","Python Object Oriented","Python Regular Expressions","Python Necessity in DevOps"]
   }
 ];
@@ -608,6 +671,7 @@ function render(filter) {
         </div>
         <div class="module-body">
           <div class="module-body-inner">
+            ${mod.desc ? `<p class="module-desc">${mod.desc}</p>` : ''}
             ${mod.topics.map(t=>`<div class="topic-item${isOpsCard?' ops-topic':''}"><div class="topic-dot${isOpsCard?' ops':''}"></div>${t}</div>`).join('')}
           </div>
         </div>

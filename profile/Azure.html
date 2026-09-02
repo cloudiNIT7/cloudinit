@@ -171,6 +171,19 @@ body::after {
   padding: 60px 60px 100px;
 }
 
+/* curriculum overview */
+.intro-wrap { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
+.intro-inner { max-width: 1100px; margin: 0 auto; padding: 56px 60px; }
+.intro-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 700;
+  color: var(--white); margin: 8px 0 20px; letter-spacing: -0.01em;
+}
+.intro-inner p { font-size: 15px; line-height: 1.85; color: #9a9080; max-width: 820px; margin-bottom: 16px; }
+.intro-inner p:last-child { margin-bottom: 0; }
+.intro-inner em { color: var(--azure-pale); font-style: italic; }
+@media (max-width: 768px) { .intro-inner { padding: 40px 20px; } }
+
 /* group headers */
 .group-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; margin-top: 48px; }
 .group-header:first-child { margin-top: 0; }
@@ -249,6 +262,13 @@ body::after {
 }
 .topic-item:hover { background: var(--azure-dim); border-color: rgba(0,137,214,0.25); color: var(--azure-pale); }
 .topic-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--azure); flex-shrink: 0; margin-top: 7px; }
+.module-desc {
+  grid-column: 1 / -1;
+  margin: 0 0 10px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--border-soft);
+  color: #b7a988; font-size: 13.5px; line-height: 1.75;
+}
 
 /* ─── SPECIAL BADGES for DevOps/AKS modules ─── */
 .badge-devops {
@@ -350,6 +370,16 @@ footer {
   </div>
 </section>
 
+<!-- CURRICULUM OVERVIEW (static, original) -->
+<section class="intro-wrap">
+  <div class="intro-inner">
+    <div class="overline">How to read this syllabus</div>
+    <h2 class="intro-title">A path from portal to pipeline</h2>
+    <p>A lot of Azure outlines read like a directory of service names with no thread connecting them. This one is ordered the way you would genuinely bring a workload to life on Microsoft Azure: you begin with the cloud and Linux fundamentals, spin up virtual machines, wrap them in a virtual network, attach storage and databases, secure everything through Entra ID and Defender, then move into serverless, containers with AKS, and automated delivery through Azure DevOps. Every module below expands into a short note on <em>why</em> it appears where it does and what you will have running by the time you finish it — not merely the topics listed inside.</p>
+    <p>The 24 modules span thirteen tracks. Newcomers should work straight down the list; if you already ship on Azure and only want to close specific gaps, use the filters above to jump to Networking, Security, CI/CD Pipelines or Infrastructure as Code. Each module is taught hands-on against a live subscription, and the sequence mirrors how real environments are assembled in NareshIT's project labs in Hyderabad, where the DevOps and container modules tie the whole curriculum together.</p>
+  </div>
+</section>
+
 <!-- MAIN -->
 <main class="main" id="mainContent"></main>
 
@@ -371,123 +401,147 @@ const modules = [
   {
     num: "01", cat: "Cloud Fundamentals", name: "Introduction to Cloud Computing",
     icon: "☁️", iconBg: "rgba(0,137,214,0.12)",
+    desc: "Before you provision anything, this module explains why organisations move to Azure in the first place — trading racks of owned hardware for on-demand, metered infrastructure — and the compromises that come with it. You finish able to talk fluently about IaaS, PaaS and SaaS and judge which model suits a given workload.",
     topics: ["Why Cloud Computing?","Benefits of Cloud Computing","Types of Cloud Computing","Cloud Service Models","Scaling in Cloud Computing","Cloud Computing Issues","Security in the Cloud","Cloud Costing Models"]
   },
   {
     num: "02", cat: "Cloud Fundamentals", name: "Virtualization",
     icon: "🖥️", iconBg: "rgba(0,137,214,0.12)",
+    desc: "Every Azure VM you launch later is a partition of a physical host handed out by a hypervisor. This module opens that layer up so nothing later feels like magic — you learn what a hypervisor does, how virtual machines share real hardware, and why virtualization is the bedrock the whole cloud stands on.",
     topics: ["What is Virtualization?","Virtualization and Cloud Computing","Types of Virtualizations","Virtualization Terminologies","Hypervisor Concepts","Benefits","Vendors"]
   },
   {
     num: "03", cat: "Linux Basics", name: "Linux",
     icon: "🐧", iconBg: "rgba(255,220,50,0.1)",
+    desc: "A large share of Azure workloads run on Linux, so the command line is a daily tool rather than an optional extra. This is a hands-on grounding in the skills you actually reach for — moving around the filesystem, fixing permissions, managing processes and services, and diagnosing network issues from the shell.",
     topics: ["All-Important Linux Commands","The Linux Filesystem","File Permissions","Process Management","User Account Management","Software Management","Networking in Linux"]
   },
   {
     num: "04", cat: "Compute Services", name: "Azure VM",
     icon: "⚡", iconBg: "rgba(0,137,214,0.12)",
+    desc: "Your first real server on Azure. You bring up both Windows and Linux virtual machines from scratch and learn what each option on the creation blade actually controls, so launching a VM becomes a deliberate decision rather than clicking through defaults.",
     topics: ["Azure VM Overview","Instance Launch (Windows and Linux OS)"]
   },
   {
     num: "05", cat: "Compute Services", name: "Azure VM Instance Management",
     icon: "⚙️", iconBg: "rgba(0,137,214,0.12)",
+    desc: "Creating a VM is the easy part; operating it safely and repeatably is the real craft. This module covers the ongoing work — sizing VMs for a workload, controlling access with key pairs and network security groups, and handling disks, snapshots and boot-time configuration.",
     topics: ["Instance Types","Key Pair Management","Security Groups & Firewalls","Storage and Snapshots","User Data and Metadata"]
   },
   {
     num: "06", cat: "Compute Services", name: "Azure Load Balancer",
     icon: "⚖️", iconBg: "rgba(0,137,214,0.12)",
+    desc: "A single VM is a single point of failure. Here you place a load balancer in front of your machines, spreading incoming traffic across a pool and configuring health checks so requests only ever reach instances that are actually healthy.",
     topics: ["Azure Load Balancers — Overview & Configuration"]
   },
   {
     num: "07", cat: "Compute Services", name: "Billing and Monitoring",
     icon: "📊", iconBg: "rgba(0,137,214,0.12)",
+    desc: "Cloud spend catches out anyone who is not watching it. This short module builds the habit early — reading Azure cost data, understanding what drives it, and setting alerts so a runaway resource surfaces long before the invoice arrives.",
     topics: ["Billing and Monitoring","Alarms"]
   },
   {
     num: "08", cat: "Compute Services", name: "Azure Auto Scaling",
     icon: "🔄", iconBg: "rgba(0,137,214,0.12)",
+    desc: "Demand rises and falls, so a fixed fleet either wastes money or falls over. Using Virtual Machine Scale Sets you configure Azure to add and remove instances automatically, and learn which scaling policies keep capacity tracking real load instead of guesswork.",
     topics: ["Auto Scaling","Scaling Types and Policies","Azure Auto-Scaling (VMSS)"]
   },
   {
     num: "09", cat: "Storage Services", name: "Azure Managed Disks / File Share",
     icon: "💾", iconBg: "rgba(52,168,83,0.1)",
+    desc: "Servers need somewhere to keep data. This module contrasts Managed Disks, which attach to one VM as block storage, with Azure File Share, which many machines can mount at once — so you choose the right storage for the job rather than defaulting to the familiar option.",
     topics: ["EBS Equivalent — Azure Managed Disks","EFS Equivalent — Azure File Share"]
   },
   {
     num: "10", cat: "Networking", name: "VNET",
     icon: "🌐", iconBg: "rgba(100,180,255,0.1)",
+    desc: "This is the networking module the rest of the course leans on. Starting from IP addressing and CIDR maths, you build your own Virtual Network with custom subnets — the private, isolated slice of Azure that all your resources actually live inside.",
     topics: ["Networking Basics","Public IPs & Private IPs","CIDR Range","Subnet Calculations","Creating Custom VNETs and Custom Subnets"]
   },
   {
     num: "11", cat: "Networking", name: "VNET Controls",
     icon: "🔀", iconBg: "rgba(100,180,255,0.1)",
+    desc: "Once you can build a network, you need to govern the traffic inside it. Here you apply Network Security Groups to filter access at the subnet and interface level, and use route tables and gateways to steer where packets are allowed to go.",
     topics: ["Network Security Groups (NSG / ACL Equivalent)","Route Tables & Gateways"]
   },
   {
     num: "12", cat: "Object Storage", name: "Blob Storage",
     icon: "🪣", iconBg: "rgba(52,168,83,0.1)",
+    desc: "Azure's default home for unstructured files. You learn how Blob Storage holds objects, how access tiers trade cost against retrieval speed, and how versioning and container permissions keep data both safe and reachable.",
     topics: ["What is Blob Storage?","Storage Classes (Tiers)","Versioning","Blob Container ACL and Permissions"]
   },
   {
     num: "13", cat: "Object Storage", name: "Blob Advanced",
     icon: "🗄️", iconBg: "rgba(52,168,83,0.1)",
+    desc: "Beyond the basics, Blob Storage becomes a real data platform. This module covers replication for durability, lifecycle rules that shift cold data to cheaper tiers on their own, encryption with Key Vault, static site hosting, and event triggers that set off downstream processing.",
     topics: ["Data Partition","Data Copying and Moving","Cross-Region/Same-Region Replication","Lifecycle Management","Security & Encryption","Azure Key Vault (KMS Equivalent)","Static Web Hosting with Blob Storage","Events Configuration on Blob Containers"]
   },
   {
     num: "14", cat: "Object Storage", name: "Blob Access",
     icon: "🔑", iconBg: "rgba(52,168,83,0.1)",
+    desc: "A focused look at something people routinely get wrong — granting another tenant or account access to your container safely, using scoped policies and shared access rather than accidentally exposing data to the public internet.",
     topics: ["Enabling Cross-Account Access for Blob Storage"]
   },
   {
     num: "15", cat: "Identity & Access", name: "Azure AD / Entra ID",
     icon: "🛡️", iconBg: "rgba(0,137,214,0.12)",
+    desc: "In Azure, identity is the true security boundary. You move beyond the owner account to set up users, groups and roles, enforce multi-factor authentication and password policies, and write least-privilege assignments through Entra ID — the line between a locked-down tenant and an incident waiting to happen.",
     topics: ["Root Account vs. User","Multi-Factor Authentication for Users","Password Policies","Keys Configuration and Access Approaches","User, Groups, and Role Concepts","Creating Managed Policies","Auditing User Activity"]
   },
   {
     num: "16", cat: "Databases", name: "Azure SQL Database",
     icon: "🗃️", iconBg: "rgba(167,139,250,0.1)",
+    desc: "Running a database on your own VM is a pile of undifferentiated maintenance. This module shows what managed Azure SQL takes off your hands compared with a self-hosted database, and introduces Azure Cache for Redis to keep hot data fast.",
     topics: ["Launching Azure SQL Instances","Difference: DB on VM vs Managed Azure SQL","Proxy Configuration Process","Azure Cache for Redis (ElastiCache Equivalent)"]
   },
   {
     num: "17", cat: "Databases", name: "Azure SQL Operations",
     icon: "🔍", iconBg: "rgba(167,139,250,0.1)",
+    desc: "The practical, day-to-day side of databases — connecting to Azure SQL both from an application VM and from a local workbench, building schemas and running queries, and offloading reads to replicas so a busy database stays responsive under load.",
     topics: ["Connection from Azure SQL to VM","Connection from Azure SQL to Local Machine (Workbench)","Creating DB and Tables, Running Queries","Configuring Read Replicas with Masters and Accessing Tables"]
   },
   {
     num: "18", cat: "Databases", name: "Cosmos DB & API Management",
     icon: "🌌", iconBg: "rgba(167,139,250,0.1)",
+    desc: "A shift from relational tables to globally distributed NoSQL. You model data in Cosmos DB, secure it, and wire it to Azure Functions behind API Management — ending in a project that stands up a complete serverless API from front door to database.",
     topics: ["Cosmos DB Overview","Cosmos DB Security Options","Cosmos DB Integration to Azure Functions","Azure Functions and API Management","Project: Azure Functions + API Management + Cosmos DB"]
   },
   {
     num: "19", cat: "Security Services", name: "Azure Security Tools",
     icon: "🔒", iconBg: "rgba(255,100,100,0.1)",
+    desc: "A tour of the services that harden a production subscription — secret storage with Key Vault, posture and threat detection through Defender for Cloud, edge protection with Front Door, CDN, DDoS Protection and WAF, plus audit and governance via Azure Monitor and Policy. This is the toolkit that turns a working environment into a defensible one.",
     topics: ["Azure Key Vault","Microsoft Defender for Cloud (Inspector Equivalent)","Azure Advisor (Trusted Advisor Equivalent)","Azure Front Door (Global Accelerator Equivalent)","Azure CDN","Azure DDoS Protection and WAF","Azure Monitor Logs","Azure Policy"]
   },
   {
     num: "20", cat: "Serverless", name: "Azure App Service / Functions",
     icon: "λ", iconBg: "rgba(0,137,214,0.12)",
+    desc: "Running code without managing a server underneath it. You deploy web apps on App Service and event-driven code with Azure Functions, wire them to other services, and set up the environment configuration that keeps deployments clean — the entry point into serverless on Azure.",
     topics: ["Overview of Azure App Services","Configuration with Different Services","Creation and Automation Using Azure Functions","General Configuration and Environment Setup","Layers Equivalent and Importance"]
   },
   {
     num: "21", cat: "Serverless", name: "Azure App Service Integrations",
     icon: "🔗", iconBg: "rgba(0,137,214,0.12)",
+    desc: "Where serverless meets the rest of your stack. You connect Azure Functions to Azure SQL, Cosmos DB and API Management, and learn their real limits so you design around the constraints instead of discovering them in production.",
     topics: ["Azure Functions Limitations","Azure Functions to Azure SQL Connection","Azure Functions to Cosmos DB and API Management Connection"]
   },
   {
     num: "22", cat: "CI/CD Pipelines", name: "Azure DevOps",
     icon: "🚀", iconBg: "rgba(0,200,150,0.1)",
     badge: "DevOps",
+    desc: "This is where manual deployment gives way to automation. You build end-to-end CI/CD pipelines in Azure DevOps that build, test and release your application on every commit, so shipping becomes repeatable and hands-off rather than a nerve-wracking manual ritual.",
     topics: ["Azure CI/CD Pipelines — Full Configuration & Integration"]
   },
   {
     num: "23", cat: "Orchestration", name: "AKS (Azure Kubernetes Service)",
     icon: "☸️", iconBg: "rgba(50,108,229,0.1)",
     badge: "DevOps",
+    desc: "Containers need something to schedule and heal them at scale, and that job belongs to Kubernetes. Here you stand up a managed AKS cluster and deploy a workload onto it, learning how Azure runs the control plane so you can focus on your containers rather than the plumbing.",
     topics: ["AKS Overview and Deployment"]
   },
   {
     num: "24", cat: "Infrastructure as Code", name: "Terraform with Azure",
     icon: "🔧", iconBg: "rgba(123,66,188,0.1)",
+    desc: "Clicking through the portal does not scale or repeat reliably. This closing module introduces infrastructure as code with Terraform — describing your Azure resources in version-controlled files you can review and reproduce, so an entire environment can be rebuilt from a single command.",
     topics: ["Terraform with Azure — Full Configuration and Automation"]
   }
 ];
@@ -541,6 +595,7 @@ function render(filter) {
         </div>
         <div class="module-body">
           <div class="module-body-inner">
+            ${mod.desc ? `<p class="module-desc">${mod.desc}</p>` : ''}
             ${mod.topics.map(t => `<div class="topic-item"><div class="topic-dot"></div>${t}</div>`).join('')}
           </div>
         </div>
