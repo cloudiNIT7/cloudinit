@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Cloud iNIT button system — every animated variant, effect and state in one place."/>
+<link rel="icon" type="image/png" href="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" />
+<title>Button system — Cloud iNIT</title>
+
+<!-- internal reference page: kept out of the index -->
+<meta name="robots" content="noindex,follow"/>
+<meta name="author" content="Abinash Kumar"/>
+<meta name="theme-color" content="#faf3e3"/>
+<link rel="manifest" href="/site.webmanifest"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="buttons.css"/>
+
+<style>
+  /* page-local layout for the specimen grid */
+  .spec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(276px,1fr));gap:16px;margin-top:26px}
+  .spec{padding:26px 22px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--panel);
+        display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-height:172px}
+  .spec-name{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ok);font-weight:600}
+  .spec-desc{font-size:13px;color:var(--g2);line-height:1.55;margin-top:auto}
+  .spec code{font-family:var(--mono);font-size:11.5px;background:rgba(0,0,0,.05);padding:2px 6px;border-radius:4px;color:var(--g1)}
+  .spec-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+</style>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div id="prog" aria-hidden="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<div class="site-orbs" aria-hidden="true">
+  <span class="site-orb site-orb-a"></span>
+  <span class="site-orb site-orb-b"></span>
+  <span class="site-orb site-orb-c"></span>
+</div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+    <span>cloud<em>init</em></span>
+  </a>
+  <div class="nav-end">
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">home</a>
+    <a href="why.html">why</a>
+    <a href="stages.html">stages</a>
+    <a href="status.html">status</a>
+    <a href="download.html">download</a>
+    <a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">api</a>
+    <a href="https://test.cloudinit.online" target="_blank" rel="noopener">test</a>
+    <a href="/profile/">profile</a>
+    <button type="button" class="nav-cta" data-fx="shimmer magnetic ripple glow confetti" data-toast="On the roadmap — iOS and Android builds are compiling." data-toast-ms="3500">get the app</button>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  </div>
+</nav>
+<div class="nav-scrim" id="navScrim"></div>
+
+<header class="page-head section">
+  <div class="breadcrumb"><a href="index.html">cloudinit</a><span>/</span><em>buttons</em></div>
+  <div class="mono-tag mono-tag--ok" style="margin-bottom:18px">UI — BUTTON SYSTEM</div>
+  <h1>Every button, <em>one contract</em></h1>
+  <p>Effects are opt-in through a single <code>data-fx</code> attribute and compose freely — <code>data-fx="shimmer magnetic ripple"</code> stacks all three. Transform ownership is split across three layers so no two effects ever write the same property. Everything below degrades to a plain, usable button without JavaScript, and drops decorative motion entirely under <code>prefers-reduced-motion</code>.</p>
+</header>
+
+<section class="section" style="padding-top:0">
+  <div class="eyebrow">variants</div>
+  <div class="spec-grid">
+
+    <div class="spec">
+      <span class="spec-name">primary</span>
+      <a href="#" class="btn btn--primary" data-fx="shimmer ripple glow">
+        <span class="btn__inner"><span class="btn__label">Download</span></span>
+      </a>
+      <p class="spec-desc">Solid accent fill. The default page CTA.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">ghost</span>
+      <a href="#" class="btn btn--ghost" data-fx="scanline ripple glow">
+        <span class="btn__inner"><span class="btn__label">Read the log</span></span>
+      </a>
+      <p class="spec-desc">Glass fill with a hairline border, for secondary actions.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">sizes</span>
+      <div class="spec-row">
+        <a href="#" class="btn btn--primary btn--sm" data-fx="shimmer ripple"><span class="btn__inner"><span class="btn__label">Small</span></span></a>
+        <a href="#" class="btn btn--primary" data-fx="shimmer ripple"><span class="btn__inner"><span class="btn__label">Base</span></span></a>
+        <a href="#" class="btn btn--primary btn--lg" data-fx="shimmer ripple"><span class="btn__inner"><span class="btn__label">Large</span></span></a>
+      </div>
+      <p class="spec-desc"><code>.btn--sm</code> · <code>.btn--lg</code> · <code>.btn--block</code></p>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="eyebrow">css effects — no javascript</div>
+  <div class="spec-grid">
+
+    <div class="spec">
+      <span class="spec-name">shimmer</span>
+      <a href="#" class="btn btn--primary" data-fx="shimmer"><span class="btn__inner"><span class="btn__label">Hover me</span></span></a>
+      <p class="spec-desc">A light band sweeps the face on hover. GPU transform only.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">scanline</span>
+      <a href="#" class="btn btn--ghost" data-fx="scanline"><span class="btn__inner"><span class="btn__label">Hover me</span></span></a>
+      <p class="spec-desc">A CRT line wipes downward — the terminal-flavoured shimmer.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">fill</span>
+      <a href="#" class="btn" data-fx="fill"><span class="btn__inner"><span class="btn__label">Hover me</span></span></a>
+      <p class="spec-desc">Outline button whose background wipes up from the baseline, inverting the label.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">gradient</span>
+      <a href="#" class="btn" data-fx="gradient"><span class="btn__inner"><span class="btn__label">Hover me</span></span></a>
+      <p class="spec-desc">Conic gradient rotates behind a masked 1px frame via <code>@property</code>.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">slide</span>
+      <a href="#" class="btn btn--ghost" data-fx="slide">
+        <span class="btn__inner"><span class="btn__label">Continue</span><span class="btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m0 0l-5.5-5.5M19 12l-5.5 5.5"/></svg></span></span>
+      </a>
+      <p class="spec-desc">Trailing icons nudge forward, leading icons nudge back.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">pulse</span>
+      <a href="#" class="btn btn--primary" data-fx="pulse"><span class="btn__inner"><span class="btn__label">Start free</span></span></a>
+      <p class="spec-desc">Expanding attention ring. One per page, maximum.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="eyebrow">gsap effects</div>
+  <div class="spec-grid">
+
+    <div class="spec">
+      <span class="spec-name">magnetic</span>
+      <a href="#" class="btn btn--primary" data-fx="magnetic glow"><span class="btn__inner"><span class="btn__label">Pull me</span></span></a>
+      <p class="spec-desc">Cursor drags the shell, capped so it never leaves its hit area. Releases on an elastic ease. Tune with <code>data-pull</code>.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">tilt</span>
+      <a href="#" class="btn btn--ghost" data-fx="tilt glow"><span class="btn__inner"><span class="btn__label">Tilt me</span></span></a>
+      <p class="spec-desc">3D rotation toward the cursor in perspective. Tune with <code>data-tilt</code>.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">letters</span>
+      <a href="#" class="btn btn--primary" data-fx="letters shimmer"><span class="btn__inner"><span class="btn__label">Staggered</span></span></a>
+      <p class="spec-desc">Per-character lift on a stagger. Keeps an <code>aria-label</code> so the label isn't read letter by letter.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">ripple</span>
+      <a href="#" class="btn btn--primary" data-fx="ripple"><span class="btn__inner"><span class="btn__label">Click me</span></span></a>
+      <p class="spec-desc">Expands from the exact pointer coordinate, sized to reach the furthest corner.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">glow + halo</span>
+      <a href="#" class="btn btn--primary" data-fx="glow halo magnetic"><span class="btn__inner"><span class="btn__label">Bloom</span></span></a>
+      <p class="spec-desc">Inner highlight tracks the cursor; an outer blurred bloom fades in behind.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">confetti</span>
+      <button type="button" class="btn btn--primary" data-fx="confetti ripple shimmer"><span class="btn__inner"><span class="btn__label">Celebrate</span></span></button>
+      <p class="spec-desc">Particle burst on click, driven by a GSAP timeline. Self-cleans every node.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="eyebrow">async states</div>
+  <div class="spec-grid">
+
+    <div class="spec">
+      <span class="spec-name">loading → done</span>
+      <button type="button" id="demoAsync" class="btn btn--primary" data-async data-fx="shimmer ripple">
+        <span class="btn__inner"><span class="btn__label">Deploy stage 5</span></span>
+      </button>
+      <p class="spec-desc">Driven by the public API: <code>CloudBtn.setLoading(el)</code> then <code>CloudBtn.setDone(el,{confetti:true})</code>. Sets <code>aria-busy</code> and keeps the button width fixed so nothing reflows.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">disabled</span>
+      <button type="button" class="btn btn--primary" disabled><span class="btn__inner"><span class="btn__label">Unavailable</span></span></button>
+      <p class="spec-desc"><code>disabled</code> or <code>aria-disabled</code> drops pointer events and all effects.</p>
+    </div>
+
+    <div class="spec">
+      <span class="spec-name">lottie icon</span>
+      <button type="button" class="btn btn--ghost" data-fx="lottie slide" data-lottie="https://assets10.lottiefiles.com/packages/lf20_x62chJ.json">
+        <span class="btn__inner"><span class="btn__label">Animated icon</span></span>
+      </button>
+      <p class="spec-desc">Plays a Lottie JSON on hover. <code>lottie-web</code> is fetched only when a page actually uses it, and the slot is removed if the CDN fails.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-bottom">
+    <p class="footer-credit">cloudinit boots clean, every time. — developed by Abinash Kumar</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="script.js" defer></script>
+<script src="buttons.js" defer></script>
+<script defer>
+  window.addEventListener('load', () => {
+    const b = document.getElementById('demoAsync');
+    if (!b) return;
+    b.addEventListener('click', () => {
+      if (b.dataset.loading === 'true') return;
+      CloudBtn.setLoading(b, true);
+      setTimeout(() => CloudBtn.setDone(b, { confetti: true }), 1500);
+    });
+  });
+</script>
+</body>
+</html>

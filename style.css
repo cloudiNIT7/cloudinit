@@ -619,4 +619,16 @@ body.is-scrolling .cursor-glow{opacity:0}
     animation-iteration-count:1 !important;
     transition-duration:.001ms !important;
   }
+  /* these two only become visible when ScrollTrigger adds .show — with
+     transitions neutralised above they must not be left at opacity:0 */
+  .stage-card,.dl-card{opacity:1;transform:none}
 }
+
+/* GSAP/ScrollTrigger unavailable (blocked CDN, offline, script error).
+   script.js sets .no-motion on <html> instead of throwing. Stage and download
+   cards are hidden at rest waiting for .show, so reveal them unconditionally —
+   otherwise a failed CDN request silently blanks those sections. */
+.no-motion .stage-card,
+.no-motion .dl-card{opacity:1;transform:none}
+.no-motion .cursor-glow,
+.no-motion .hero-orb{display:none}

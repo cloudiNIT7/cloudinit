@@ -2,6 +2,110 @@
    Cloud iNIT — behavior
    ========================================================================== */
 
+/* ---------- GSAP / ScrollTrigger fallback shim ----------------------------
+   Animation libraries load from a third-party CDN, so they can be blocked by a
+   network filter, an ad blocker, or a plain outage. Several things below are not
+   decorative — the download-card filter and the platform detector both do real
+   work inside gsap callbacks — so a missing library used to throw on the first
+   bare `gsap.` call and kill every feature after it.
+
+   Rather than guarding each call site, install a shim that keeps the same API
+   and jumps straight to the end state:
+     · tweens apply their final values immediately, then fire onComplete
+     · gsap.from() is a no-op (its end state IS the element's natural state)
+     · ScrollTrigger fires onEnter at once, so scroll-revealed content appears
+   Result: no animation, but nothing is broken or invisible. */
+(() => {
+  if (typeof window.gsap !== 'undefined') return;
+  document.documentElement.classList.add('no-motion');
+
+  const list = t => typeof t === 'string' ? [...document.querySelectorAll(t)]
+    : (t == null ? [] : (t.length !== undefined && !t.nodeType ? [...t] : [t]));
+
+  const NUM_PX = { x: 1, y: 1 };                      // need a px unit
+  const NUM_DEG = { rotate: 1, rotation: 1, rotateX: 1, rotateY: 1, rotationX: 1, rotationY: 1 };
+  const SKIP = {
+    duration: 1, delay: 1, ease: 1, stagger: 1, overwrite: 1, clearProps: 1,
+    onComplete: 1, onStart: 1, onUpdate: 1, repeat: 1, yoyo: 1, paused: 1,
+    transformPerspective: 1, transformStyle: 1, defaults: 1, immediateRender: 1
+  };
+
+  /* write a tween's end values straight to inline style */
+  function applyEnd(targets, vars) {
+    if (!vars) return;
+    const tf = [];
+    for (const k in vars) {
+      if (SKIP[k]) continue;
+      const v = vars[k];
+      if (typeof v === 'function' || typeof v === 'object') continue;
+      if (k === 'opacity') continue;                  // handled below
+      if (NUM_PX[k]) tf.push(`translate${k.toUpperCase()}(${typeof v === 'number' ? v + 'px' : v})`);
+      else if (k === 'xPercent') tf.push(`translateX(${v}%)`);
+      else if (k === 'yPercent') tf.push(`translateY(${v}%)`);
+      else if (k === 'scale') tf.push(`scale(${v})`);
+      else if (NUM_DEG[k]) {
+        const axis = /X$/.test(k) ? 'X' : /Y$/.test(k) ? 'Y' : 'Z';
+        tf.push(`rotate${axis}(${typeof v === 'number' ? v + 'deg' : v})`);
+      }
+    }
+    list(targets).forEach(el => {
+      if (!el || !el.style) return;
+      if ('opacity' in vars && typeof vars.opacity === 'number') el.style.opacity = vars.opacity;
+      if (tf.length) el.style.transform = tf.join(' ');
+      if (vars.clearProps) el.style.transform = '';
+    });
+  }
+
+  /* fire callbacks asynchronously so behaviour matches the real library */
+  const fire = vars => {
+    if (!vars) return;
+    if (typeof vars.onStart === 'function') { try { vars.onStart(); } catch (e) {} }
+    if (typeof vars.onComplete === 'function') setTimeout(() => { try { vars.onComplete(); } catch (e) {} }, 0);
+  };
+
+  const tween = (targets, vars) => { applyEnd(targets, vars); fire(vars); return chain; };
+
+  /* chainable stand-in for both tweens and timelines */
+  const chain = {
+    to: (t, v) => tween(t, v),
+    from: (t, v) => { fire(v); return chain; },
+    fromTo: (t, f, v) => tween(t, v),
+    set: (t, v) => { applyEnd(t, v); return chain; },
+    add: () => chain, call: fn => { if (typeof fn === 'function') setTimeout(fn, 0); return chain; },
+    play: () => chain, pause: () => chain, kill: () => chain,
+    progress: () => chain, seek: () => chain, restart: () => chain, eventCallback: () => chain
+  };
+
+  window.gsap = {
+    __shim: true,
+    to: tween,
+    from: (t, v) => { fire(v); return chain; },
+    fromTo: (t, f, v) => tween(t, v),
+    set: (t, v) => { applyEnd(t, v); return chain; },
+    timeline: () => chain,
+    registerPlugin() {},
+    /* quickTo returns a setter that positions instantly */
+    quickTo: (target, prop) => val => applyEnd(target, { [prop]: val }),
+    utils: {
+      toArray: list,
+      clamp: (lo, hi, v) => Math.min(Math.max(v, lo), hi),
+      random: (a, b) => a + Math.random() * (b - a)
+    }
+  };
+
+  if (typeof window.ScrollTrigger === 'undefined') {
+    window.ScrollTrigger = {
+      __shim: true,
+      /* reveal immediately — never leave scroll-gated content hidden */
+      create(v) {
+        if (v && typeof v.onEnter === 'function') setTimeout(() => { try { v.onEnter(); } catch (e) {} }, 0);
+        return { kill() {}, refresh() {} };
+      },
+      refresh() {}, update() {}, getAll: () => [], killAll() {}
+    };
+  }
+})();
+
 /* ---------- service worker (PWA + offline page) ---------- */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -629,25 +733,13 @@ gsap.from('footer > *', {
   opacity: 0, y: 18, duration: .6, stagger: .08, ease: 'power3.out'
 });
 
-/* micro-interactions */
-document.querySelectorAll('.btn-primary, .btn-ghost, .nav-cta').forEach(btn => {
-  btn.addEventListener('mouseenter', () => gsap.to(btn, { scale: 1.04, y: -3, duration: .35, ease: 'power3.out' }));
-  btn.addEventListener('mouseleave', () => gsap.to(btn, { scale: 1, y: 0, duration: .4, ease: 'power3.out' }));
-});
+/* micro-interactions
+   Button, icon-button and magnetic behaviour moved to buttons.js — it owns the
+   layered transform model so hover-lift and magnetic-pull no longer both write
+   `y` on the same element. */
 document.querySelectorAll('.dl-card').forEach(card => {
   card.addEventListener('mouseenter', () => gsap.to(card, { y: -6, duration: .45, ease: 'power3.out' }));
   card.addEventListener('mouseleave', () => gsap.to(card, { y: 0, duration: .45, ease: 'power3.out' }));
-});
-document.querySelectorAll('.icon-btn').forEach(btn => {
-  const tip = btn.querySelector('.icon-tip');
-  btn.addEventListener('mouseenter', () => {
-    gsap.to(btn, { scale: 1.08, y: -2, duration: .35, ease: 'back.out(2)' });
-    gsap.to(tip, { opacity: 1, y: 0, duration: .3, ease: 'power3.out' });
-  });
-  btn.addEventListener('mouseleave', () => {
-    gsap.to(btn, { scale: 1, y: 0, duration: .35, ease: 'power3.out' });
-    gsap.to(tip, { opacity: 0, y: 6, duration: .25, ease: 'power2.in' });
-  });
 });
 
 /* profile button — entrance pop + click ripple */
@@ -680,21 +772,7 @@ document.querySelectorAll('.glass-shine').forEach(el => {
   }, { passive: true });
 });
 
-/* magnetic pull */
-if (matchMedia('(pointer:fine)').matches) {
-  document.querySelectorAll('.magnetic').forEach(el => {
-    const strength = el.classList.contains('icon-btn') ? .5 : .3;
-    el.addEventListener('mousemove', e => {
-      const r = el.getBoundingClientRect();
-      const relX = e.clientX - (r.left + r.width / 2);
-      const relY = e.clientY - (r.top + r.height / 2);
-      gsap.to(el, { x: relX * strength, y: relY * strength, duration: .4, ease: 'power3.out' });
-    }, { passive: true });
-    el.addEventListener('mouseleave', () => {
-      gsap.to(el, { x: 0, y: 0, duration: .6, ease: 'elastic.out(1,.4)' });
-    });
-  });
-}
+/* magnetic pull — see buttons.js (opt in with data-fx="magnetic") */
 
 /* hero parallax orbs */
 if (matchMedia('(pointer:fine)').matches) {

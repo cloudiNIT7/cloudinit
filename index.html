@@ -32,6 +32,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 
 <link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="buttons.css"/>
 </head>
 <body>
 
@@ -60,7 +61,7 @@
     <a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">api</a>
     <a href="https://test.cloudinit.online" target="_blank" rel="noopener">test</a>
     <a href="/profile/">profile</a>
-    <button type="button" class="nav-cta" data-toast="On the roadmap — iOS and Android builds are compiling." data-toast-ms="3500">get the app</button>
+    <button type="button" class="nav-cta" data-fx="shimmer magnetic ripple glow confetti" data-toast="On the roadmap — iOS and Android builds are compiling." data-toast-ms="3500">get the app</button>
   </div>
   <div class="nav-right">
     <button type="button" class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
@@ -84,8 +85,22 @@
       <p class="hero-tag">Every infrastructure starts with a boot sequence.<br class="br-desktop"/> This is ours.</p>
 
       <div class="hero-btns">
-        <a href="download.html" class="btn-primary magnetic">Download Cloud iNIT</a>
-        <a href="stages.html" class="btn-ghost magnetic">Read the boot log</a>
+        <a href="download.html" class="btn btn--primary btn--lg" data-fx="shimmer magnetic ripple glow halo letters">
+          <span class="btn__inner">
+            <span class="btn__label">Download Cloud iNIT</span>
+            <span class="btn__ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19h16"/></svg>
+            </span>
+          </span>
+        </a>
+        <a href="stages.html" class="btn btn--ghost btn--lg" data-fx="scanline magnetic ripple glow slide">
+          <span class="btn__inner">
+            <span class="btn__label">Read the boot log</span>
+            <span class="btn__ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m0 0l-5.5-5.5M19 12l-5.5 5.5"/></svg>
+            </span>
+          </span>
+        </a>
       </div>
 
       <div class="hero-pills">
@@ -288,6 +303,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="script.js" defer></script>
+<script src="buttons.js" defer></script>
 
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"22188c7db1bf43e28939ffcdafe1a591","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>

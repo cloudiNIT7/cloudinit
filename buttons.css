@@ -1,0 +1,402 @@
+/* ==========================================================================
+   Cloud iNIT — advanced button system
+   Layered transform model, so effects never fight each other:
+
+     .btn            → outer.  owned by JS (magnetic pull / tilt)
+     .btn__inner     → middle. owned by CSS (:hover lift + scale)
+     .btn__label     → inner.  owned by GSAP (per-letter stagger)
+
+   Opt in per button with data-fx="shimmer magnetic ripple".
+   Every effect degrades to a plain, fully usable button without JS,
+   and collapses to a simple colour change under prefers-reduced-motion.
+   ========================================================================== */
+
+:root{
+  --btn-ease:cubic-bezier(.22,1,.36,1);
+  --btn-ease-back:cubic-bezier(.34,1.56,.64,1);
+  --btn-dur:.34s;
+  --btn-r:10px;
+  --btn-glow:rgba(184,145,43,.42);
+}
+
+/* ============================= BASE ============================= */
+.btn{
+  position:relative;
+  display:inline-block;
+  border:none;
+  padding:0;
+  background:none;
+  text-decoration:none;
+  font-family:var(--mono);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  will-change:transform;
+}
+
+.btn__inner{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:14px 28px;
+  border-radius:var(--btn-r);
+  font-size:14px;
+  font-weight:700;
+  line-height:1.2;
+  white-space:nowrap;
+  overflow:hidden;          /* clips shimmer / ripple / fill layers */
+  isolation:isolate;        /* keeps ::before/::after under the label */
+  transition:transform var(--btn-dur) var(--btn-ease),
+             background-color var(--btn-dur) var(--btn-ease),
+             border-color var(--btn-dur) var(--btn-ease),
+             box-shadow var(--btn-dur) var(--btn-ease),
+             color var(--btn-dur) var(--btn-ease);
+}
+
+.btn__label{position:relative;z-index:3;display:inline-block}
+.btn__ico{position:relative;z-index:3;display:inline-flex;flex:0 0 auto;align-items:center}
+.btn__ico svg{width:15px;height:15px;display:block}
+
+.btn:hover .btn__inner{transform:translateY(-3px) scale(1.035)}
+.btn:active .btn__inner{transform:translateY(-1px) scale(.985);transition-duration:.09s}
+
+/* keyboard focus — visible ring that never relies on motion */
+.btn:focus-visible{outline:none}
+.btn:focus-visible .btn__inner{
+  outline:2px solid var(--ok);
+  outline-offset:3px;
+  box-shadow:0 0 0 6px var(--ok-dim);
+}
+
+/* ============================= VARIANTS ============================= */
+.btn--primary .btn__inner{
+  background:var(--ok);
+  color:var(--ok-ink);
+  box-shadow:0 1px 2px rgba(0,0,0,.16);
+}
+.btn--primary:hover .btn__inner{
+  background:var(--ok-bright);
+  box-shadow:0 1px 2px rgba(0,0,0,.18),0 14px 30px rgba(0,0,0,.17);
+}
+
+.btn--ghost .btn__inner{
+  background:var(--glass-fill);
+  backdrop-filter:blur(16px);
+  color:var(--white);
+  font-weight:600;
+  border:1px solid var(--glass-border);
+}
+.btn--ghost:hover .btn__inner{
+  background:var(--glass-fill-2);
+  border-color:var(--glass-highlight);
+}
+
+.btn--sm .btn__inner{padding:10px 18px;font-size:12.5px}
+.btn--lg .btn__inner{padding:17px 36px;font-size:15.5px}
+.btn--block{display:block;width:100%}
+.btn--block .btn__inner{width:100%}
+
+/* disabled / busy — both stop pointer effects */
+.btn[disabled],.btn[aria-disabled="true"]{pointer-events:none;opacity:.5}
+.btn[data-loading="true"]{pointer-events:none}
+
+/* ============================= FX: SHIMMER =============================
+   Light sweep across the face on hover. Pure CSS, GPU transform only. */
+.btn[data-fx~="shimmer"] .btn__inner::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;
+  width:60%;height:100%;
+  z-index:1;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.42),transparent);
+  transform:translate3d(-180%,0,0) skewX(-18deg);
+  opacity:0;
+}
+.btn[data-fx~="shimmer"]:hover .btn__inner::before{
+  opacity:1;
+  animation:btn-shimmer .78s var(--btn-ease);
+}
+@keyframes btn-shimmer{
+  from{transform:translate3d(-180%,0,0) skewX(-18deg)}
+  to{transform:translate3d(280%,0,0) skewX(-18deg)}
+}
+/* ghost buttons sit on a light background — darken the sweep instead */
+.btn--ghost[data-fx~="shimmer"] .btn__inner::before{
+  background:linear-gradient(100deg,transparent,rgba(0,0,0,.10),transparent);
+}
+
+/* ============================= FX: SCANLINE =============================
+   Terminal-flavoured alternative to shimmer: a CRT line wipes downward. */
+.btn[data-fx~="scanline"] .btn__inner::before{
+  content:'';
+  position:absolute;
+  left:0;right:0;top:0;
+  height:2px;
+  z-index:1;
+  background:linear-gradient(90deg,transparent,var(--ok-ink),transparent);
+  opacity:0;
+  transform:translate3d(0,-4px,0);
+}
+.btn[data-fx~="scanline"]:hover .btn__inner::before{
+  animation:btn-scan .9s linear;
+}
+@keyframes btn-scan{
+  0%{opacity:0;transform:translate3d(0,0,0)}
+  12%{opacity:.85}
+  88%{opacity:.85}
+  100%{opacity:0;transform:translate3d(0,44px,0)}
+}
+.btn--ghost[data-fx~="scanline"] .btn__inner::before{
+  background:linear-gradient(90deg,transparent,var(--ok),transparent);
+}
+
+/* ============================= FX: FILL =============================
+   Background wipes up from the baseline; label inverts as it passes. */
+.btn[data-fx~="fill"] .btn__inner{background:transparent;border:1px solid var(--ok);color:var(--ok)}
+.btn[data-fx~="fill"] .btn__inner::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:var(--ok);
+  transform:scaleY(0);
+  transform-origin:bottom;
+  transition:transform .42s var(--btn-ease);
+}
+.btn[data-fx~="fill"]:hover .btn__inner{color:var(--ok-ink);border-color:var(--ok)}
+.btn[data-fx~="fill"]:hover .btn__inner::after{transform:scaleY(1)}
+
+/* ============================= FX: GRADIENT BORDER =============================
+   Conic gradient rotates behind a masked 1px frame. */
+.btn[data-fx~="gradient"] .btn__inner{
+  background:var(--bg);
+  color:var(--white);
+  border:1px solid transparent;
+}
+.btn[data-fx~="gradient"]::before{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  border-radius:calc(var(--btn-r) + 1px);
+  z-index:0;
+  background:conic-gradient(from var(--btn-angle,0deg),var(--ok),transparent 25%,transparent 75%,var(--ok));
+  opacity:.55;
+  transition:opacity var(--btn-dur) var(--btn-ease);
+}
+.btn[data-fx~="gradient"]:hover::before{opacity:1}
+@supports (background:paint(x)) or (rotate:1deg){
+  .btn[data-fx~="gradient"]:hover::before{animation:btn-spin 2.6s linear infinite}
+}
+@property --btn-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes btn-spin{to{--btn-angle:360deg}}
+
+/* ============================= FX: RIPPLE =============================
+   JS sets --rx/--ry to the click point, then adds .is-rippling. */
+.btn__ripple{
+  position:absolute;
+  z-index:2;
+  top:var(--ry,50%);
+  left:var(--rx,50%);
+  width:var(--rs,120px);
+  height:var(--rs,120px);
+  margin:calc(var(--rs,120px) / -2) 0 0 calc(var(--rs,120px) / -2);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 68%);
+  pointer-events:none;
+  transform:scale(.18);
+  opacity:.9;
+  animation:btn-ripple .62s var(--btn-ease) forwards;
+}
+.btn--ghost .btn__ripple,.btn[data-fx~="fill"] .btn__ripple{
+  background:radial-gradient(circle,rgba(0,0,0,.22),rgba(0,0,0,0) 68%);
+}
+@keyframes btn-ripple{to{transform:scale(2.4);opacity:0}}
+
+/* ============================= FX: GLOW =============================
+   Radial highlight tracks the cursor across the face. */
+.btn[data-fx~="glow"] .btn__inner::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:1;
+  border-radius:inherit;
+  background:radial-gradient(circle 120px at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.30),transparent 62%);
+  opacity:0;
+  transition:opacity .35s var(--btn-ease);
+  pointer-events:none;
+}
+.btn[data-fx~="glow"]:hover .btn__inner::after{opacity:1}
+.btn--ghost[data-fx~="glow"] .btn__inner::after{
+  background:radial-gradient(circle 120px at var(--gx,50%) var(--gy,50%),rgba(0,0,0,.13),transparent 62%);
+}
+
+/* ============================= FX: HALO =============================
+   Soft outer bloom on hover — pairs well with magnetic. */
+.btn[data-fx~="halo"]::after{
+  content:'';
+  position:absolute;
+  inset:-2px;
+  border-radius:calc(var(--btn-r) + 3px);
+  z-index:-1;
+  background:var(--btn-glow);
+  filter:blur(15px);
+  opacity:0;
+  transition:opacity .4s var(--btn-ease);
+  pointer-events:none;
+}
+.btn[data-fx~="halo"]:hover::after{opacity:.85}
+
+/* ============================= FX: SLIDE ICON =============================
+   Trailing icon nudges forward, leading icon nudges back. */
+.btn[data-fx~="slide"] .btn__ico{transition:transform .38s var(--btn-ease-back)}
+.btn[data-fx~="slide"]:hover .btn__ico:last-child{transform:translateX(5px)}
+.btn[data-fx~="slide"]:hover .btn__ico:first-child{transform:translateX(-4px)}
+
+/* ============================= FX: PULSE =============================
+   Attention ring for the single most important CTA on a page. */
+.btn[data-fx~="pulse"] .btn__inner{animation:btn-pulse 2.6s var(--btn-ease) infinite}
+.btn[data-fx~="pulse"]:hover .btn__inner{animation-play-state:paused}
+@keyframes btn-pulse{
+  0%{box-shadow:0 0 0 0 var(--btn-glow)}
+  62%{box-shadow:0 0 0 13px rgba(184,145,43,0)}
+  100%{box-shadow:0 0 0 0 rgba(184,145,43,0)}
+}
+
+/* ============================= LOADING STATE =============================
+   data-loading="true" swaps the label for a spinner, keeping button width. */
+.btn__spinner{
+  position:absolute;
+  inset:0;
+  z-index:4;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.btn[data-loading="true"] .btn__spinner{display:flex}
+.btn[data-loading="true"] .btn__label,
+.btn[data-loading="true"] .btn__ico{opacity:0}
+.btn__spinner i{
+  width:15px;height:15px;
+  border-radius:50%;
+  border:2px solid currentColor;
+  border-top-color:transparent;
+  animation:btn-spinner .68s linear infinite;
+}
+@keyframes btn-spinner{to{transform:rotate(360deg)}}
+
+/* ============================= SUCCESS STATE =============================
+   data-state="done" draws a check via stroke-dashoffset. */
+.btn__check{
+  position:absolute;
+  inset:0;
+  z-index:4;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.btn[data-state="done"] .btn__check{display:flex}
+.btn[data-state="done"] .btn__label,
+.btn[data-state="done"] .btn__ico{opacity:0}
+.btn[data-state="done"] .btn__inner{background:var(--ok);color:var(--ok-ink)}
+.btn__check svg{width:19px;height:19px}
+.btn__check path{
+  stroke:currentColor;stroke-width:2.6;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:26;stroke-dashoffset:26;
+  animation:btn-check .42s var(--btn-ease) forwards;
+}
+@keyframes btn-check{to{stroke-dashoffset:0}}
+
+/* ============================= LOTTIE SLOT ============================= */
+.btn__lottie{
+  position:relative;z-index:3;
+  width:19px;height:19px;
+  flex:0 0 auto;
+  pointer-events:none;
+}
+.btn__lottie svg{width:100%!important;height:100%!important;display:block}
+
+/* ============================= CONFETTI ============================= */
+.btn__spark{
+  position:absolute;
+  z-index:5;
+  width:6px;height:6px;
+  border-radius:1.5px;
+  pointer-events:none;
+  will-change:transform,opacity;
+}
+
+/* ============================= ICON BUTTON ============================= */
+.btn-ico{
+  position:relative;
+  width:40px;height:40px;
+  border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--glass-fill);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px);
+  color:var(--g1);
+  cursor:pointer;
+  transition:color var(--btn-dur) var(--btn-ease),
+             background-color var(--btn-dur) var(--btn-ease),
+             border-color var(--btn-dur) var(--btn-ease);
+  will-change:transform;
+}
+.btn-ico:hover{color:var(--ok);background:var(--glass-fill-2);border-color:var(--ok)}
+.btn-ico:focus-visible{outline:2px solid var(--ok);outline-offset:3px}
+.btn-ico svg{width:16px;height:16px}
+
+/* ============================= LEGACY NEUTRALIZER =============================
+   style.css styles .btn-primary / .btn-ghost / .nav-cta as single-box buttons:
+   padding, background and a :hover transform all sit on the element itself.
+   Once buttons.js promotes them to .btn, that box must move to .btn__inner —
+   otherwise the padding applies twice and the :hover transform fights the
+   magnetic tween GSAP writes to the same element. Strip the outer box here.
+   (buttons.css loads after style.css, so equal-specificity rules land on top.) */
+.btn.btn-primary,.btn.btn-ghost,.btn.nav-cta,
+.btn.btn-primary:hover,.btn.btn-ghost:hover,.btn.nav-cta:hover{
+  padding:0;
+  margin:0;
+  background:none;
+  border:none;
+  box-shadow:none;
+  backdrop-filter:none;
+  transform:none;
+  transition:none;
+}
+/* keep the nav CTA's compact proportions after the box moves inward */
+.btn.nav-cta{margin-left:8px}
+.btn.nav-cta .btn__inner{padding:9px 18px;font-size:12.5px;border-radius:8px;letter-spacing:.02em}
+
+/* ============================= REDUCED MOTION =============================
+   Strip every sweep, spin, pull and pulse. Keep colour + outline feedback so
+   the button still reads as interactive, and keep the spinner (it communicates
+   state, not decoration) at a slower, non-vestibular rate. */
+@media (prefers-reduced-motion:reduce){
+  .btn__inner,.btn-ico{transition:background-color .01ms,color .01ms,border-color .01ms}
+  .btn:hover .btn__inner,.btn:active .btn__inner{transform:none}
+  .btn[data-fx] .btn__inner::before,
+  .btn[data-fx~="glow"] .btn__inner::after,
+  .btn[data-fx~="halo"]::after{animation:none!important;opacity:0!important}
+  .btn[data-fx~="gradient"]:hover::before{animation:none!important}
+  .btn[data-fx~="pulse"] .btn__inner{animation:none!important}
+  .btn[data-fx~="fill"] .btn__inner::after{transition:none;transform:scaleY(1);opacity:0}
+  .btn[data-fx~="fill"]:hover .btn__inner::after{opacity:1}
+  .btn[data-fx~="slide"] .btn__ico{transition:none}
+  .btn[data-fx~="slide"]:hover .btn__ico{transform:none}
+  .btn__ripple,.btn__spark{display:none!important}
+  .btn__spinner i{animation-duration:1.6s}
+  .btn__check path{animation:none;stroke-dashoffset:0}
+}
+
+/* ============================= RESPONSIVE ============================= */
+@media (max-width:768px){
+  .btn__inner{padding:13px 22px}
+  .btn--lg .btn__inner{padding:15px 26px;font-size:14.5px}
+  /* style.css made the nav CTA full-width on mobile; reapply to the new box */
+  .btn.nav-cta{display:block;width:100%;margin:8px 0 0}
+  .btn.nav-cta .btn__inner{width:100%;padding:13px 18px}
+  /* pointer-driven effects are dead weight on touch */
+  .btn[data-fx~="halo"]::after,.btn[data-fx~="glow"] .btn__inner::after{display:none}
+}
