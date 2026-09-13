@@ -1,0 +1,169 @@
+/* ==========================================================================
+   Cloud iNIT — download flow
+   Styles the three-step batch → build → platform selector and the final
+   download page. Uses existing design tokens only.
+   ========================================================================== */
+
+/* ---------- step indicator ---------- */
+.dl-step{display:flex;align-items:center;gap:10px;margin-top:22px}
+.dl-step__dots{display:inline-flex;gap:5px}
+.dl-step__dots i{
+  width:22px;height:3px;border-radius:2px;
+  background:var(--line-2);
+  transition:background .3s;
+}
+.dl-step__dots i.on{background:var(--ok)}
+.dl-step__txt{
+  font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--g3);
+}
+
+/* ---------- option grid (batches, modes, platforms) ---------- */
+.dl-opt-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(288px,1fr));
+  gap:18px;
+  max-width:1040px;margin:0 auto;padding:0 32px;
+}
+.dl-opt-grid--4{grid-template-columns:repeat(auto-fit,minmax(232px,1fr))}
+
+.dl-opt{
+  position:relative;
+  display:flex;flex-direction:column;
+  padding:26px 24px;
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  background:var(--panel);
+  text-decoration:none;color:inherit;
+  transition:transform .38s cubic-bezier(.22,1,.36,1),
+             border-color .3s,box-shadow .38s;
+  will-change:transform;
+}
+.dl-opt:hover{
+  transform:translateY(-5px);
+  border-color:var(--ok);
+  box-shadow:0 26px 60px rgba(0,0,0,.14);
+}
+.dl-opt:focus-visible{outline:2px solid var(--ok);outline-offset:4px}
+
+.dl-opt__tag{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ok);font-weight:600;
+  margin-bottom:12px;
+}
+.dl-opt h3{font-size:21px;margin-bottom:9px;letter-spacing:-.01em}
+.dl-opt h2{font-size:27px;margin-bottom:9px;letter-spacing:-.02em;font-family:var(--mono)}
+.dl-opt p{font-size:13.5px;color:var(--g2);line-height:1.62;margin-bottom:14px}
+
+.dl-opt__list{
+  list-style:none;padding:0;margin:0 0 16px;
+  font-size:12.5px;color:var(--g2);
+}
+.dl-opt__list li{
+  position:relative;padding-left:16px;margin-bottom:6px;line-height:1.5;
+}
+.dl-opt__list li::before{
+  content:'▸';position:absolute;left:0;top:0;
+  color:var(--ok);font-size:11px;
+}
+
+.dl-opt__go{
+  margin-top:auto;
+  font-family:var(--mono);font-size:12.5px;font-weight:600;
+  color:var(--ok);
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+.dl-opt:hover .dl-opt__go{transform:translateX(4px)}
+
+/* batch cards carry a big monospace time as the primary signal */
+.dl-opt__time{
+  font-family:var(--mono);font-size:34px;font-weight:700;
+  letter-spacing:-.02em;line-height:1.1;
+  margin-bottom:6px;
+}
+.dl-opt__num{
+  position:absolute;top:20px;right:22px;
+  font-family:var(--mono);font-size:11px;
+  color:var(--g3);
+}
+
+/* ---------- requirements table ---------- */
+.dl-req{
+  width:100%;border-collapse:collapse;
+  font-size:12px;margin-bottom:16px;
+}
+.dl-req th,.dl-req td{
+  text-align:left;padding:6px 8px;
+  border-bottom:1px solid var(--line);
+}
+.dl-req th{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.07em;text-transform:uppercase;
+  color:var(--g3);font-weight:600;
+}
+.dl-req td{color:var(--g2)}
+.dl-req td:first-child{font-weight:600;color:var(--g1)}
+
+/* ---------- final download panel ---------- */
+.dl-final{
+  max-width:1040px;margin:0 auto 34px;
+  padding:34px 32px;
+  border:1px solid var(--line-2);
+  border-radius:var(--r-lg);
+  background:var(--panel);
+  text-align:center;
+}
+.dl-final__meta{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px 26px;
+  margin-bottom:26px;
+  font-family:var(--mono);font-size:12px;color:var(--g2);
+}
+.dl-final__row b{
+  display:block;
+  font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--g3);font-weight:600;margin-bottom:3px;
+}
+.dl-final__note{
+  margin-top:16px;
+  font-size:12px;color:var(--g3);line-height:1.55;
+}
+.dl-final code,.dl-opt code,.page-head code{
+  font-family:var(--mono);font-size:.9em;
+  background:rgba(0,0,0,.06);padding:1.5px 6px;border-radius:4px;
+}
+
+/* ---------- two-column detail ---------- */
+.dl-cols{
+  display:grid;grid-template-columns:1fr 1fr;gap:34px;
+  max-width:1040px;margin:0 auto;padding:0 32px;
+}
+.dl-cols h3{font-size:16px;margin-bottom:10px}
+.dl-cols p{font-size:13.5px;color:var(--g2);line-height:1.65;margin-bottom:12px}
+
+/* ---------- back / start-over links ---------- */
+.dl-back{
+  max-width:1040px;margin:34px auto 0;padding:0 32px;
+  display:flex;gap:22px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:12.5px;
+}
+.dl-back a{color:var(--g2);text-decoration:none;transition:color .25s}
+.dl-back a:hover{color:var(--ok)}
+.dl-back a:focus-visible{outline:2px solid var(--ok);outline-offset:3px;border-radius:2px}
+
+/* ---------- responsive ---------- */
+@media (max-width:768px){
+  .dl-opt-grid,.dl-cols,.dl-back,.dl-final{padding-left:20px;padding-right:20px}
+  .dl-cols{grid-template-columns:1fr;gap:26px}
+  .dl-final{padding:26px 20px;margin-left:20px;margin-right:20px}
+  .dl-opt__time{font-size:29px}
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  .dl-opt{transition:border-color .01ms}
+  .dl-opt:hover{transform:none}
+  .dl-opt:hover .dl-opt__go{transform:none}
+  .dl-step__dots i{transition:none}
+}
