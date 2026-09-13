@@ -17,4 +17,32 @@
   <url><loc>https://cloudinit.online/profile/DevOps.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://cloudinit.online/profile/Ai.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://cloudinit.online/profile/projects.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/1030-offline-macos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/1030-offline-windows.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/1030-offline.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/1030-online-macos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/1030-online-windows.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/1030-online.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/1030.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://cloudinit.online/download/730-offline-macos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/730-offline-windows.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/730-offline.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/730-online-macos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/730-online-windows.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/730-online.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/730.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://cloudinit.online/download/730pm-offline-macos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/730pm-offline-windows.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/730pm-offline.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/730pm-online-macos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/730pm-online-windows.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/730pm-online.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/730pm.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://cloudinit.online/download/900-offline-macos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/900-offline-windows.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/900-offline.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/900-online-macos.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/900-online-windows.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://cloudinit.online/download/900-online.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://cloudinit.online/download/900.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>

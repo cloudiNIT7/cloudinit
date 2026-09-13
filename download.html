@@ -31,6 +31,7 @@
 <link rel="stylesheet" href="style.css"/>
 <link rel="stylesheet" href="buttons.css"/>
 <link rel="stylesheet" href="chat.css"/>
+<link rel="stylesheet" href="dl-flow.css"/>
 </head>
 <body>
 
@@ -73,36 +74,43 @@
   <div class="breadcrumb"><a href="index.html">cloudinit</a><span>/</span><em>download</em></div>
   <div class="mono-tag mono-tag--ok" style="margin-bottom:18px">04 — INSTALL</div>
   <h1>Get <em>Cloud iNIT</em></h1>
-  <p>Pick a platform and a release window. Online sandboxes activate after a short review; offline builds unlock everything immediately.</p>
-  <div class="dl-detect" id="dlDetect" style="display:none">
-    <span class="mono-tag mono-tag--ok" id="dlDetectTag"><i class="dl-detect-dot"></i><b id="dlDetectLabel">detecting device…</b></span>
-    <button type="button" class="dl-detect-toggle" id="dlDetectToggle">show all platforms</button>
+  <p>Start by picking a release window. You'll choose the sandbox or offline build next, then your platform — each combination has its own page with the exact release and its requirements.</p>
+  <div class="dl-step">
+    <span class="dl-step__dots" aria-hidden="true"><i class="on"></i><i></i><i></i></span>
+    <span class="dl-step__txt">step 1 of 3 — pick a release window</span>
   </div>
 </header>
 
-<section class="dl-wrap section" style="padding-top:0">
-  <div class="dl-grid" id="dlGrid">
-    <article class="dl-card glass-shine" id="dlpc">
-      <div class="dl-screen">
-        <img src="https://blogs.windows.com/wp-content/uploads/prod/sites/2/2021/06/WIN_Start_GenZ_Light_16x10_en-US-1024x640.png" alt="Windows desktop"/>
-        <span class="dl-screen-tag">Windows</span>
-      </div>
-      <div class="dl-body">
-        <div class="dl-plat-title">cloudinit <em>· win64</em></div>
-        <div id="pc-batches"></div>
-      </div>
-    </article>
-
-    <article class="dl-card glass-shine" id="dlmac">
-      <div class="dl-screen">
-        <img src="https://seeddownload.cdn-apple.com/s3/prod/ATLC/package/T024582A-en_US/0267d20c-4cbb-4f3d-beee-0f8820381866/31.0/T024582A-mac-mac-desktop/images/gallery_1_poster.jpg" alt="macOS desktop"/>
-        <span class="dl-screen-tag">macOS</span>
-      </div>
-      <div class="dl-body">
-        <div class="dl-plat-title">cloudinit <em>· macos</em></div>
-        <div id="mac-batches"></div>
-      </div>
-    </article>
+<section class="section" style="padding-top:0">
+  <div class="dl-opt-grid dl-opt-grid--4">
+    <a class="dl-opt glass-shine" href="download/730.html">
+      <span class="dl-opt__num">01</span>
+      <span class="dl-opt__tag">release window</span>
+      <span class="dl-opt__time">7:30 AM</span>
+      <p>Morning batch. Windows and macOS, sandbox or offline.</p>
+      <span class="dl-opt__go">Choose this window &rarr;</span>
+    </a>
+    <a class="dl-opt glass-shine" href="download/900.html">
+      <span class="dl-opt__num">02</span>
+      <span class="dl-opt__tag">release window</span>
+      <span class="dl-opt__time">9:00 AM</span>
+      <p>Mid-morning batch. Windows and macOS, sandbox or offline.</p>
+      <span class="dl-opt__go">Choose this window &rarr;</span>
+    </a>
+    <a class="dl-opt glass-shine" href="download/1030.html">
+      <span class="dl-opt__num">03</span>
+      <span class="dl-opt__tag">release window</span>
+      <span class="dl-opt__time">10:30 AM</span>
+      <p>Late-morning batch. Windows and macOS, sandbox or offline.</p>
+      <span class="dl-opt__go">Choose this window &rarr;</span>
+    </a>
+    <a class="dl-opt glass-shine" href="download/730pm.html">
+      <span class="dl-opt__num">04</span>
+      <span class="dl-opt__tag">release window</span>
+      <span class="dl-opt__time">7:30 PM</span>
+      <p>Evening batch. Windows and macOS, sandbox or offline.</p>
+      <span class="dl-opt__go">Choose this window &rarr;</span>
+    </a>
   </div>
 </section>
 
