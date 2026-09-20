@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Download the 7:30 PM offline build of Cloud iNIT for Windows. Windows 10/11 or Apple silicon macOS only."/>
+<link rel="icon" type="image/png" href="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" />
+<title>Download 7:30 PM Offline build for Windows — Cloud iNIT</title>
+<link rel="canonical" href="https://cloudinit.online/download/730pm-offline-windows.html"/>
+<meta name="robots" content="index,follow"/>
+<meta name="author" content="Abinash Kumar"/>
+<meta name="theme-color" content="#15130e"/>
+<link rel="manifest" href="../site.webmanifest"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Cloud iNIT"/>
+<meta property="og:title" content="Download 7:30 PM Offline build for Windows — Cloud iNIT"/>
+<meta property="og:description" content="Download the 7:30 PM offline build of Cloud iNIT for Windows. Windows 10/11 or Apple silicon macOS only."/>
+<meta property="og:url" content="https://cloudinit.online/download/730pm-offline-windows.html"/>
+<meta property="og:image" content="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../style.css"/>
+<link rel="stylesheet" href="../buttons.css"/>
+<link rel="stylesheet" href="../chat.css"/>
+<link rel="stylesheet" href="../dl-flow.css"/>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div id="prog" aria-hidden="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<div class="site-orbs" aria-hidden="true">
+  <span class="site-orb site-orb-a"></span>
+  <span class="site-orb site-orb-b"></span>
+  <span class="site-orb site-orb-c"></span>
+</div>
+
+<nav>
+  <a class="logo" href="../index.html">
+    <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+    <span>cloud<em>init</em></span>
+  </a>
+  <div class="nav-end">
+  <div class="nav-links" id="navLinks">
+    <a href="../index.html">home</a>
+    <a href="../why.html">why</a>
+    <a href="../stages.html">stages</a>
+    <a href="../status.html">status</a>
+    <a href="../download.html">download</a>
+    <a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">api</a>
+    <a href="https://test.cloudinit.online" target="_blank" rel="noopener">test</a>
+    <a href="/profile/">profile</a>
+    <button type="button" class="nav-cta" data-fx="shimmer magnetic ripple glow confetti" data-toast="On the roadmap — iOS and Android builds are compiling." data-toast-ms="3500">get the app</button>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  </div>
+</nav>
+<div class="nav-scrim" id="navScrim"></div>
+
+<main class="dlx">
+ <div class="dlx-wrap">
+  <div class="dlx-crumb"><a href="../index.html">cloudinit</a><span>/</span><a href="../download.html">download</a><span>/</span><a href="730pm.html">7:30 PM</a><span>/</span><a href="730pm-offline.html">Offline build</a><span>/</span><em>Windows</em></div>
+  <header class="dlx-head">
+    <span class="dlx-kicker"><i></i>7:30 PM · Offline build · Windows</span>
+    <h1>Your build is <em>ready</em><span class="dlx-cursor"></span></h1>
+    <p>Offline build for Windows, cut for the 7:30 PM release window. The button below pulls the installer straight from our storage bucket — no account, no redirect.</p>
+    <div class="dlx-rail"><div class="dlx-rail__seg is-done">step 01<b>release window</b></div><div class="dlx-rail__seg is-done">step 02<b>sandbox or offline</b></div><div class="dlx-rail__seg is-done">step 03<b>platform</b></div><div class="dlx-rail__seg is-now">step 04<b>download</b></div></div>
+  </header>
+
+  <aside class="dlx-note">
+    <div class="dlx-note__hd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9.5 17H2.5L12 3z"/><path d="M12 9v5m0 3.2v.1"/></svg> read this before you download</div>
+    <p class="dlx-note__lead">Cloud iNIT ships one build per platform. Check your machine against the rules below first — an unsupported system fails at install, not at first boot.</p>
+    <div class="dlx-note__grid" style="grid-template-columns:1fr">
+      <div class="dlx-note__card">
+        <h4><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.6l7.6-1v7.1H3V5.6zm0 12.8l7.6 1v-7H3v6zM11.6 4.4L21 3v8.7h-9.4V4.4zm0 8.3H21V21l-9.4-1.3v-7z"/></svg> Windows</h4>
+        <ul>
+          <li><b>Windows 10 or Windows 11 only</b>, 64-bit. These are the only versions the installer supports.</li>
+          <li class="no">Windows 8.1, 8, 7 and anything older will not install, and will not be patched to.</li>
+          <li><b>Some older machines are fine.</b> Age of the laptop or desktop does not matter — if it runs Windows 10 or 11 with 4&nbsp;GB of RAM, it is supported.</li>
+          <li>Keep Windows updated, and allow the installer through SmartScreen and any admin prompt.</li>
+        </ul>
+      </div></div>
+    <p class="dlx-note__foot">Check yours — Settings → System → About. The <b>Edition</b> line must read Windows&nbsp;10 or Windows&nbsp;11, and <b>System type</b> must be 64-bit.</p>
+  </aside>
+
+  <section class="dlx-ticket">
+    <div class="dlx-ticket__bar">
+      <span class="dlx-ticket__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      cloudinit · 730pm-offline-windows · verified object
+    </div>
+    <div class="dlx-ticket__body">
+      <div class="dlx-ticket__main">
+        <div class="dlx-ticket__badges">
+          <span class="dlx-badge dlx-badge--gold">EXE installer</span>
+          <span class="dlx-badge">74.3 MB</span>
+          <span class="dlx-badge">win64</span>
+          <span class="dlx-badge">Offline build</span>
+        </div>
+        <a class="dlx-dl" href="https://storage.googleapis.com/abinashdatafetch/window%20offline/CloudINIT%207%20pm%20offline.exe" rel="noopener">
+          <span class="dlx-dl__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0l-4.5-4.5M12 14l4.5-4.5M4 20h16"/></svg></span>
+          <span>Download for Windows<small>EXE · 74.3 MB</small></span>
+        </a>
+        <p class="dlx-hint">The download starts immediately. If your browser blocks it, choose keep or allow — the file is served over HTTPS from our bucket.</p>
+      </div>
+      <div class="dlx-ticket__stub">
+        <h3>Build details</h3>
+        <dl class="dlx-spec"><div class="dlx-spec__row"><dt>Release</dt><dd>7:30 PM <span>· evening batch</span></dd></div><div class="dlx-spec__row"><dt>Build</dt><dd>Offline build</dd></div><div class="dlx-spec__row"><dt>Platform</dt><dd>Windows <span>· win64</span></dd></div><div class="dlx-spec__row"><dt>Installer</dt><dd><code>EXE</code> <span>· 74.3 MB</span></dd></div><div class="dlx-spec__row"><dt>Network</dt><dd>Not required once installed; the build runs against your own credentials.</dd></div></dl>
+      </div>
+    </div>
+  </section>
+
+  <div class="dlx-cols">
+    <div class="dlx-panel">
+      <h3>What you are getting</h3>
+      <p>Installs locally and runs the same nine-stage sequence against your own cloud credentials. No shared capacity, so no queue and no rate limit — the boot log reflects your actual account limits rather than ours.</p>
+      <ul class="dlx-list"><li>Unlocks immediately — no review queue</li><li>No rate limits; your account limits apply instead</li><li>Asks for cloud credentials on first launch; these stay local and are never sent to us</li><li>Credentials are held in an OS-native secret store (since v2.4.0)</li></ul>
+    </div>
+    <div class="dlx-panel">
+      <h3>Installing on Windows</h3>
+      <ol class="dlx-steps"><li>Run the downloaded <b>.exe</b>. SmartScreen may warn on a fresh build — choose <b>More info → Run anyway</b>.</li><li>Approve the <b>administrator prompt</b> so the boot-engine service can register.</li><li>Launch Cloud iNIT and watch the first boot stream all nine stages.</li><li>Uninstall from <b>Settings → Apps</b>, not by deleting the folder, so sandboxes tear down and credentials rotate.</li></ol>
+    </div>
+  </div>
+
+  <div class="dlx-flownav"><a href="730pm-offline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6m0 0l5-5m-5 5l5 5"/></svg>Back to platform choice</a><a href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6m0 0l5-5m-5 5l5 5"/></svg>Start over</a><a href="../status.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m0 0l-5-5m5 5l-5 5"/></svg>Live system status</a></div>
+ </div>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand-col">
+      <a class="logo logo--footer" href="../index.html">
+        <img src="https://i.ibb.co/C5XqXXx5/d2a09cd4-f07d-4034-99ad-51292342123d.png" alt=""/>
+        <span>cloud<em>init</em></span>
+      </a>
+      <p>The boot sequence for your infrastructure — encrypted, multi‑cloud, AI‑managed, with an open API and a public status page. Built and maintained by Abinash Kumar.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../why.html">Why iNIT</a></li>
+        <li><a href="../stages.html">Boot stages</a></li>
+        <li><a href="../status.html">System status</a></li>
+        <li><a href="../download.html">Download</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">API &amp; GitHub</a></li>
+        <li><a href="https://test.cloudinit.online" target="_blank" rel="noopener">Test sandbox</a></li>
+        <li><a href="/profile/">Training &amp; profile</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="../privacy.html">Privacy policy</a></li>
+        <li><a href="../terms.html">Terms of service</a></li>
+        <li><a href="../cookies.html">Cookie policy</a></li>
+        <li><a href="../refund.html">Refund policy</a></li>
+        <li><a class="footer-mail" href="mailto:cloudgcp08@gmail.com">cloudgcp08@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-credit">cloudinit boots clean, every time. — developed by Abinash Kumar</p>
+    <div class="social-row">
+      <a class="icon-btn glass-shine magnetic" href="https://github.com/abinashkumar19" target="_blank" rel="noopener" aria-label="GitHub — Abinash Kumar">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.27 5.68.42.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .3.2.66.79.55A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+        <span class="icon-tip">Abinash Kumar</span>
+      </a>
+      <a class="icon-btn glass-shine magnetic" href="https://x.com/AbinashKumar192" target="_blank" rel="noopener" aria-label="X (Twitter) — @AbinashKumar192">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-6.9l-5.4-7.06L4.8 22H1.7l8.14-9.3L1 2h7.1l4.9 6.47L18.9 2Zm-1.2 18h1.9L7.4 3.9H5.36L17.7 20Z"/></svg>
+        <span class="icon-tip">@AbinashKumar192</span>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="../script.js" defer></script>
+<script src="../buttons.js" defer></script>
+<script src="../chat.js" defer></script>
+</body>
+</html>

@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
-Cloud iNIT — download page generator
+Cloud iNIT — download page generator  ·  "install console" redesign
 
 Emits the three-step download tree into download/:
 
     download.html                          batch selector (4 release windows)
       download/<batch>.html                online or offline
         download/<batch>-<mode>.html       Windows or macOS
-          download/<batch>-<mode>-<os>.html  final page with the release link
+          download/<batch>-<mode>-<os>.html  final page with the direct link
 
 28 generated pages. They are committed to the repo like any other file — this
 script exists so the set stays consistent, not as a build step. Re-run it after
-editing any template or the RELEASES map, then commit the output.
+editing any template or the DOWNLOADS map, then commit the output.
 
     python3 scripts/gen_download.py
 
@@ -19,27 +19,27 @@ Nav and footer are extracted from why.html so generated pages cannot drift from
 the rest of the site. Relative links are rewritten with a ../ prefix because
 generated pages live one directory down.
 
-RELEASE TAGS ARE INTENTIONALLY IRREGULAR. The original inline implementation in
-script.js built them by string concatenation and the naming was never
-normalised: macOS AM builds carry no suffix, macOS 7:30 PM uses 'mac' but its
-offline build puts 'mac' before 'offline'. Every tag below is transcribed from
-the previous behaviour so no download link changes. Do not "tidy" them without
-confirming the tags exist on GitHub.
+DOWNLOADS now point at the signed-off Google Cloud Storage objects (direct .exe
+/ .dmg), not GitHub release tags. FILENAMES AND SIZES ARE TRANSCRIBED FROM THE
+BUCKET AS-IS — the naming is irregular (Windows uses "7 am", macOS uses
+"730am"; one Windows object has a stray space before ".exe"). Do not "tidy"
+any URL without re-checking it returns 200 from the bucket first.
 """
 
 import os
 import re
 import html
+from urllib.parse import quote
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'download')
-BASE = 'https://github.com/CloudTechDevOps/CloudTechDevOps/releases/tag/'
+BUCKET = 'https://storage.googleapis.com/abinashdatafetch/'
 
 BATCHES = [
-    {'id': '730',   'label': '7:30 AM',  'num': '01'},
-    {'id': '900',   'label': '9:00 AM',  'num': '02'},
-    {'id': '1030',  'label': '10:30 AM', 'num': '03'},
-    {'id': '730pm', 'label': '7:30 PM',  'num': '04'},
+    {'id': '730',   'label': '7:30 AM',  'num': '01', 'when': 'morning batch'},
+    {'id': '900',   'label': '9:00 AM',  'num': '02', 'when': 'mid-morning batch'},
+    {'id': '1030',  'label': '10:30 AM', 'num': '03', 'when': 'late-morning batch'},
+    {'id': '730pm', 'label': '7:30 PM',  'num': '04', 'when': 'evening batch'},
 ]
 
 MODES = [
@@ -48,69 +48,156 @@ MODES = [
 ]
 
 OSES = [
-    {'id': 'windows', 'label': 'Windows', 'short': 'win64'},
-    {'id': 'macos',   'label': 'macOS',   'short': 'macos'},
+    {'id': 'windows', 'label': 'Windows', 'short': 'win64', 'ext': 'EXE'},
+    {'id': 'macos',   'label': 'macOS',   'short': 'arm64', 'ext': 'DMG'},
 ]
 
-# (batch, mode, os) -> release tag, transcribed from the previous script.js logic
-RELEASES = {
-    ('730',   'online',  'windows'): '730onlinepc',
-    ('730',   'offline', 'windows'): '730offlinepc',
-    ('730',   'online',  'macos'):   '730online',
-    ('730',   'offline', 'macos'):   '730offline',
-    ('900',   'online',  'windows'): '900onlinepc',
-    ('900',   'offline', 'windows'): '900offlinepc',
-    ('900',   'online',  'macos'):   '900online',
-    ('900',   'offline', 'macos'):   '900offline',
-    ('1030',  'online',  'windows'): '1030onlinepc',
-    ('1030',  'offline', 'windows'): '1030offlinepc',
-    ('1030',  'online',  'macos'):   '1030online',
-    ('1030',  'offline', 'macos'):   '1030offline',
-    ('730pm', 'online',  'windows'): '730pmonline',
-    ('730pm', 'offline', 'windows'): '730pmoffline',
-    ('730pm', 'online',  'macos'):   '730pmonlinemac',
-    ('730pm', 'offline', 'macos'):   '730pmmacoffline',
+# (batch, mode, os) -> (object path inside the bucket, size in bytes)
+# Sizes were read from the bucket (content-length) so the page can state the
+# download weight without a request at page load.
+DOWNLOADS = {
+    ('730',   'offline', 'windows'): ('window offline/CloudINIT 7 am offline pc.exe',    77866739),
+    ('900',   'offline', 'windows'): ('window offline/CloudINIT 9 am offline pc.exe',    77866729),
+    ('1030',  'offline', 'windows'): ('window offline/CloudINIT 10 am offline pc.exe',   77866600),
+    ('730pm', 'offline', 'windows'): ('window offline/CloudINIT 7 pm offline.exe',       77866542),
+    ('730',   'online',  'windows'): ('window online/CloudINIT 7 am online pc.exe',      77866778),
+    ('900',   'online',  'windows'): ('window online/CloudINIT 9 am online pc .exe',     77866651),
+    ('1030',  'online',  'windows'): ('window online/CloudINIT 10 am online pc.exe',     77866790),
+    ('730pm', 'online',  'windows'): ('window online/CloudINIT 7 pm online pc.exe',      77866561),
+    ('730',   'offline', 'macos'):   ('mac offline/cloudinit730amofflinemac.dmg',         4935294),
+    ('900',   'offline', 'macos'):   ('mac offline/CloudInit9amofflinemac.dmg',           4936292),
+    ('1030',  'offline', 'macos'):   ('mac offline/CloudInit1030offlinemac.dmg',          4935280),
+    ('730pm', 'offline', 'macos'):   ('mac offline/CloudInit730pmofflinemac.dmg',         4937579),
+    ('730',   'online',  'macos'):   ('mac online/cloudinitonlinemac730am.dmg',           4935290),
+    ('900',   'online',  'macos'):   ('mac online/CloudInit9amonlinemac.dmg',             4936285),
+    ('1030',  'online',  'macos'):   ('mac online/CloudInit1030onlinemac.dmg',            4935298),
+    ('730pm', 'online',  'macos'):   ('mac online/CloudInit730pmonlinemac.dmg',           4937740),
 }
 
 MODE_COPY = {
     'online': {
         'tag': 'SHARED CAPACITY · REVIEWED',
         'blurb': 'Runs the full nine-stage sequence against shared accounts we manage across AWS, Azure, and GCP. Rate-limited, and it goes through a short automated review before activating, because capacity is shared with everyone else on the same release window. That trade-off is what keeps it free.',
-        'best': 'Coursework, demos, and trying a stage you have not used before without touching your own billing.',
         'notes': [
             'Activates after a short automated review within this release window',
             'Rate-limited, since capacity is shared',
             'Needs no cloud credentials of your own',
             'Auto-expires at the end of the release window',
         ],
+        'net': 'Required — the sandbox runs against our shared cloud accounts.',
     },
     'offline': {
         'tag': 'YOUR ACCOUNTS · NO QUEUE',
         'blurb': 'Installs locally and runs the same nine-stage sequence against your own cloud credentials. No shared capacity, so no queue and no rate limit — the boot log reflects your actual account limits rather than ours.',
-        'best': 'Real projects and coursework you intend to keep iterating on, once you are past learning the sequence.',
         'notes': [
             'Unlocks immediately — no review queue',
             'No rate limits; your account limits apply instead',
             'Asks for cloud credentials on first launch; these stay local and are never sent to us',
             'Credentials are held in an OS-native secret store (since v2.4.0)',
         ],
+        'net': 'Not required once installed; the build runs against your own credentials.',
     },
 }
 
 OS_COPY = {
     'windows': {
-        'req': [('OS', 'Windows 10', 'Windows 11'),
-                ('RAM', '4 GB', '8 GB+'),
-                ('Storage', '1.2 GB free', '3 GB free (offline build)')],
-        'admin': 'Administrator rights are required — the installer registers a local service that runs the boot engine.',
+        'blurb': 'Windows 10 and Windows 11 only, 64-bit. Administrator rights are required — the installer registers a local service that runs the boot engine.',
+        'spec': [('OS', 'Windows 10 or 11 (64-bit) <span>— nothing older</span>'),
+                 ('CPU', 'x64 <span>· older desktops and laptops are fine on 10 / 11</span>'),
+                 ('RAM', '4 GB minimum <span>· 8 GB recommended</span>'),
+                 ('Disk', '1.2 GB free <span>· 3 GB for the offline build</span>'),
+                 ('Rights', 'Administrator <span>· registers a local service</span>')],
+        'install': [
+            'Run the downloaded <b>.exe</b>. SmartScreen may warn on a fresh build — choose <b>More info → Run anyway</b>.',
+            'Approve the <b>administrator prompt</b> so the boot-engine service can register.',
+            'Launch Cloud iNIT and watch the first boot stream all nine stages.',
+            'Uninstall from <b>Settings → Apps</b>, not by deleting the folder, so sandboxes tear down and credentials rotate.',
+        ],
     },
     'macos': {
-        'req': [('OS', 'macOS 12', 'macOS 14+'),
-                ('RAM', '4 GB', '8 GB+'),
-                ('Storage', '1.2 GB free', '3 GB free (offline build)')],
-        'admin': 'A standard user account is enough — no root privileges are required.',
+        'blurb': 'Apple silicon MacBooks only (M1 and newer) on a fully updated macOS. A standard user account is enough — no root privileges are required.',
+        'spec': [('Chip', 'Apple silicon — M1 / M2 / M3 / M4 <span>— Intel Macs unsupported</span>'),
+                 ('OS', 'Latest macOS available for your Mac <span>· keep it updated</span>'),
+                 ('RAM', '8 GB unified memory'),
+                 ('Disk', '1.2 GB free <span>· 3 GB for the offline build</span>'),
+                 ('Rights', 'Standard user <span>· no root needed</span>')],
+        'install': [
+            'Open the <b>.dmg</b> and drag Cloud iNIT into <b>Applications</b>.',
+            'First launch: <b>right-click → Open</b>, then allow it under <b>System Settings → Privacy &amp; Security</b> if Gatekeeper holds it.',
+            'Install any pending <b>macOS updates</b> first — the build targets the current release.',
+            'Uninstall with the bundled uninstaller so sandboxes tear down and credentials rotate.',
+        ],
     },
 }
+
+# ------------------------------------------------------------------- icons
+I_ARROW = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" '
+           'stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m0 0l-5-5m5 5l-5 5"/></svg>')
+I_BACK = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" '
+          'stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6m0 0l5-5m-5 5l5 5"/></svg>')
+I_DL = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" '
+        'stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0l-4.5-4.5M12 14l4.5-4.5M4 20h16"/></svg>')
+I_WARN = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
+          'stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9.5 17H2.5L12 3z"/>'
+          '<path d="M12 9v5m0 3.2v.1"/></svg>')
+# Glyph paths are kept on one line each: splitting a path `d` across Python
+# string literals silently eats the separating space and corrupts the curve.
+I_WIN = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.6l7.6-1v7.1H3V5.6zm0 12.8l7.6 1v-7H3v6zM11.6 4.4L21 3v8.7h-9.4V4.4zm0 8.3H21V21l-9.4-1.3v-7z"/></svg>'
+I_MAC = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.7.8-3.4.8-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.8 3-.8 1.3 0 1.7.7 2.9.7 1.2 0 2-1.1 2.8-2.2.9-1.3 1.3-2.5 1.3-2.6-.1 0-2.5-1-2.5-3.7zM14.2 5.5c.6-.8 1.1-1.8 1-2.9-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.8-1 2.8 1 .1 2-.5 2.6-1.3z"/></svg>'
+I_CLOUD = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" '
+           'stroke-linejoin="round"><path d="M7 18h10a3.5 3.5 0 000-7 5 5 0 00-9.6-1.4A3.8 3.8 0 007 18z"/></svg>')
+I_CHIP = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" '
+          'stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2.5"/>'
+          '<path d="M10 3v3m4-3v3m-4 12v3m4-3v3M3 10h3m-3 4h3m12-4h3m-3 4h3"/></svg>')
+OS_ICON = {'windows': I_WIN, 'macos': I_MAC}
+MODE_ICON = {'online': I_CLOUD, 'offline': I_CHIP}
+
+
+# ------------------------------------------------------------- compat note
+def compat_note(scope='both'):
+    """The support rules shown before every download decision.
+
+    scope: 'both' | 'windows' | 'macos' — narrows the cards on platform-specific
+    pages so a macOS visitor is not reading Windows rules.
+    """
+    win = """
+      <div class="dlx-note__card">
+        <h4>""" + I_WIN + """ Windows</h4>
+        <ul>
+          <li><b>Windows 10 or Windows 11 only</b>, 64-bit. These are the only versions the installer supports.</li>
+          <li class="no">Windows 8.1, 8, 7 and anything older will not install, and will not be patched to.</li>
+          <li><b>Some older machines are fine.</b> Age of the laptop or desktop does not matter — if it runs Windows 10 or 11 with 4&nbsp;GB of RAM, it is supported.</li>
+          <li>Keep Windows updated, and allow the installer through SmartScreen and any admin prompt.</li>
+        </ul>
+      </div>"""
+    mac = """
+      <div class="dlx-note__card">
+        <h4>""" + I_MAC + """ macOS</h4>
+        <ul>
+          <li><b>MacBook with Apple silicon only</b> — M1, M2, M3, M4 and later chips.</li>
+          <li class="no">Intel-based Macs are not supported. There is no Intel build.</li>
+          <li><b>macOS must be up to date.</b> Install every pending system update before you run the installer.</li>
+          <li>On first launch use right-click → Open, then allow it under Privacy &amp; Security if Gatekeeper holds it.</li>
+        </ul>
+      </div>"""
+
+    cards = {'both': win + mac, 'windows': win, 'macos': mac}[scope]
+    grid = ' style="grid-template-columns:1fr"' if scope != 'both' else ''
+    foot = {
+        'both': 'Check yours — Windows: Settings → System → About. Mac: Apple menu → About This Mac; '
+                'the <b>Chip</b> line must read Apple&nbsp;M-something.',
+        'windows': 'Check yours — Settings → System → About. The <b>Edition</b> line must read '
+                   'Windows&nbsp;10 or Windows&nbsp;11, and <b>System type</b> must be 64-bit.',
+        'macos': 'Check yours — Apple menu → About This Mac. The <b>Chip</b> line must read '
+                 'Apple&nbsp;M-something, and Software Update must show no pending updates.',
+    }[scope]
+    return f"""
+  <aside class="dlx-note">
+    <div class="dlx-note__hd">{I_WARN} read this before you download</div>
+    <p class="dlx-note__lead">Cloud iNIT ships one build per platform. Check your machine against the rules below first — an unsupported system fails at install, not at first boot.</p>
+    <div class="dlx-note__grid"{grid}>{cards}</div>
+    <p class="dlx-note__foot">{foot}</p>
+  </aside>"""
 
 
 # --------------------------------------------------------------------- chrome
@@ -141,7 +228,7 @@ HEAD = """<!DOCTYPE html>
 <link rel="canonical" href="https://cloudinit.online/download/{slug}.html"/>
 <meta name="robots" content="{robots}"/>
 <meta name="author" content="Abinash Kumar"/>
-<meta name="theme-color" content="#faf3e3"/>
+<meta name="theme-color" content="#15130e"/>
 <link rel="manifest" href="../site.webmanifest"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Cloud iNIT"/>
@@ -196,7 +283,7 @@ def page(slug, title, desc, body, robots='index,follow'):
 
 def crumbs(*parts):
     """parts: (label, href|None) — last item renders as the current page."""
-    out = ['<div class="breadcrumb"><a href="../index.html">cloudinit</a><span>/</span>'
+    out = ['<div class="dlx-crumb"><a href="../index.html">cloudinit</a><span>/</span>'
            '<a href="../download.html">download</a>']
     for label, href in parts:
         out.append('<span>/</span>')
@@ -205,11 +292,51 @@ def crumbs(*parts):
     return ''.join(out)
 
 
-def step(n, total, label):
-    dots = ''.join(
-        f'<i class="{"on" if i < n else ""}"></i>' for i in range(total))
-    return (f'<div class="dl-step"><span class="dl-step__dots" aria-hidden="true">{dots}</span>'
-            f'<span class="dl-step__txt">step {n} of {total} — {label}</span></div>')
+STEP_LABELS = [('step 01', 'release window'), ('step 02', 'sandbox or offline'),
+               ('step 03', 'platform'), ('step 04', 'download')]
+
+
+def rail(current):
+    """Segmented step rail. current is 1-based; 4 means the final page."""
+    segs = []
+    for i, (num, label) in enumerate(STEP_LABELS, start=1):
+        cls = 'is-now' if i == current else ('is-done' if i < current else '')
+        segs.append(f'<div class="dlx-rail__seg {cls}">{num}<b>{label}</b></div>')
+    return f'<div class="dlx-rail">{"".join(segs)}</div>'
+
+
+def spec(rows):
+    items = ''.join(f'<div class="dlx-spec__row"><dt>{k}</dt><dd>{v}</dd></div>' for k, v in rows)
+    return f'<dl class="dlx-spec">{items}</dl>'
+
+
+def flownav(*links):
+    """links: (label, href, back?) tuples.
+
+    Deliberately a <div>, not a <nav> — style.css pins the bare `nav` element
+    with position:fixed for the site header, which would rip this off the page.
+    """
+    out = []
+    for label, href, back in links:
+        ico = I_BACK if back else I_ARROW
+        out.append(f'<a href="{href}">{ico}{label}</a>')
+    return f'<div class="dlx-flownav">{"".join(out)}</div>'
+
+
+def size_mb(n):
+    return f'{n / (1024 * 1024):.1f} MB'
+
+
+def url_for(b, m, o):
+    path, _ = DOWNLOADS[(b, m, o)]
+    return BUCKET + quote(path)
+
+
+def filename_for(b, m, o):
+    """Bucket object name. Not shown on the pages — the installer filename and
+    the 'direct from storage' line were removed from the ticket on request —
+    but kept here because it is the handle used when auditing the bucket."""
+    return DOWNLOADS[(b, m, o)][0].split('/')[-1]
 
 
 # ------------------------------------------------------------------ level 2
@@ -220,27 +347,30 @@ def gen_batch(b):
         c = MODE_COPY[m['id']]
         notes = ''.join(f'<li>{n}</li>' for n in c['notes'])
         cards.append(f"""
-      <a class="dl-opt glass-shine" href="{b['id']}-{m['id']}.html">
-        <span class="dl-opt__tag">{c['tag']}</span>
-        <h3>{m['label']}</h3>
+      <a class="dlx-card" href="{b['id']}-{m['id']}.html">
+        <span class="dlx-card__tag">{c['tag']}</span>
+        <span class="dlx-card__glyph">{MODE_ICON[m['id']]}</span>
+        <h2>{m['label']}</h2>
         <p>{c['blurb']}</p>
-        <ul class="dl-opt__list">{notes}</ul>
-        <span class="dl-opt__go">Choose {m['label'].lower()} &rarr;</span>
+        <ul class="dlx-list">{notes}</ul>
+        <span class="dlx-card__go">Choose {m['label'].lower()} {I_ARROW}</span>
       </a>""")
 
     body = f"""
-<header class="page-head section" style="padding-bottom:26px">
+<main class="dlx">
+ <div class="dlx-wrap">
   {crumbs((b['label'], None))}
-  <div class="mono-tag mono-tag--ok" style="margin-bottom:18px">RELEASE WINDOW · {b['label']}</div>
-  <h1>Sandbox or <em>offline build</em>?</h1>
-  <p>Both run the identical nine-stage boot sequence. The difference is whose cloud accounts they run against, and how hard you can push them.</p>
-  {step(2, 3, 'pick a build')}
-</header>
-
-<section class="section" style="padding-top:0">
-  <div class="dl-opt-grid">{''.join(cards)}</div>
-  <p class="dl-back"><a href="../download.html">&larr; Back to release windows</a></p>
-</section>
+  <header class="dlx-head">
+    <span class="dlx-kicker"><i></i>release window · {b['label']}</span>
+    <h1>Sandbox or <em>offline</em>?<span class="dlx-cursor"></span></h1>
+    <p>Both run the identical nine-stage boot sequence. The difference is whose cloud accounts they run against, and how hard you can push them.</p>
+    {rail(2)}
+  </header>
+{compat_note('both')}
+  <div class="dlx-pick">{''.join(cards)}</div>
+  {flownav(('Back to release windows', '../download.html', True))}
+ </div>
+</main>
 """
     return page(b['id'], f"{b['label']} release — Cloud iNIT",
                 f"Choose the online sandbox or the offline build for the {b['label']} Cloud iNIT release window.",
@@ -252,31 +382,33 @@ def gen_mode(b, m):
     """Choose Windows or macOS for a given batch and mode."""
     cards = []
     for o in OSES:
-        rows = ''.join(
-            f'<tr><td>{k}</td><td>{lo}</td><td>{hi}</td></tr>'
-            for k, lo, hi in OS_COPY[o['id']]['req'])
+        _, size = DOWNLOADS[(b['id'], m['id'], o['id'])]
         cards.append(f"""
-      <a class="dl-opt glass-shine" href="{b['id']}-{m['id']}-{o['id']}.html">
-        <span class="dl-opt__tag">cloudinit · {o['short']}</span>
-        <h3>{o['label']}</h3>
-        <p>{OS_COPY[o['id']]['admin']}</p>
-        <table class="dl-req"><thead><tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr></thead><tbody>{rows}</tbody></table>
-        <span class="dl-opt__go">Get the {o['label']} build &rarr;</span>
+      <a class="dlx-card" href="{b['id']}-{m['id']}-{o['id']}.html">
+        <span class="dlx-card__tag">cloudinit · {o['short']} · {o['ext']} · {size_mb(size)}</span>
+        <span class="dlx-card__glyph">{OS_ICON[o['id']]}</span>
+        <h2>{o['label']}</h2>
+        <p>{OS_COPY[o['id']]['blurb']}</p>
+        {spec(OS_COPY[o['id']]['spec'])}
+        <span class="dlx-card__go">Get the {o['label']} build {I_ARROW}</span>
       </a>""")
 
     body = f"""
-<header class="page-head section" style="padding-bottom:26px">
-  {crumbs((b['label'], b['id'] + '.html'), (MODES[0]['label'] if m['id'] == 'online' else MODES[1]['label'], None))}
-  <div class="mono-tag mono-tag--ok" style="margin-bottom:18px">{b['label']} · {m['label'].upper()}</div>
-  <h1>Which <em>platform</em>?</h1>
-  <p>{MODE_COPY[m['id']]['blurb']}</p>
-  {step(3, 3, 'pick a platform')}
-</header>
-
-<section class="section" style="padding-top:0">
-  <div class="dl-opt-grid">{''.join(cards)}</div>
-  <p class="dl-back"><a href="{b['id']}.html">&larr; Back to build choice</a></p>
-</section>
+<main class="dlx">
+ <div class="dlx-wrap">
+  {crumbs((b['label'], b['id'] + '.html'), (m['label'], None))}
+  <header class="dlx-head">
+    <span class="dlx-kicker"><i></i>{b['label']} · {m['label']}</span>
+    <h1>Pick your <em>platform</em><span class="dlx-cursor"></span></h1>
+    <p>{MODE_COPY[m['id']]['blurb']}</p>
+    {rail(3)}
+  </header>
+{compat_note('both')}
+  <div class="dlx-pick">{''.join(cards)}</div>
+  {flownav((f"Back to build choice", f"{b['id']}.html", True),
+           ('Start over', '../download.html', True))}
+ </div>
+</main>
 """
     return page(f"{b['id']}-{m['id']}", f"{b['label']} {m['label']} — Cloud iNIT",
                 f"Pick Windows or macOS for the {b['label']} {m['label'].lower()} of Cloud iNIT.",
@@ -285,66 +417,80 @@ def gen_mode(b, m):
 
 # ------------------------------------------------------------------ level 4
 def gen_leaf(b, m, o):
-    tag = RELEASES[(b['id'], m['id'], o['id'])]
-    url = BASE + tag
+    url = url_for(b['id'], m['id'], o['id'])
+    _, size = DOWNLOADS[(b['id'], m['id'], o['id'])]
     c = MODE_COPY[m['id']]
-    rows = ''.join(f'<tr><td>{k}</td><td>{lo}</td><td>{hi}</td></tr>'
-                   for k, lo, hi in OS_COPY[o['id']]['req'])
     notes = ''.join(f'<li>{n}</li>' for n in c['notes'])
+    steps = ''.join(f'<li>{s}</li>' for s in OS_COPY[o['id']]['install'])
 
-    net = ('Required — the sandbox runs against our shared cloud accounts.'
-           if m['id'] == 'online'
-           else 'Not required once installed; the build runs against your own credentials.')
+    meta = spec([
+        ('Release', b['label'] + f" <span>· {b['when']}</span>"),
+        ('Build', m['label']),
+        ('Platform', f"{o['label']} <span>· {o['short']}</span>"),
+        ('Installer', f"<code>{o['ext']}</code> <span>· {size_mb(size)}</span>"),
+        ('Network', c['net']),
+    ])
 
     body = f"""
-<header class="page-head section" style="padding-bottom:26px">
+<main class="dlx">
+ <div class="dlx-wrap">
   {crumbs((b['label'], b['id'] + '.html'), (m['label'], f"{b['id']}-{m['id']}.html"), (o['label'], None))}
-  <div class="mono-tag mono-tag--ok" style="margin-bottom:18px">{b['label']} · {m['label'].upper()} · {o['label'].upper()}</div>
-  <h1>Download <em>Cloud iNIT</em></h1>
-  <p>{m['label']} for {o['label']}, built for the {b['label']} release window. Release tag <code>{tag}</code>.</p>
-</header>
+  <header class="dlx-head">
+    <span class="dlx-kicker"><i></i>{b['label']} · {m['label']} · {o['label']}</span>
+    <h1>Your build is <em>ready</em><span class="dlx-cursor"></span></h1>
+    <p>{m['label']} for {o['label']}, cut for the {b['label']} release window. The button below pulls the installer straight from our storage bucket — no account, no redirect.</p>
+    {rail(4)}
+  </header>
+{compat_note(o['id'])}
 
-<section class="section" style="padding-top:0">
-  <div class="dl-final glass-shine">
-    <div class="dl-final__meta">
-      <span class="dl-final__row"><b>Release window</b> {b['label']}</span>
-      <span class="dl-final__row"><b>Build</b> {m['label']}</span>
-      <span class="dl-final__row"><b>Platform</b> {o['label']} <code>{o['short']}</code></span>
-      <span class="dl-final__row"><b>Network</b> {net}</span>
+  <section class="dlx-ticket">
+    <div class="dlx-ticket__bar">
+      <span class="dlx-ticket__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      cloudinit · {b['id']}-{m['id']}-{o['id']} · verified object
     </div>
-    <a class="btn btn--primary btn--lg" data-fx="shimmer magnetic ripple glow halo"
-       href="{url}" target="_blank" rel="noopener">
-      <span class="btn__inner">
-        <span class="btn__label">Download from GitHub</span>
-        <span class="btn__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 19h16"/></svg></span>
-      </span>
-    </a>
-    <p class="dl-final__note">Opens the tagged release on GitHub in a new tab.</p>
-  </div>
+    <div class="dlx-ticket__body">
+      <div class="dlx-ticket__main">
+        <div class="dlx-ticket__badges">
+          <span class="dlx-badge dlx-badge--gold">{o['ext']} installer</span>
+          <span class="dlx-badge">{size_mb(size)}</span>
+          <span class="dlx-badge">{o['short']}</span>
+          <span class="dlx-badge">{m['label']}</span>
+        </div>
+        <a class="dlx-dl" href="{url}" rel="noopener">
+          <span class="dlx-dl__ico" aria-hidden="true">{I_DL}</span>
+          <span>Download for {o['label']}<small>{o['ext']} · {size_mb(size)}</small></span>
+        </a>
+        <p class="dlx-hint">The download starts immediately. If your browser blocks it, choose keep or allow — the file is served over HTTPS from our bucket.</p>
+      </div>
+      <div class="dlx-ticket__stub">
+        <h3>Build details</h3>
+        {meta}
+      </div>
+    </div>
+  </section>
 
-  <div class="dl-cols">
-    <div>
+  <div class="dlx-cols">
+    <div class="dlx-panel">
       <h3>What you are getting</h3>
       <p>{c['blurb']}</p>
-      <ul class="dl-opt__list">{notes}</ul>
+      <ul class="dlx-list">{notes}</ul>
     </div>
-    <div>
-      <h3>Before you install</h3>
-      <p>{OS_COPY[o['id']]['admin']}</p>
-      <table class="dl-req"><thead><tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr></thead><tbody>{rows}</tbody></table>
-      <p class="dl-final__note">Re-running the installer resumes from the last completed step. Uninstall with the uninstaller rather than deleting the folder, so sandboxes tear down and credentials rotate.</p>
+    <div class="dlx-panel">
+      <h3>Installing on {o['label']}</h3>
+      <ol class="dlx-steps">{steps}</ol>
     </div>
   </div>
 
-  <p class="dl-back">
-    <a href="{b['id']}-{m['id']}.html">&larr; Back to platform choice</a>
-    <a href="../download.html">Start over</a>
-  </p>
-</section>
+  {flownav((f"Back to platform choice", f"{b['id']}-{m['id']}.html", True),
+           ('Start over', '../download.html', True),
+           ('Live system status', '../status.html', False))}
+ </div>
+</main>
 """
     return page(f"{b['id']}-{m['id']}-{o['id']}",
                 f"Download {b['label']} {m['label']} for {o['label']} — Cloud iNIT",
-                f"Download the {b['label']} {m['label'].lower()} of Cloud iNIT for {o['label']}.",
+                f"Download the {b['label']} {m['label'].lower()} of Cloud iNIT for {o['label']}. "
+                f"Windows 10/11 or Apple silicon macOS only.",
                 body)
 
 

@@ -455,8 +455,9 @@ document.addEventListener('mousemove', e => {
    URL. The markup those blocks targeted no longer exists, so they have been
    removed rather than left to no-op on every page load.
 
-   To change a release tag or add a window, edit scripts/gen_download.py and
-   re-run it, then commit the regenerated pages. */
+   To change an installer URL or add a window, edit scripts/gen_download.py and
+   re-run it, then commit the regenerated pages. Installers are served straight
+   from the storage bucket, so the URLs in DOWNLOADS are the source of truth. */
 
 /* ---------- GSAP motion system ---------- */
 gsap.registerPlugin(ScrollTrigger);
@@ -648,6 +649,6 @@ if (matchMedia('(pointer:fine)').matches) {
 if (document.querySelector('.stage-card')) {
   setTimeout(() => toast('Scroll to walk through the boot sequence', 4200), 1600);
 }
-if (document.querySelector('.batch-row') || document.getElementById('pc-batches')) {
-  setTimeout(() => toast('Pick Online or Offline to reveal a download link', 6800), 2200);
+if (document.querySelector('.dlx-board')) {
+  setTimeout(() => toast('Check the Windows / macOS support rules before you pick a window', 6800), 2200);
 }
