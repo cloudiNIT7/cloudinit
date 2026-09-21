@@ -147,7 +147,7 @@ export default {
       "No markdown code fences.\n\n" +
       "=== CONTEXT (cloudinit.online) ===\n" + siteContext + "\n=== END CONTEXT ===";
 
-    const backendUrl = (env.BACKEND_URL || '').replace(/\/+$/, '') + '/chat/completions';
+    const backendPath = '/v1/chat/completions';
     const body = {
       model: payload.model || env.BACKEND_MODEL || 'gemini-3.5-flash-thinking',
       messages: [{ role: 'system', content: systemPrompt }, ...userMessages],
@@ -160,11 +160,18 @@ export default {
     if (env.BACKEND_KEY) headers['Authorization'] = 'Bearer ' + env.BACKEND_KEY;
 
     try {
-      const upstream = await fetch(backendUrl, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body)
-      });
+      let upstream;
+      if (env.BACKEND) {
+        // Service binding (preferred): direct worker-to-worker, no public hop.
+        upstream = await env.BACKEND.fetch('https://backend' + backendPath, {
+          method: 'POST', headers, body: JSON.stringify(body)
+        });
+      } else {
+        const backendUrl = (env.BACKEND_URL || '').replace(/\/+$/, '') + '/chat/completions';
+        upstream = await fetch(backendUrl, {
+          method: 'POST', headers, body: JSON.stringify(body)
+        });
+      }
       const data = await upstream.json();
       return json(data, upstream.ok ? 200 : upstream.status, origin);
     } catch (err) {

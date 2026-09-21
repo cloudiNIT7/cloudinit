@@ -5,9 +5,15 @@ compatibility_date = "2026-07-21"
 # Non-secret configuration. Edit BACKEND_URL to your deployed gemini-web2api
 # Worker URL (must include /v1). BACKEND_MODEL is the Gemini model to use.
 [vars]
-BACKEND_URL = "https://api.cloudinit.online/v1"
+BACKEND_URL = "https://cloudinit-api.awscloud1211.workers.dev/v1"
 BACKEND_MODEL = "gemini-3.5-flash-thinking"
 SITE_ORIGIN = "https://cloudinit.online"
+
+# Direct worker-to-worker call to the gemini-web2api backend (avoids the
+# public workers.dev hop that Cloudflare can block). Preferred over BACKEND_URL.
+[[services]]
+binding = "BACKEND"
+service = "cloudinit-api"
 
 # Secrets (do NOT put here — set with `wrangler secret put`):
 #   BACKEND_KEY   bearer key the gemini-web2api backend expects ('' if none)

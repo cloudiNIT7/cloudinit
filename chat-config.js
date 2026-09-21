@@ -25,14 +25,12 @@
    ========================================================================== */
 
 window.CLOUDINIT_CHAT_CONFIG = {
-  /* Base URL of the OpenAI-compatible server, INCLUDING /v1.
-     This points at the cloudinit-assistant Cloudflare Worker (see worker/),
-     which grounds Gemini strictly on cloudinit.online content and refuses
-     off-topic questions. If you haven't mapped the custom domain yet, use your
-     workers.dev URL instead, e.g.
-       'https://cloudinit-assistant.<your-subdomain>.workers.dev/v1'
-     Leave '' to force the offline retrieval assistant only.            */
-  endpoint: 'https://assistant.cloudinit.online/v1',
+  /* LIVE — deployed grounded Gemini Worker (see worker/). Grounds answers
+     strictly on cloudinit.online content and refuses off-topic questions.
+     Deployed on Cloudflare account cloudgcp08@gmail.com.
+     Swap to 'https://assistant.cloudinit.online/v1' after mapping the custom
+     domain. Leave '' to force the offline retrieval assistant only.     */
+  endpoint: 'https://cloudinit-assistant.awscloud1211.workers.dev/v1',
 
   /* Model name exposed by gemini-web2api. See its README for the list.  */
   model: 'gemini-3.5-flash-thinking',

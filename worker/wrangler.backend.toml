@@ -1,0 +1,7 @@
+name = "cloudinit-api"
+main = "backend-gemini.js"
+compatibility_date = "2026-07-21"
+
+[vars]
+API_KEYS = "[\"sk-cloudinit-internal\"]"
+DEFAULT_MODEL = "gemini-3.5-flash-thinking"
