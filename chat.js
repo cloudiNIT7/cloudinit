@@ -1,16 +1,15 @@
 /* ==========================================================================
-   Cloud iNIT — site assistant
-   A self-contained, retrieval-based helper. No backend, no API key, no network
-   calls: the knowledge base ships with the page and matching runs locally.
+   Cloud iNIT — site assistant  ·  hybrid Gemini + local retrieval
+   --------------------------------------------------------------------------
+   When a backend is configured in chat-config.js (window.CLOUDINIT_CHAT_CONFIG
+   .endpoint), the assistant sends the conversation to that OpenAI-compatible
+   endpoint — designed for the gemini-web2api server, which proxies Google
+   Gemini's web UI as /v1/chat/completions.
 
-   Why no LLM: this is a static site served from Cloudflare assets. Any API key
-   placed in client JS is public, so a hosted model would need a server-side
-   proxy. Retrieval answers the questions this site actually gets — stages,
-   builds, regions, refunds — deterministically and with a source link, and it
-   cannot invent product facts. answerFor() is isolated so a Workers AI
-   endpoint can be added later as a fallback for unmatched queries.
-
-   Every answer below is taken from the site's own copy. Nothing is invented.
+   When no backend is set, or the request errors / times out, it falls back to
+   the self-contained, retrieval-based knowledge base below — so the widget
+   always answers, online or off, and never needs an API key baked into the
+   static page. The knowledge base is drawn entirely from this site's own copy.
    ========================================================================== */
 
 (() => {
@@ -494,6 +493,68 @@
   const STORE = 'cloudinit-chat-v1';
   let panel, log, chips, input, sendBtn, fab, lastFocus = null, busy = false;
 
+  /* --------------------------------------------------- Gemini LLM backend --
+     Optional OpenAI-compatible backend (gemini-web2api). Config lives in
+     chat-config.js on window.CLOUDINIT_CHAT_CONFIG. When it is absent, empty,
+     or the request fails/times out, callers fall back to the local KB.       */
+  const CFG = (window.CLOUDINIT_CHAT_CONFIG || {});
+  const history = [];   // [{role:'user'|'assistant', content}] running context
+
+  const backendEnabled = () => !!(CFG.endpoint && String(CFG.endpoint).trim());
+
+  function sanitizeAnswer(text) {
+    // strip accidental ```code fences``` and normalise to safe-ish HTML
+    let t = String(text || '').trim().replace(/^```[a-z]*\n?|```$/gim, '').trim();
+    // if the model already returned HTML tags, trust the allowed subset only
+    const hasHtml = /<(p|ul|ol|li|strong|em|b|a|br)\b/i.test(t);
+    if (!hasHtml) {
+      // plain text → escape then paragraph-wrap on blank lines
+      const esc = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      t = esc.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+    }
+    return t || '<p>(no response)</p>';
+  }
+
+  async function geminiAnswer(query) {
+    const endpoint = String(CFG.endpoint).replace(/\/+$/, '') + '/chat/completions';
+    const turns = Math.max(0, CFG.historyTurns || 8);
+    const recent = history.slice(-turns * 2);   // user+assistant pairs
+    const messages = [
+      { role: 'system', content: CFG.systemPrompt || 'You are a helpful assistant.' },
+      ...recent,
+      { role: 'user', content: query }
+    ];
+
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), CFG.timeoutMs || 30000);
+    const headers = { 'Content-Type': 'application/json' };
+    if (CFG.apiKey) headers['Authorization'] = 'Bearer ' + CFG.apiKey;
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        signal: ctrl.signal,
+        body: JSON.stringify({
+          model: CFG.model || 'gemini-3.5-flash',
+          messages,
+          temperature: CFG.temperature ?? 0.6,
+          max_tokens: CFG.maxTokens || 900,
+          stream: false
+        })
+      });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const content = data?.choices?.[0]?.message?.content;
+      if (!content || !String(content).trim()) throw new Error('empty response');
+      return { html: sanitizeAnswer(content), source: 'gemini' };
+    } catch (err) {
+      clearTimeout(timer);
+      return null;   // signal caller to fall back
+    }
+  }
+
   function build() {
     fab = document.createElement('button');
     fab.type = 'button';
@@ -517,7 +578,7 @@
         <span class="chat-dot chat-dot--r" aria-hidden="true"></span>
         <span class="chat-dot chat-dot--y" aria-hidden="true"></span>
         <span class="chat-dot chat-dot--g" aria-hidden="true"></span>
-        <span class="chat-title">~/cloudinit/assistant — retrieval mode</span>
+        <span class="chat-title">~/cloudinit/assistant — ${backendEnabled() ? 'gemini live' : 'retrieval mode'}</span>
         <button type="button" class="chat-x" id="chatClose" aria-label="Close assistant">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
         </button>
@@ -605,16 +666,37 @@
     typing(true);
 
     const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
-    setTimeout(() => {
-      typing(false);
+    const minDelay = reduced ? 60 : 380;
+    const started = Date.now();
+
+    const finish = (html, next) => {
+      const wait = Math.max(0, minDelay - (Date.now() - started));
+      setTimeout(() => {
+        typing(false);
+        addMsg(html, 'bot');
+        setChips(next && next.length ? next : FALLBACK_CHIPS.slice(0, 3));
+        busy = false;
+        sendBtn.disabled = false;
+        save();
+        input.focus();
+      }, wait);
+    };
+
+    if (backendEnabled()) {
+      geminiAnswer(q).then(res => {
+        if (res) {
+          history.push({ role: 'user', content: q });
+          history.push({ role: 'assistant', content: res.html.replace(/<[^>]+>/g, ' ').trim() });
+          finish(res.html, FALLBACK_CHIPS.slice(0, 3));
+        } else {
+          const local = answerFor(q);           // graceful fallback to KB
+          finish(local.html, local.next);
+        }
+      });
+    } else {
       const res = answerFor(q);
-      addMsg(res.html, 'bot');
-      setChips(res.next);
-      busy = false;
-      sendBtn.disabled = false;
-      save();
-      input.focus();
-    }, reduced ? 60 : 420);
+      finish(res.html, res.next);
+    }
   }
 
   function greet() {
@@ -696,5 +778,5 @@
   } else build();
 
   // exposed for tests and for wiring an "ask the assistant" link anywhere
-  window.CloudChat = { open, close, ask: submit, answerFor, KB };
+  window.CloudChat = { open, close, ask: submit, answerFor, geminiAnswer, backendEnabled, KB };
 })();
