@@ -43,7 +43,7 @@ BATCHES = [
 ]
 
 MODES = [
-    {'id': 'online',  'label': 'Online sandbox'},
+    {'id': 'online',  'label': 'Online build'},
     {'id': 'offline', 'label': 'Offline build'},
 ]
 
@@ -76,7 +76,7 @@ DOWNLOADS = {
 
 MODE_COPY = {
     'online': {
-        'tag': 'SHARED CAPACITY · REVIEWED',
+        'tag': 'FREE · BEST IF YOU ARE LEARNING',
         'blurb': 'Runs the full nine-stage sequence against shared accounts we manage across AWS, Azure, and GCP. Rate-limited, and it goes through a short automated review before activating, because capacity is shared with everyone else on the same release window. That trade-off is what keeps it free.',
         'notes': [
             'Activates after a short automated review within this release window',
@@ -84,10 +84,10 @@ MODE_COPY = {
             'Needs no cloud credentials of your own',
             'Auto-expires at the end of the release window',
         ],
-        'net': 'Required — the sandbox runs against our shared cloud accounts.',
+        'net': 'Required — the online build runs against our shared cloud accounts.',
     },
     'offline': {
-        'tag': 'YOUR ACCOUNTS · NO QUEUE',
+        'tag': 'NEEDS YOUR OWN CLOUD ACCOUNT',
         'blurb': 'Installs locally and runs the same nine-stage sequence against your own cloud credentials. No shared capacity, so no queue and no rate limit — the boot log reflects your actual account limits rather than ours.',
         'notes': [
             'Unlocks immediately — no review queue',
@@ -166,7 +166,7 @@ def compat_note(scope='both'):
         <ul>
           <li><b>Windows 10 or Windows 11 only</b>, 64-bit. These are the only versions the installer supports.</li>
           <li class="no">Windows 8.1, 8, 7 and anything older will not install, and will not be patched to.</li>
-          <li><b>Some older machines are fine.</b> Age of the laptop or desktop does not matter — if it runs Windows 10 or 11 with 4&nbsp;GB of RAM, it is supported.</li>
+          <li><b>An older laptop is usually fine.</b> Age does not matter — if it runs Windows 10 or 11 with 4&nbsp;GB of RAM, it is supported.</li>
           <li>Keep Windows updated, and allow the installer through SmartScreen and any admin prompt.</li>
         </ul>
       </div>"""
@@ -184,17 +184,17 @@ def compat_note(scope='both'):
     cards = {'both': win + mac, 'windows': win, 'macos': mac}[scope]
     grid = ' style="grid-template-columns:1fr"' if scope != 'both' else ''
     foot = {
-        'both': 'Check yours — Windows: Settings → System → About. Mac: Apple menu → About This Mac; '
+        'both': 'Where to check — Windows: Settings → System → About. Mac: Apple menu → About This Mac; '
                 'the <b>Chip</b> line must read Apple&nbsp;M-something.',
-        'windows': 'Check yours — Settings → System → About. The <b>Edition</b> line must read '
+        'windows': 'Where to check — Settings → System → About. The <b>Edition</b> line must read '
                    'Windows&nbsp;10 or Windows&nbsp;11, and <b>System type</b> must be 64-bit.',
-        'macos': 'Check yours — Apple menu → About This Mac. The <b>Chip</b> line must read '
+        'macos': 'Where to check — Apple menu → About This Mac. The <b>Chip</b> line must read '
                  'Apple&nbsp;M-something, and Software Update must show no pending updates.',
     }[scope]
     return f"""
   <aside class="dlx-note">
-    <div class="dlx-note__hd">{I_WARN} read this before you download</div>
-    <p class="dlx-note__lead">Cloud iNIT ships one build per platform. Check your machine against the rules below first — an unsupported system fails at install, not at first boot.</p>
+    <div class="dlx-note__hd">{I_WARN} will it run on your computer?</div>
+    <p class="dlx-note__lead">There is one build per platform. Check your machine against the rules below — an unsupported computer fails during install, so it is worth thirty seconds now.</p>
     <div class="dlx-note__grid"{grid}>{cards}</div>
     <p class="dlx-note__foot">{foot}</p>
   </aside>"""
@@ -292,8 +292,14 @@ def crumbs(*parts):
     return ''.join(out)
 
 
-STEP_LABELS = [('step 01', 'release window'), ('step 02', 'sandbox or offline'),
-               ('step 03', 'platform'), ('step 04', 'download')]
+def guide(step, text, note=''):
+    """Plain-English "what to do now" line shown above each set of choices."""
+    tail = f' <span>{note}</span>' if note else ''
+    return f'<p class="dlx-guide"><b>step {step} of 4</b>{text}{tail}</p>'
+
+
+STEP_LABELS = [('step 1 of 4', 'pick a time'), ('step 2 of 4', 'online or offline'),
+               ('step 3 of 4', 'Windows or Mac'), ('step 4 of 4', 'download')]
 
 
 def rail(current):
@@ -346,8 +352,11 @@ def gen_batch(b):
     for m in MODES:
         c = MODE_COPY[m['id']]
         notes = ''.join(f'<li>{n}</li>' for n in c['notes'])
+        # dlx-card--<mode> carries the per-build accent (mint / violet) that
+        # dl-flow.css reads through --dlx-hot, so the two choices no longer
+        # read as the same cyan card twice.
         cards.append(f"""
-      <a class="dlx-card" href="{b['id']}-{m['id']}.html">
+      <a class="dlx-card dlx-card--{m['id']}" href="{b['id']}-{m['id']}.html">
         <span class="dlx-card__tag">{c['tag']}</span>
         <span class="dlx-card__glyph">{MODE_ICON[m['id']]}</span>
         <h2>{m['label']}</h2>
@@ -362,18 +371,20 @@ def gen_batch(b):
   {crumbs((b['label'], None))}
   <header class="dlx-head">
     <span class="dlx-kicker"><i></i>release window · {b['label']}</span>
-    <h1>Sandbox or <em>offline</em>?<span class="dlx-cursor"></span></h1>
+    <h1>Online or <em>offline</em> build?<span class="dlx-cursor"></span></h1>
     <p>Both run the identical nine-stage boot sequence. The difference is whose cloud accounts they run against, and how hard you can push them.</p>
     {rail(2)}
   </header>
-{compat_note('both')}
+  {guide(2, 'Pick one of the two builds below.',
+         'Studying or just trying it out? Choose the online build — it is free and needs no cloud account of your own.')}
   <div class="dlx-pick">{''.join(cards)}</div>
+{compat_note('both')}
   {flownav(('Back to release windows', '../download.html', True))}
  </div>
 </main>
 """
     return page(b['id'], f"{b['label']} release — Cloud iNIT",
-                f"Choose the online sandbox or the offline build for the {b['label']} Cloud iNIT release window.",
+                f"Choose the online build or the offline build for the {b['label']} Cloud iNIT release window.",
                 body)
 
 
@@ -399,12 +410,14 @@ def gen_mode(b, m):
   {crumbs((b['label'], b['id'] + '.html'), (m['label'], None))}
   <header class="dlx-head">
     <span class="dlx-kicker"><i></i>{b['label']} · {m['label']}</span>
-    <h1>Pick your <em>platform</em><span class="dlx-cursor"></span></h1>
+    <h1>Windows or <em>Mac</em>?<span class="dlx-cursor"></span></h1>
     <p>{MODE_COPY[m['id']]['blurb']}</p>
     {rail(3)}
   </header>
-{compat_note('both')}
+  {guide(3, 'Choose the computer you will install on.',
+         'Not sure? Check the Windows and macOS rules below before you pick.')}
   <div class="dlx-pick">{''.join(cards)}</div>
+{compat_note('both')}
   {flownav((f"Back to build choice", f"{b['id']}.html", True),
            ('Start over', '../download.html', True))}
  </div>
@@ -441,7 +454,8 @@ def gen_leaf(b, m, o):
     <p>{m['label']} for {o['label']}, cut for the {b['label']} release window. The button below pulls the installer straight from our storage bucket — no account, no redirect.</p>
     {rail(4)}
   </header>
-{compat_note(o['id'])}
+  {guide(4, 'Click the blue button below to download.',
+         'The file is ' + size_mb(size) + ' and saves to your Downloads folder. Installing steps are further down this page.')}
 
   <section class="dlx-ticket">
     <div class="dlx-ticket__bar">
@@ -460,7 +474,7 @@ def gen_leaf(b, m, o):
           <span class="dlx-dl__ico" aria-hidden="true">{I_DL}</span>
           <span>Download for {o['label']}<small>{o['ext']} · {size_mb(size)}</small></span>
         </a>
-        <p class="dlx-hint">The download starts immediately. If your browser blocks it, choose keep or allow — the file is served over HTTPS from our bucket.</p>
+        <p class="dlx-hint">The download starts as soon as you click. If your browser asks, choose <b>Keep</b> or <b>Allow</b> — the file is served over HTTPS from our own storage.</p>
       </div>
       <div class="dlx-ticket__stub">
         <h3>Build details</h3>
@@ -480,6 +494,7 @@ def gen_leaf(b, m, o):
       <ol class="dlx-steps">{steps}</ol>
     </div>
   </div>
+{compat_note(o['id'])}
 
   {flownav((f"Back to platform choice", f"{b['id']}-{m['id']}.html", True),
            ('Start over', '../download.html', True),
