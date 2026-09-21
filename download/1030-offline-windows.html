@@ -52,7 +52,6 @@
     <a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">api</a>
     <a href="https://test.cloudinit.online" target="_blank" rel="noopener">test</a>
     <a href="/profile/">profile</a>
-    <a href="https://songs.cloudinit.online/" target="_blank" rel="noopener" class="nav-cta" data-fx="shimmer magnetic ripple glow">get the app</a>
   </div>
   <div class="nav-right">
     <button type="button" class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
@@ -70,24 +69,9 @@
     <span class="dlx-kicker"><i></i>10:30 AM · Offline build · Windows</span>
     <h1>Your build is <em>ready</em><span class="dlx-cursor"></span></h1>
     <p>Offline build for Windows, cut for the 10:30 AM release window. The button below pulls the installer straight from our storage bucket — no account, no redirect.</p>
-    <div class="dlx-rail"><div class="dlx-rail__seg is-done">step 01<b>release window</b></div><div class="dlx-rail__seg is-done">step 02<b>sandbox or offline</b></div><div class="dlx-rail__seg is-done">step 03<b>platform</b></div><div class="dlx-rail__seg is-now">step 04<b>download</b></div></div>
+    <div class="dlx-rail"><div class="dlx-rail__seg is-done">step 1 of 4<b>pick a time</b></div><div class="dlx-rail__seg is-done">step 2 of 4<b>online or offline</b></div><div class="dlx-rail__seg is-done">step 3 of 4<b>Windows or Mac</b></div><div class="dlx-rail__seg is-now">step 4 of 4<b>download</b></div></div>
   </header>
-
-  <aside class="dlx-note">
-    <div class="dlx-note__hd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9.5 17H2.5L12 3z"/><path d="M12 9v5m0 3.2v.1"/></svg> read this before you download</div>
-    <p class="dlx-note__lead">Cloud iNIT ships one build per platform. Check your machine against the rules below first — an unsupported system fails at install, not at first boot.</p>
-    <div class="dlx-note__grid" style="grid-template-columns:1fr">
-      <div class="dlx-note__card">
-        <h4><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.6l7.6-1v7.1H3V5.6zm0 12.8l7.6 1v-7H3v6zM11.6 4.4L21 3v8.7h-9.4V4.4zm0 8.3H21V21l-9.4-1.3v-7z"/></svg> Windows</h4>
-        <ul>
-          <li><b>Windows 10 or Windows 11 only</b>, 64-bit. These are the only versions the installer supports.</li>
-          <li class="no">Windows 8.1, 8, 7 and anything older will not install, and will not be patched to.</li>
-          <li><b>Some older machines are fine.</b> Age of the laptop or desktop does not matter — if it runs Windows 10 or 11 with 4&nbsp;GB of RAM, it is supported.</li>
-          <li>Keep Windows updated, and allow the installer through SmartScreen and any admin prompt.</li>
-        </ul>
-      </div></div>
-    <p class="dlx-note__foot">Check yours — Settings → System → About. The <b>Edition</b> line must read Windows&nbsp;10 or Windows&nbsp;11, and <b>System type</b> must be 64-bit.</p>
-  </aside>
+  <p class="dlx-guide"><b>step 4 of 4</b>Click the blue button below to download. <span>The file is 74.3 MB and saves to your Downloads folder. Installing steps are further down this page.</span></p>
 
   <section class="dlx-ticket">
     <div class="dlx-ticket__bar">
@@ -106,7 +90,7 @@
           <span class="dlx-dl__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0l-4.5-4.5M12 14l4.5-4.5M4 20h16"/></svg></span>
           <span>Download for Windows<small>EXE · 74.3 MB</small></span>
         </a>
-        <p class="dlx-hint">The download starts immediately. If your browser blocks it, choose keep or allow — the file is served over HTTPS from our bucket.</p>
+        <p class="dlx-hint">The download starts as soon as you click. If your browser asks, choose <b>Keep</b> or <b>Allow</b> — the file is served over HTTPS from our own storage.</p>
       </div>
       <div class="dlx-ticket__stub">
         <h3>Build details</h3>
@@ -126,6 +110,22 @@
       <ol class="dlx-steps"><li>Run the downloaded <b>.exe</b>. SmartScreen may warn on a fresh build — choose <b>More info → Run anyway</b>.</li><li>Approve the <b>administrator prompt</b> so the boot-engine service can register.</li><li>Launch Cloud iNIT and watch the first boot stream all nine stages.</li><li>Uninstall from <b>Settings → Apps</b>, not by deleting the folder, so sandboxes tear down and credentials rotate.</li></ol>
     </div>
   </div>
+
+  <aside class="dlx-note">
+    <div class="dlx-note__hd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9.5 17H2.5L12 3z"/><path d="M12 9v5m0 3.2v.1"/></svg> will it run on your computer?</div>
+    <p class="dlx-note__lead">There is one build per platform. Check your machine against the rules below — an unsupported computer fails during install, so it is worth thirty seconds now.</p>
+    <div class="dlx-note__grid" style="grid-template-columns:1fr">
+      <div class="dlx-note__card">
+        <h4><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.6l7.6-1v7.1H3V5.6zm0 12.8l7.6 1v-7H3v6zM11.6 4.4L21 3v8.7h-9.4V4.4zm0 8.3H21V21l-9.4-1.3v-7z"/></svg> Windows</h4>
+        <ul>
+          <li><b>Windows 10 or Windows 11 only</b>, 64-bit. These are the only versions the installer supports.</li>
+          <li class="no">Windows 8.1, 8, 7 and anything older will not install, and will not be patched to.</li>
+          <li><b>An older laptop is usually fine.</b> Age does not matter — if it runs Windows 10 or 11 with 4&nbsp;GB of RAM, it is supported.</li>
+          <li>Keep Windows updated, and allow the installer through SmartScreen and any admin prompt.</li>
+        </ul>
+      </div></div>
+    <p class="dlx-note__foot">Where to check — Settings → System → About. The <b>Edition</b> line must read Windows&nbsp;10 or Windows&nbsp;11, and <b>System type</b> must be 64-bit.</p>
+  </aside>
 
   <div class="dlx-flownav"><a href="1030-offline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6m0 0l5-5m-5 5l5 5"/></svg>Back to platform choice</a><a href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6m0 0l5-5m-5 5l5 5"/></svg>Start over</a><a href="../status.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m0 0l-5-5m5 5l-5 5"/></svg>Live system status</a></div>
  </div>
@@ -189,7 +189,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="../script.js" defer></script>
 <script src="../buttons.js" defer></script>
-<script src="../chat-config.js"></script>
 <script src="../chat.js" defer></script>
 </body>
 </html>
