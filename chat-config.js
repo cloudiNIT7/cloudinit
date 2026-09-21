@@ -26,16 +26,21 @@
 
 window.CLOUDINIT_CHAT_CONFIG = {
   /* Base URL of the OpenAI-compatible server, INCLUDING /v1.
-     Local dev example:   'http://localhost:8081/v1'
-     Behind a proxy:      'https://api.cloudinit.online/v1'
+     This points at the cloudinit-assistant Cloudflare Worker (see worker/),
+     which grounds Gemini strictly on cloudinit.online content and refuses
+     off-topic questions. If you haven't mapped the custom domain yet, use your
+     workers.dev URL instead, e.g.
+       'https://cloudinit-assistant.<your-subdomain>.workers.dev/v1'
      Leave '' to force the offline retrieval assistant only.            */
-  endpoint: '',
+  endpoint: 'https://assistant.cloudinit.online/v1',
 
   /* Model name exposed by gemini-web2api. See its README for the list.  */
   model: 'gemini-3.5-flash-thinking',
 
-  /* Bearer key. Leave '' when the backend runs with `api_keys: []`.
-     PUBLIC once deployed — use a proxy for real secrets.                */
+  /* Bearer key sent to the Worker. Only needed if you set PROXY_KEY as a
+     secret on the cloudinit-assistant Worker. The real Gemini backend key is
+     kept server-side in the Worker and never appears here. Leave '' if you
+     did not set PROXY_KEY.                                              */
   apiKey: '',
 
   /* Generation + network tuning.                                       */

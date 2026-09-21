@@ -1,0 +1,20 @@
+name = "cloudinit-assistant"
+main = "cloudinit-assistant.js"
+compatibility_date = "2026-07-21"
+
+# Non-secret configuration. Edit BACKEND_URL to your deployed gemini-web2api
+# Worker URL (must include /v1). BACKEND_MODEL is the Gemini model to use.
+[vars]
+BACKEND_URL = "https://api.cloudinit.online/v1"
+BACKEND_MODEL = "gemini-3.5-flash-thinking"
+SITE_ORIGIN = "https://cloudinit.online"
+
+# Secrets (do NOT put here — set with `wrangler secret put`):
+#   BACKEND_KEY   bearer key the gemini-web2api backend expects ('' if none)
+#   PROXY_KEY     optional key this worker requires from the site
+
+# Custom domain route (optional). Requires cloudinit.online in this Cloudflare
+# account. Uncomment and deploy, or set the route in the dashboard instead.
+# [[routes]]
+# pattern = "assistant.cloudinit.online/*"
+# custom_domain = true
