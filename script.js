@@ -304,7 +304,7 @@ document.querySelectorAll('[data-toast]').forEach(el => {
   window.addEventListener('resize', resize);
 
   const density = isMobile ? 0.55 : 1;
-  const colOk = 0x8b6cf0, colInfo = 0x0ea5d6;
+  const colOk = 0x38e1ff, colInfo = 0x8b7bff;
 
   const gridSize = 70, gridSeg = isMobile ? 24 : 40;
   const waveGeo = new THREE.PlaneGeometry(gridSize, gridSize * 0.75, gridSeg, Math.round(gridSeg * 0.75));
