@@ -20,24 +20,46 @@
   --dlx-edge:rgba(255,255,255,.10);
   --dlx-edge-2:rgba(255,255,255,.18);
   --dlx-txt:#f4f7ff;
-  --dlx-txt-2:#c2cbe8;
-  --dlx-txt-3:#9aa4c8;
+  --dlx-txt-2:#d3dbf2;
+  --dlx-txt-3:#a8b2d4;
   --dlx-gold:#38e1ff;
   --dlx-gold-dim:rgba(56,225,255,.14);
   --dlx-red:#ff5cc8;
-  --dlx-grid:rgba(255,255,255,.045);
+  --dlx-grid:rgba(255,255,255,.022);
+
+  /* Opaque surfaces. Every block used to be a translucent wash over the
+     slab's radial gradients, so card edges and body text sat on a background
+     that shifted underneath them. These are flat colours instead: a card is
+     the same shade wherever it lands on the page, which is what makes the
+     download path readable at a glance. */
+  --dlx-surface:#101736;         /* cards, panels, notes            */
+  --dlx-surface-2:#0c1229;       /* nested blocks inside a surface  */
+  --dlx-surface-3:#151d42;       /* raised / hovered surface        */
+
+  /* Key-click accents. The flow is cyan end to end, which made the four
+     decision points blend into the surrounding chrome. Each decision now
+     carries its own accent, exposed as --dlx-hot so one rule set can serve
+     all of them. --dlx-hot-soft is the same hue at glow strength. */
+  --dlx-hot:var(--dlx-gold);
+  --dlx-hot-soft:rgba(56,225,255,.16);
+  --dlx-amber:#ffb64d;            /* step 01 — release window  */
+  --dlx-amber-soft:rgba(255,182,77,.16);
+  --dlx-mint:#4fe6a8;             /* step 02 — online build    */
+  --dlx-mint-soft:rgba(79,230,168,.16);
+  --dlx-violet:#a78bff;           /* step 02 — offline build   */
+  --dlx-violet-soft:rgba(167,139,255,.16);
 }
 
 /* ---------------------------------------------------------------- shell ---
-   One dark slab wraps the whole flow. Sits above the page grid texture and
-   the ambient orbs, and stretches edge to edge under the fixed nav.
+   One dark slab wraps the whole flow. The decorative glow is now confined to
+   the header band: below that the slab is flat, so cards and body copy are
+   never read against a moving gradient.
    ------------------------------------------------------------------------ */
 .dlx{
   position:relative;z-index:2;
   background:
-    radial-gradient(1100px 520px at 12% -10%,rgba(56,225,255,.16),transparent 62%),
-    radial-gradient(760px 420px at 92% 8%,rgba(255,255,255,.07),transparent 60%),
-    linear-gradient(180deg,var(--dlx-ink) 0%,var(--dlx-ink-2) 62%,var(--dlx-ink) 100%);
+    radial-gradient(900px 340px at 14% -18%,rgba(56,225,255,.10),transparent 64%),
+    var(--dlx-ink);
   color:var(--dlx-txt);
   padding:112px 0 74px;
   overflow:hidden;
@@ -48,7 +70,7 @@
     linear-gradient(var(--dlx-grid) 1px,transparent 1px),
     linear-gradient(90deg,var(--dlx-grid) 1px,transparent 1px);
   background-size:52px 52px;
-  mask-image:radial-gradient(ellipse 78% 70% at 50% 0%,#000,transparent 76%);
+  mask-image:linear-gradient(180deg,#000,transparent 340px);
 }
 .dlx::after{ /* hairline seam where the slab meets the cream page */
   content:'';position:absolute;left:0;right:0;bottom:0;height:1px;
@@ -110,20 +132,28 @@
 }
 
 /* ------------------------------------------------------------ step rail ---
-   Replaces the old three-dot indicator with a labelled segmented rail.
+   Four numbered tiles on an opaque surface. The old version was a hairline
+   rule over the slab gradient, which read as decoration rather than as "you
+   are on step 2 of 4". Each tile now states its number in words a first-time
+   visitor can act on, and the current one is filled rather than merely tinted.
    ------------------------------------------------------------------------ */
 .dlx-rail{display:flex;gap:10px;margin:34px 0 0;flex-wrap:wrap}
 .dlx-rail__seg{
   flex:1 1 150px;min-width:132px;
-  padding-top:11px;border-top:2px solid var(--dlx-edge);
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  padding:13px 15px;border-radius:12px;
+  border:1px solid var(--dlx-edge);
+  background:var(--dlx-surface-2);
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--dlx-txt-3);
-  transition:color .3s,border-color .3s;
+  transition:color .3s,border-color .3s,background .3s;
 }
-.dlx-rail__seg b{display:block;font-size:13px;letter-spacing:.04em;margin-top:3px;color:var(--dlx-txt-3);font-weight:600}
-.dlx-rail__seg.is-done{border-top-color:rgba(56,225,255,.45)}
+.dlx-rail__seg b{display:block;font-size:14px;letter-spacing:.01em;margin-top:5px;color:var(--dlx-txt-2);font-weight:600;text-transform:none}
+.dlx-rail__seg.is-done{border-color:rgba(56,225,255,.4);color:var(--dlx-gold)}
 .dlx-rail__seg.is-done b{color:var(--dlx-txt-2)}
-.dlx-rail__seg.is-now{border-top-color:var(--dlx-gold);color:var(--dlx-gold)}
+.dlx-rail__seg.is-done::after{content:' ✓';color:var(--dlx-gold)}
+.dlx-rail__seg.is-now{
+  border-color:var(--dlx-gold);background:rgba(56,225,255,.13);color:var(--dlx-gold);
+}
 .dlx-rail__seg.is-now b{color:var(--dlx-txt)}
 
 /* ----------------------------------------------------- compatibility note ---
@@ -134,81 +164,105 @@
   border:1px solid rgba(56,225,255,.30);
   border-left:3px solid var(--dlx-gold);
   border-radius:14px;
-  background:linear-gradient(180deg,rgba(56,225,255,.10),rgba(255,255,255,.02));
+  background:var(--dlx-surface);
   padding:22px 24px;
 }
 .dlx-note__hd{
   display:flex;align-items:center;gap:10px;margin-bottom:4px;
-  font-family:var(--mono);font-size:11.5px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--dlx-gold);
+  font-family:var(--mono);font-size:12.5px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--dlx-gold);
 }
 .dlx-note__hd svg{width:16px;height:16px;flex:none}
-.dlx-note__lead{font-size:13.5px;color:var(--dlx-txt-2);line-height:1.65;margin-bottom:18px}
+.dlx-note__lead{font-size:14.5px;color:var(--dlx-txt-2);line-height:1.68;margin-bottom:18px}
 .dlx-note__grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .dlx-note__card{
   border:1px solid var(--dlx-edge);border-radius:12px;
-  background:rgba(0,0,0,.28);padding:16px 18px;
+  background:var(--dlx-surface-2);padding:16px 18px;
 }
 .dlx-note__card h4{
   display:flex;align-items:center;gap:8px;
-  font-family:var(--mono);font-size:12.5px;font-weight:700;letter-spacing:.04em;
+  font-family:var(--mono);font-size:13.5px;font-weight:700;letter-spacing:.03em;
   color:var(--dlx-txt);margin-bottom:11px;
 }
-.dlx-note__card h4 svg{width:15px;height:15px;color:var(--dlx-gold);flex:none}
+.dlx-note__card h4 svg{width:16px;height:16px;color:var(--dlx-gold);flex:none}
 .dlx-note__card ul{list-style:none;padding:0;margin:0}
 .dlx-note__card li{
-  position:relative;padding-left:19px;margin-bottom:8px;
-  font-size:12.8px;line-height:1.58;color:var(--dlx-txt-2);
+  position:relative;padding-left:21px;margin-bottom:9px;
+  font-size:14px;line-height:1.62;color:var(--dlx-txt-2);
 }
 .dlx-note__card li:last-child{margin-bottom:0}
 .dlx-note__card li::before{
-  content:'';position:absolute;left:5px;top:7px;
-  width:5px;height:5px;border-radius:1px;background:var(--dlx-gold);
+  content:'';position:absolute;left:5px;top:8px;
+  width:6px;height:6px;border-radius:1px;background:var(--dlx-gold);
 }
 .dlx-note__card li.no::before{background:var(--dlx-red);transform:rotate(45deg)}
 .dlx-note__card li b{color:var(--dlx-txt);font-weight:600}
 .dlx-note__foot{
   margin-top:16px;padding-top:14px;border-top:1px dashed var(--dlx-edge);
-  font-family:var(--mono);font-size:11.5px;line-height:1.6;color:var(--dlx-txt-3);
+  font-family:var(--mono);font-size:12.5px;line-height:1.65;color:var(--dlx-txt-3);
 }
 
-/* ------------------------------------------------------- release board ---
-   Step 1. A departure-board list instead of four identical cards.
+/* ------------------------------------------------------------- guide -----
+   A one-line, plain-English instruction placed immediately above each set of
+   choices. The step rail shows where you are; this says what to do next and,
+   just as importantly, what will not happen yet — first-time visitors were
+   hesitating over the release-window list because nothing told them the
+   installer comes later.
    ------------------------------------------------------------------------ */
-.dlx-board{margin-top:38px;border-top:1px solid var(--dlx-edge)}
+.dlx-guide{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-top:34px;padding:16px 20px;
+  border:1px solid var(--dlx-edge-2);border-left:4px solid var(--dlx-gold);
+  border-radius:12px;background:var(--dlx-surface);
+  font-size:15.5px;line-height:1.6;color:var(--dlx-txt);
+}
+.dlx-guide b{
+  flex:none;padding:6px 13px;border-radius:999px;
+  background:var(--dlx-gold);color:#070b1a;
+  font-family:var(--mono);font-size:12.5px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.dlx-guide span{color:var(--dlx-txt-3)}
+
+/* ------------------------------------------------------- release board ---
+   Step 1. A departure-board list instead of four identical cards. Each row is
+   its own opaque tile rather than a hairline-separated strip over the slab, so
+   a row reads as a button-sized target.
+   ------------------------------------------------------------------------ */
+.dlx-board{margin-top:38px;display:grid;gap:12px}
 .dlx-board__row{
   position:relative;display:grid;
   grid-template-columns:52px 190px 1fr auto;
   align-items:center;gap:22px;
-  padding:24px 6px;
-  border-bottom:1px solid var(--dlx-edge);
-  text-decoration:none;color:inherit;
-  transition:background .3s,padding-left .3s;
+  padding:22px 22px 22px 26px;
+  border:1px solid var(--dlx-edge);border-radius:14px;
+  background:var(--dlx-surface);
+  text-decoration:none;color:inherit;overflow:hidden;
+  transition:background .3s,border-color .3s,transform .3s;
 }
 .dlx-board__row::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:var(--dlx-gold);transform:scaleY(0);transform-origin:50% 0;
-  transition:transform .34s cubic-bezier(.22,1,.36,1);
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:var(--dlx-hot);
+  transition:opacity .3s;
 }
-.dlx-board__row:hover{background:rgba(255,255,255,.035);padding-left:20px}
-.dlx-board__row:hover::before{transform:scaleY(1)}
+.dlx-board__row:hover{background:var(--dlx-surface-3);border-color:var(--dlx-hot);transform:translateY(-2px)}
 .dlx-board__row:focus-visible{outline:2px solid var(--dlx-gold);outline-offset:-3px}
-.dlx-board__idx{font-family:var(--mono);font-size:12px;color:var(--dlx-txt-3)}
+.dlx-board__idx{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--dlx-hot)}
 .dlx-board__time{
   font-family:var(--mono);font-size:clamp(26px,3.4vw,38px);font-weight:700;
   letter-spacing:-.03em;line-height:1;color:var(--dlx-txt);
   transition:color .3s;
 }
-.dlx-board__row:hover .dlx-board__time{color:var(--dlx-gold)}
-.dlx-board__time small{display:block;font-size:11px;font-weight:500;letter-spacing:.1em;color:var(--dlx-txt-3);margin-top:7px}
-.dlx-board__desc{font-size:13.5px;line-height:1.6;color:var(--dlx-txt-2)}
-.dlx-board__desc b{display:block;color:var(--dlx-txt);font-size:14px;font-weight:600;margin-bottom:3px}
+.dlx-board__row:hover .dlx-board__time{color:var(--dlx-hot)}
+.dlx-board__time small{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--dlx-txt-3);margin-top:8px}
+.dlx-board__desc{font-size:14.5px;line-height:1.65;color:var(--dlx-txt-2)}
+.dlx-board__desc b{display:block;color:var(--dlx-txt);font-size:15px;font-weight:600;margin-bottom:4px}
 .dlx-board__go{
   display:inline-flex;align-items:center;gap:9px;
-  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.05em;
+  font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.03em;
   color:var(--dlx-gold);white-space:nowrap;
 }
-.dlx-board__go svg{width:15px;height:15px;transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.dlx-board__go svg{width:16px;height:16px;transition:transform .3s cubic-bezier(.22,1,.36,1)}
 .dlx-board__row:hover .dlx-board__go svg{transform:translateX(5px)}
 
 /* ------------------------------------------------------------- choices ---
@@ -219,9 +273,9 @@
   position:relative;display:flex;flex-direction:column;
   padding:28px 26px 26px;
   border:1px solid var(--dlx-edge);border-radius:18px;
-  background:linear-gradient(170deg,rgba(255,255,255,.05),rgba(0,0,0,.26));
+  background:var(--dlx-surface);
   text-decoration:none;color:inherit;overflow:hidden;
-  transition:transform .4s cubic-bezier(.22,1,.36,1),border-color .3s,box-shadow .4s;
+  transition:transform .4s cubic-bezier(.22,1,.36,1),border-color .3s,box-shadow .4s,background .3s;
 }
 .dlx-card::after{ /* sweep highlight on hover */
   content:'';position:absolute;inset:0;pointer-events:none;
@@ -230,40 +284,41 @@
 }
 .dlx-card:hover{
   transform:translateY(-6px);
+  background:var(--dlx-surface-3);
   border-color:rgba(56,225,255,.5);
   box-shadow:0 30px 70px rgba(0,0,0,.45);
 }
 .dlx-card:hover::after{transform:translateX(120%)}
 .dlx-card:focus-visible{outline:2px solid var(--dlx-gold);outline-offset:4px}
 .dlx-card__tag{
-  font-family:var(--mono);font-size:10px;font-weight:600;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--dlx-gold);
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--dlx-gold);
   margin-bottom:16px;
 }
 .dlx-card__glyph{
   width:44px;height:44px;margin-bottom:16px;
   display:flex;align-items:center;justify-content:center;
   border:1px solid var(--dlx-edge-2);border-radius:12px;
-  background:rgba(0,0,0,.3);color:var(--dlx-gold);
+  background:var(--dlx-surface-2);color:var(--dlx-gold);
 }
 .dlx-card__glyph svg{width:22px;height:22px}
 .dlx-card h2{
   font-family:var(--mono);font-size:25px;font-weight:700;
   letter-spacing:-.02em;margin-bottom:11px;color:var(--dlx-txt);
 }
-.dlx-card p{font-size:13.5px;line-height:1.68;color:var(--dlx-txt-2);margin-bottom:18px}
+.dlx-card p{font-size:14.5px;line-height:1.7;color:var(--dlx-txt-2);margin-bottom:18px}
 .dlx-list{list-style:none;padding:0;margin:0 0 20px}
 .dlx-list li{
-  position:relative;padding-left:18px;margin-bottom:8px;
-  font-size:12.8px;line-height:1.55;color:var(--dlx-txt-2);
+  position:relative;padding-left:21px;margin-bottom:9px;
+  font-size:14px;line-height:1.6;color:var(--dlx-txt-2);
 }
 .dlx-list li::before{
-  content:'';position:absolute;left:4px;top:7px;width:5px;height:5px;
-  border-radius:1px;background:var(--dlx-gold);opacity:.85;
+  content:'';position:absolute;left:4px;top:8px;width:6px;height:6px;
+  border-radius:1px;background:var(--dlx-gold);opacity:.9;
 }
 .dlx-card__go{
   margin-top:auto;display:inline-flex;align-items:center;gap:9px;
-  font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--dlx-gold);
+  font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--dlx-gold);
 }
 .dlx-card__go svg{width:15px;height:15px;transition:transform .3s cubic-bezier(.22,1,.36,1)}
 .dlx-card:hover .dlx-card__go svg{transform:translateX(5px)}
@@ -274,18 +329,18 @@
 .dlx-spec{margin:0 0 20px;border-top:1px solid var(--dlx-edge)}
 .dlx-spec__row{
   display:grid;grid-template-columns:104px 1fr;gap:14px;
-  padding:9px 0;border-bottom:1px solid var(--dlx-edge);
-  font-size:12.8px;color:var(--dlx-txt-2);
+  padding:10px 0;border-bottom:1px solid var(--dlx-edge);
+  font-size:14px;color:var(--dlx-txt-2);
 }
 .dlx-spec__row dt{
-  font-family:var(--mono);font-size:10px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--dlx-txt-3);padding-top:2px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dlx-txt-3);padding-top:3px;
 }
-.dlx-spec__row dd{margin:0;line-height:1.55;color:var(--dlx-txt)}
+.dlx-spec__row dd{margin:0;line-height:1.6;color:var(--dlx-txt)}
 .dlx-spec__row dd span{color:var(--dlx-txt-3)}
 .dlx-spec code{
   font-family:var(--mono);font-size:.9em;color:var(--dlx-gold);
-  background:rgba(255,255,255,.06);padding:1.5px 6px;border-radius:4px;
+  background:var(--dlx-surface-2);padding:2px 7px;border-radius:4px;
   word-break:break-all;
 }
 
@@ -295,15 +350,15 @@
 .dlx-ticket{
   position:relative;margin-top:38px;
   border:1px solid var(--dlx-edge-2);border-radius:20px;
-  background:linear-gradient(165deg,rgba(255,255,255,.07),rgba(0,0,0,.34));
+  background:var(--dlx-surface);
   box-shadow:0 30px 80px rgba(0,0,0,.4);
   overflow:hidden;
 }
 .dlx-ticket__bar{
   display:flex;align-items:center;gap:9px;
   padding:13px 22px;border-bottom:1px solid var(--dlx-edge);
-  background:rgba(0,0,0,.34);
-  font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--dlx-txt-3);
+  background:var(--dlx-surface-2);
+  font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--dlx-txt-3);
 }
 .dlx-ticket__dots{display:inline-flex;gap:6px;margin-right:6px}
 .dlx-ticket__dots i{width:9px;height:9px;border-radius:50%;background:var(--dlx-edge-2)}
@@ -313,71 +368,126 @@
 .dlx-ticket__stub{
   padding:30px;
   border-left:1px dashed var(--dlx-edge-2);
-  background:rgba(0,0,0,.2);
+  background:var(--dlx-surface-2);
 }
 .dlx-ticket__stub h3{
-  font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;
+  font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase;color:var(--dlx-gold);margin-bottom:16px;
 }
 .dlx-ticket__badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
 .dlx-badge{
-  font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.09em;
+  font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.07em;
   text-transform:uppercase;color:var(--dlx-txt-2);
-  padding:5px 11px;border-radius:999px;
-  border:1px solid var(--dlx-edge-2);background:rgba(0,0,0,.28);
+  padding:6px 12px;border-radius:999px;
+  border:1px solid var(--dlx-edge-2);background:var(--dlx-surface-2);
 }
-.dlx-badge--gold{color:#0a0f24;background:var(--dlx-gold);border-color:transparent}
+/* The file-type chip picks up the head of the download button's gradient, so
+   "EXE installer" and the button below it read as one unit. */
+.dlx-badge--gold{
+  color:#070b1a;border-color:transparent;
+  background:linear-gradient(100deg,#38e1ff,#8b7bff);
+  box-shadow:0 4px 14px rgba(139,123,255,.32);
+}
 
-/* the download button — self-contained so it does not inherit buttons.css */
+/* the download button — self-contained so it does not inherit buttons.css.
+   This is the one click the whole four-step flow exists to produce, so it is
+   deliberately the only element on the site that carries the full brand
+   gradient rather than the flat cyan accent. Three motion cues, all of them
+   pointing at "a file is about to arrive":
+     · the gradient drifts slowly, so the button is never quite static
+     · a ring pulses outward from the edge, pulling the eye across the page
+     · on hover a sheen sweeps across and a bar fills along the bottom,
+       borrowing the shape of a progress indicator
+   ------------------------------------------------------------------------ */
 .dlx-dl{
-  display:inline-flex;align-items:center;gap:14px;
-  padding:17px 28px;border-radius:14px;
-  background:var(--dlx-gold);color:#070b1a;
-  font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:.01em;
+  position:relative;isolation:isolate;overflow:hidden;
+  display:inline-flex;align-items:center;gap:18px;
+  padding:22px 38px;border-radius:16px;
+  background:linear-gradient(105deg,#38e1ff 0%,#8b7bff 46%,#ff5cc8 100%);
+  background-size:230% 100%;background-position:0% 50%;
+  color:#070b1a;
+  font-family:var(--mono);font-size:18px;font-weight:700;letter-spacing:.01em;
   text-decoration:none;border:none;cursor:pointer;
-  box-shadow:0 14px 34px rgba(56,225,255,.28);
-  transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s,background .28s;
+  animation:dlxDlRing 2.8s ease-out infinite,
+            dlxDlDrift 7s ease-in-out infinite alternate;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),filter .3s;
 }
-.dlx-dl:hover{transform:translateY(-3px);background:#f0c458;box-shadow:0 20px 46px rgba(56,225,255,.4)}
-.dlx-dl:active{transform:translateY(0)}
-.dlx-dl:focus-visible{outline:2px solid var(--dlx-txt);outline-offset:4px}
+/* sheen — sits above the gradient, below the label (z-index 2 on the spans) */
+.dlx-dl::before{
+  content:'';position:absolute;top:0;bottom:0;left:0;width:45%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:translateX(-160%) skewX(-18deg);
+  transition:transform .75s cubic-bezier(.22,1,.36,1);
+  pointer-events:none;
+}
+.dlx-dl:hover::before{transform:translateX(320%) skewX(-18deg)}
+/* progress bar that fills on hover */
+.dlx-dl::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:4px;
+  background:rgba(7,11,26,.55);
+  transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .6s cubic-bezier(.22,1,.36,1);
+  pointer-events:none;
+}
+.dlx-dl:hover::after{transform:scaleX(1)}
+.dlx-dl > *{position:relative;z-index:2}
+.dlx-dl:hover{transform:translateY(-4px) scale(1.015);filter:saturate(1.15)}
+.dlx-dl:active{transform:translateY(0) scale(.99)}
+.dlx-dl:focus-visible{outline:3px solid var(--dlx-txt);outline-offset:4px}
 .dlx-dl__ico{
-  width:34px;height:34px;flex:none;border-radius:10px;
+  width:42px;height:42px;flex:none;border-radius:12px;
   display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.14);
+  background:rgba(7,11,26,.22);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);
 }
-.dlx-dl__ico svg{width:18px;height:18px}
-.dlx-dl small{display:block;font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.72;margin-top:2px}
+.dlx-dl__ico svg{width:22px;height:22px;animation:dlxDlBob 2.2s ease-in-out infinite}
+.dlx-dl:hover .dlx-dl__ico svg{animation-duration:.9s}
+.dlx-dl small{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.72;margin-top:4px}
+
+@keyframes dlxDlDrift{
+  0%{background-position:0% 50%}
+  100%{background-position:100% 50%}
+}
+@keyframes dlxDlRing{
+  0%{box-shadow:0 18px 44px rgba(139,123,255,.40),0 0 0 0 rgba(56,225,255,.5)}
+  70%{box-shadow:0 18px 44px rgba(139,123,255,.40),0 0 0 18px rgba(56,225,255,0)}
+  100%{box-shadow:0 18px 44px rgba(139,123,255,.40),0 0 0 0 rgba(56,225,255,0)}
+}
+@keyframes dlxDlBob{
+  0%,100%{transform:translateY(-2px)}
+  50%{transform:translateY(3px)}
+}
+
 .dlx-hint{
-  margin-top:16px;font-family:var(--mono);font-size:11.5px;line-height:1.65;
-  color:var(--dlx-txt-3);
+  margin-top:20px;font-size:13.5px;line-height:1.7;
+  color:var(--dlx-txt-3);max-width:52ch;
 }
 
 /* ------------------------------------------------------------- detail ---- */
 .dlx-cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:34px}
 .dlx-panel{
   border:1px solid var(--dlx-edge);border-radius:16px;
-  background:rgba(0,0,0,.24);padding:24px 24px 22px;
+  background:var(--dlx-surface);padding:24px 24px 22px;
 }
 .dlx-panel h3{
-  font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.13em;
+  font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase;color:var(--dlx-gold);margin-bottom:14px;
 }
-.dlx-panel p{font-size:13.3px;line-height:1.7;color:var(--dlx-txt-2);margin-bottom:14px}
+.dlx-panel p{font-size:14.5px;line-height:1.72;color:var(--dlx-txt-2);margin-bottom:14px}
 .dlx-panel p:last-child{margin-bottom:0}
 .dlx-steps{list-style:none;counter-reset:dlxs;padding:0;margin:0}
 .dlx-steps li{
-  counter-increment:dlxs;position:relative;padding-left:34px;margin-bottom:14px;
-  font-size:13.2px;line-height:1.62;color:var(--dlx-txt-2);
+  counter-increment:dlxs;position:relative;padding-left:38px;margin-bottom:15px;
+  font-size:14.5px;line-height:1.66;color:var(--dlx-txt-2);
 }
 .dlx-steps li:last-child{margin-bottom:0}
 .dlx-steps li::before{
-  content:counter(dlxs,decimal-leading-zero);
-  position:absolute;left:0;top:0;
-  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--dlx-gold);
-  width:23px;height:23px;border-radius:7px;
+  content:counter(dlxs);
+  position:absolute;left:0;top:-1px;
+  font-family:var(--mono);font-size:13px;font-weight:700;color:#070b1a;
+  width:26px;height:26px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  border:1px solid rgba(56,225,255,.34);background:var(--dlx-gold-dim);
+  border:none;background:var(--dlx-gold);
 }
 .dlx-steps li b{color:var(--dlx-txt);font-weight:600}
 
@@ -387,13 +497,13 @@
 .dlx-flownav{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
 .dlx-flownav a{
   display:inline-flex;align-items:center;gap:9px;
-  padding:11px 18px;border-radius:999px;
-  border:1px solid var(--dlx-edge-2);background:rgba(0,0,0,.26);
-  font-family:var(--mono);font-size:12px;color:var(--dlx-txt-2);
+  padding:12px 20px;border-radius:999px;
+  border:1px solid var(--dlx-edge-2);background:var(--dlx-surface);
+  font-family:var(--mono);font-size:13px;color:var(--dlx-txt-2);
   text-decoration:none;transition:border-color .25s,color .25s,background .25s,transform .25s;
 }
 .dlx-flownav a svg{width:15px;height:15px;flex:none;opacity:.8}
-.dlx-flownav a:hover{border-color:var(--dlx-gold);color:var(--dlx-gold);background:rgba(56,225,255,.1);transform:translateY(-2px)}
+.dlx-flownav a:hover{border-color:var(--dlx-gold);color:var(--dlx-gold);background:var(--dlx-surface-3);transform:translateY(-2px)}
 .dlx-flownav a:hover svg{opacity:1}
 .dlx-flownav a:focus-visible{outline:2px solid var(--dlx-gold);outline-offset:3px}
 
@@ -401,23 +511,23 @@
 .dlx-sec{margin-top:66px}
 .dlx-sec__hd{
   display:flex;align-items:baseline;gap:14px;margin-bottom:6px;
-  font-family:var(--mono);font-size:11px;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--dlx-gold);
+  font-family:var(--mono);font-size:12.5px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--dlx-gold);
 }
-.dlx-sec__hd::before{content:'';width:22px;height:1px;background:var(--dlx-gold);opacity:.6}
+.dlx-sec__hd::before{content:'';width:22px;height:2px;background:var(--dlx-gold)}
 .dlx-sec h2{
   font-family:var(--mono);font-size:clamp(22px,3vw,30px);font-weight:700;
   letter-spacing:-.02em;color:var(--dlx-txt);
 }
 .dlx-sec h2 em{font-style:normal;color:var(--dlx-gold)}
-.dlx-sec > p{max-width:70ch;margin-top:12px;font-size:14px;line-height:1.72;color:var(--dlx-txt-2)}
+.dlx-sec > p{max-width:70ch;margin-top:12px;font-size:15px;line-height:1.75;color:var(--dlx-txt-2)}
 
 /* --------------------------------------------------------------- faq ----- */
 .dlx-faq{margin-top:26px;border-top:1px solid var(--dlx-edge)}
 .dlx-faq details{border-bottom:1px solid var(--dlx-edge)}
 .dlx-faq summary{
   list-style:none;cursor:pointer;padding:18px 40px 18px 0;position:relative;
-  font-size:14.5px;font-weight:600;color:var(--dlx-txt);transition:color .25s;
+  font-size:15.5px;font-weight:600;color:var(--dlx-txt);transition:color .25s;
 }
 .dlx-faq summary::-webkit-details-marker{display:none}
 .dlx-faq summary:hover{color:var(--dlx-gold)}
@@ -427,28 +537,104 @@
 }
 .dlx-faq details[open] summary::after{content:'−'}
 .dlx-faq details[open] summary{color:var(--dlx-gold)}
-.dlx-faq .dlx-faq__a{padding:0 30px 20px 0;font-size:13.5px;line-height:1.75;color:var(--dlx-txt-2)}
+.dlx-faq .dlx-faq__a{padding:0 30px 20px 0;font-size:14.5px;line-height:1.78;color:var(--dlx-txt-2)}
 
 /* -------------------------------------------------------------- outro ---- */
 .dlx-outro{
   margin-top:64px;padding:34px 30px;text-align:center;
   border:1px solid var(--dlx-edge);border-radius:20px;
-  background:radial-gradient(600px 220px at 50% 0%,rgba(56,225,255,.14),transparent 70%),rgba(0,0,0,.26);
+  background:var(--dlx-surface);
 }
 .dlx-outro h2{font-family:var(--mono);font-size:clamp(21px,3vw,28px);font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
 .dlx-outro h2 em{font-style:normal;color:var(--dlx-gold)}
-.dlx-outro p{font-size:13.8px;color:var(--dlx-txt-2);max-width:60ch;margin:0 auto 22px}
+.dlx-outro p{font-size:14.5px;color:var(--dlx-txt-2);max-width:60ch;margin:0 auto 22px;line-height:1.7}
 .dlx-outro__btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .dlx-outro__btns a{
-  padding:13px 24px;border-radius:12px;text-decoration:none;
-  font-family:var(--mono);font-size:13px;font-weight:600;
+  padding:14px 26px;border-radius:12px;text-decoration:none;
+  font-family:var(--mono);font-size:14px;font-weight:700;
   transition:transform .25s,box-shadow .25s,background .25s,border-color .25s;
 }
 .dlx-outro__btns a:first-child{background:var(--dlx-gold);color:#070b1a;box-shadow:0 12px 30px rgba(56,225,255,.26)}
-.dlx-outro__btns a:first-child:hover{transform:translateY(-3px);background:#f0c458}
-.dlx-outro__btns a+a{border:1px solid var(--dlx-edge-2);color:var(--dlx-txt-2)}
+.dlx-outro__btns a:first-child:hover{transform:translateY(-3px);background:#6fecff}
+.dlx-outro__btns a+a{border:1px solid var(--dlx-edge-2);color:var(--dlx-txt-2);background:var(--dlx-surface-2)}
 .dlx-outro__btns a+a:hover{transform:translateY(-3px);border-color:var(--dlx-gold);color:var(--dlx-gold)}
 .dlx-outro__btns a:focus-visible{outline:2px solid var(--dlx-gold);outline-offset:4px}
+
+/* ========================================================================== *
+   KEY CLICKS — the four decision points
+   --------------------------------------------------------------------------
+   Everything a visitor must actually click to move through the flow is
+   promoted here: the release-window rows (step 01) and the build / platform
+   cards (steps 02–03). Each scope sets --dlx-hot and --dlx-hot-soft, and the
+   rules below read only those two variables, so re-colouring a step is a
+   one-line change rather than a hunt through the file.
+
+   Treatment, in order of visibility:
+     · the "go" affordance becomes a filled pill instead of bare text
+     · a rest-state edge marker says "clickable" before any hover happens
+     · hover raises the accent to full strength
+     · :active gives a real press response
+   ========================================================================== */
+
+/* step 01 — release window rows                                            */
+.dlx-board{--dlx-hot:var(--dlx-amber);--dlx-hot-soft:var(--dlx-amber-soft)}
+/* step 02 — build choice                                                   */
+.dlx-card--online{--dlx-hot:var(--dlx-mint);--dlx-hot-soft:var(--dlx-mint-soft)}
+.dlx-card--offline{--dlx-hot:var(--dlx-violet);--dlx-hot-soft:var(--dlx-violet-soft)}
+
+/* ---------------------------------------------------------- board rows --- */
+/* The accent bar sits at rest in a dimmed accent and fills on hover, so a row
+   reads as a link before the pointer arrives. Hover stays on an opaque
+   surface — a translucent tint here would put the slab back behind the text. */
+.dlx-board__row::before{opacity:.45}
+.dlx-board__row:hover::before{opacity:1}
+.dlx-board__row:focus-visible{outline-color:var(--dlx-hot)}
+.dlx-board__row:active{transform:translateY(0)}
+
+/* The go affordance: a filled pill, visible at rest, so the row reads as the
+   thing to click rather than as a table entry. */
+.dlx-board__go,
+.dlx-card__go{
+  padding:10px 16px;border-radius:999px;
+  border:1px solid var(--dlx-hot);
+  background:var(--dlx-hot-soft);
+  color:var(--dlx-hot);
+  box-shadow:0 0 0 0 var(--dlx-hot-soft);
+  transition:background .26s,color .26s,box-shadow .3s,transform .26s;
+}
+.dlx-board__row:hover .dlx-board__go,
+.dlx-card:hover .dlx-card__go{
+  background:var(--dlx-hot);color:#070b1a;
+  box-shadow:0 8px 26px var(--dlx-hot-soft);
+}
+.dlx-board__row:active .dlx-board__go,
+.dlx-card:active .dlx-card__go{transform:scale(.97);box-shadow:none}
+
+/* ------------------------------------------------------------- cards ----- */
+.dlx-card{border-top:2px solid transparent}
+.dlx-card--online,
+.dlx-card--offline{border-top-color:var(--dlx-hot)}
+.dlx-card--online::after,
+.dlx-card--offline::after{
+  background:linear-gradient(115deg,transparent 38%,var(--dlx-hot-soft) 50%,transparent 62%);
+}
+.dlx-card--online:hover,
+.dlx-card--offline:hover{
+  border-color:var(--dlx-hot);
+  box-shadow:0 30px 70px rgba(0,0,0,.45),0 0 0 1px var(--dlx-hot-soft);
+}
+.dlx-card--online:active,
+.dlx-card--offline:active{transform:translateY(-2px)}
+.dlx-card--online:focus-visible,
+.dlx-card--offline:focus-visible{outline-color:var(--dlx-hot)}
+.dlx-card--online .dlx-card__tag,
+.dlx-card--offline .dlx-card__tag{color:var(--dlx-hot)}
+.dlx-card--online .dlx-card__glyph,
+.dlx-card--offline .dlx-card__glyph{
+  color:var(--dlx-hot);border-color:var(--dlx-hot);background:var(--dlx-hot-soft);
+}
+.dlx-card--online .dlx-list li::before,
+.dlx-card--offline .dlx-list li::before{background:var(--dlx-hot)}
 
 /* ---------------------------------------------------------- responsive --- */
 @media (max-width:980px){
@@ -460,12 +646,14 @@
 @media (max-width:760px){
   .dlx{padding:96px 0 58px}
   .dlx-wrap{padding:0 20px}
-  .dlx-board__row{grid-template-columns:1fr auto;gap:8px 14px;padding:20px 4px}
+  .dlx-board__row{grid-template-columns:1fr auto;gap:10px 14px;padding:18px 18px 18px 22px}
   .dlx-board__idx{display:none}
   .dlx-board__time{grid-column:1;font-size:29px}
   .dlx-board__go{grid-column:2;grid-row:1;align-self:center}
   .dlx-board__desc{grid-column:1/-1}
-  .dlx-board__row:hover{padding-left:12px}
+  .dlx-guide{font-size:14.5px;gap:10px}
+  .dlx-dl{width:100%;padding:20px 24px;font-size:16px;gap:14px}
+  .dlx-dl__ico{width:38px;height:38px}
   .dlx-ticket__main,.dlx-ticket__stub{padding:24px 20px}
   .dlx-rail__seg{flex:1 1 100%;min-width:0;display:flex;gap:10px;align-items:baseline}
   .dlx-rail__seg b{margin-top:0}
@@ -474,9 +662,18 @@
 /* ------------------------------------------------------- reduced motion --- */
 @media (prefers-reduced-motion:reduce){
   .dlx-card,.dlx-card::after,.dlx-board__row,.dlx-board__row::before,
-  .dlx-dl,.dlx-flownav a,.dlx-outro__btns a{transition:none}
-  .dlx-card:hover,.dlx-dl:hover,.dlx-flownav a:hover,.dlx-outro__btns a:hover{transform:none}
+  .dlx-dl,.dlx-flownav a,.dlx-outro__btns a,
+  .dlx-board__go,.dlx-card__go{transition:none}
+  .dlx-card:hover,.dlx-dl:hover,.dlx-flownav a:hover,.dlx-outro__btns a:hover,
+  .dlx-board__row:hover{transform:none}
   .dlx-card:hover::after{transform:translateX(-120%)}
-  .dlx-board__row:hover{padding-left:6px}
+  .dlx-card--online:active,.dlx-card--offline:active{transform:none}
+  .dlx-board__row:active .dlx-board__go,.dlx-card:active .dlx-card__go{transform:none}
   .dlx-kicker i,.dlx-head h1 span.dlx-cursor{animation:none}
+  /* download button keeps its gradient and glow, loses all movement */
+  .dlx-dl{animation:none;box-shadow:0 18px 44px rgba(139,123,255,.40)}
+  .dlx-dl__ico svg{animation:none;transform:none}
+  .dlx-dl::before,.dlx-dl::after{transition:none}
+  .dlx-dl:hover::before{transform:translateX(-160%) skewX(-18deg)}
+  .dlx-dl:hover::after{transform:scaleX(0)}
 }
