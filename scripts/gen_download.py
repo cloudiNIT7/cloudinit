@@ -441,9 +441,16 @@ def progress_panel(size):
             <span class="dlx-prog__state" data-k="state" aria-live="polite">Connecting to storage…</span>
             <span class="dlx-prog__pct" data-k="pct">0%</span>
           </div>
-          <div class="dlx-prog__track" data-k="track" role="progressbar" aria-label="Download progress"
-               aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <span class="dlx-prog__fill" data-k="fill"></span>
+          <div class="dlx-prog__bar">
+            <div class="dlx-prog__track" data-k="track" role="progressbar" aria-label="Download progress"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span class="dlx-prog__fill" data-k="fill"></span>
+            </div>
+            <!-- at 100% the bar turns into the save button -->
+            <a class="dlx-prog__save" data-k="save" href="#" hidden>
+              <span class="dlx-prog__save-ico" aria-hidden="true">{I_DL}</span>
+              <span>Save file<small data-k="savename"></small></span>
+            </a>
           </div>
           <dl class="dlx-prog__stats">
             <div><dt>received</dt><dd data-k="bytes">0.0 MB / {size_mb(size)}</dd></div>
@@ -453,7 +460,6 @@ def progress_panel(size):
           <ol class="dlx-prog__rail">{rail_items}</ol>
           <p class="dlx-prog__msg" data-k="msg"></p>
           <div class="dlx-prog__btns">
-            <a class="dlx-prog__btn dlx-prog__btn--hot" data-k="save" href="#" hidden>Save file</a>
             <button type="button" class="dlx-prog__btn" data-k="cancel">Cancel</button>
             <button type="button" class="dlx-prog__btn" data-k="retry" hidden>Retry</button>
           </div>

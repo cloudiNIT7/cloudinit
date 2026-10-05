@@ -26,7 +26,7 @@
   var el = {
     state: $('state'), pct: $('pct'), track: $('track'), fill: $('fill'),
     bytes: $('bytes'), speed: $('speed'), eta: $('eta'), msg: $('msg'),
-    cancel: $('cancel'), retry: $('retry'), save: $('save'),
+    cancel: $('cancel'), retry: $('retry'), save: $('save'), savename: $('savename'),
     stages: root.querySelectorAll('[data-s]')
   };
 
@@ -80,7 +80,7 @@
     progress(0, expected);
     el.speed.textContent = '—';
     el.eta.textContent = '—';
-    show('cancel', true); show('retry', false); show('save', false);
+    show('cancel', true); show('retry', false); show('save', false); show('track', true);
     root.hidden = false;
     btn.classList.add('is-busy');
     btn.setAttribute('aria-disabled', 'true');
@@ -171,17 +171,18 @@
         blobUrl = URL.createObjectURL(blob);
         el.save.href = blobUrl;
         el.save.download = fileName;
+        el.savename.textContent = fileName + ' · ' + mb(got);
 
         stage('done');
         mode('done');
         el.speed.textContent = rate(got / Math.max(secs, 0.001)) + ' avg';
         el.eta.textContent = 'done in ' + eta(secs);
         say('Download complete',
-            fileName + ' (' + mb(got) + ') is ready. If the save dialog did not appear, use "Save file" below. ' +
+            fileName + ' (' + mb(got) + ') is ready. If the save dialog did not appear, click the green bar to save it. ' +
             'Then follow the install steps further down this page.');
         el.save.click();
         idle();
-        show('save', true);
+        show('track', false); show('save', true);
         show('retry', true);
         el.retry.textContent = 'Download again';
       })

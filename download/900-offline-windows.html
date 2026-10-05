@@ -95,9 +95,16 @@
             <span class="dlx-prog__state" data-k="state" aria-live="polite">Connecting to storage…</span>
             <span class="dlx-prog__pct" data-k="pct">0%</span>
           </div>
-          <div class="dlx-prog__track" data-k="track" role="progressbar" aria-label="Download progress"
-               aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <span class="dlx-prog__fill" data-k="fill"></span>
+          <div class="dlx-prog__bar">
+            <div class="dlx-prog__track" data-k="track" role="progressbar" aria-label="Download progress"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span class="dlx-prog__fill" data-k="fill"></span>
+            </div>
+            <!-- at 100% the bar turns into the save button -->
+            <a class="dlx-prog__save" data-k="save" href="#" hidden>
+              <span class="dlx-prog__save-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0l-4.5-4.5M12 14l4.5-4.5M4 20h16"/></svg></span>
+              <span>Save file<small data-k="savename"></small></span>
+            </a>
           </div>
           <dl class="dlx-prog__stats">
             <div><dt>received</dt><dd data-k="bytes">0.0 MB / 74.3 MB</dd></div>
@@ -107,7 +114,6 @@
           <ol class="dlx-prog__rail"><li data-s="connect">connect</li><li data-s="fetch">download</li><li data-s="verify">verify</li><li data-s="save">save</li><li data-s="done">ready</li></ol>
           <p class="dlx-prog__msg" data-k="msg"></p>
           <div class="dlx-prog__btns">
-            <a class="dlx-prog__btn dlx-prog__btn--hot" data-k="save" href="#" hidden>Save file</a>
             <button type="button" class="dlx-prog__btn" data-k="cancel">Cancel</button>
             <button type="button" class="dlx-prog__btn" data-k="retry" hidden>Retry</button>
           </div>
