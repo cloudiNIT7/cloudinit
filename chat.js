@@ -306,7 +306,7 @@
       k: 'api integration integrate github repo sdk documentation docs developer endpoint open',
       p: ['is there an api', 'api access', 'open api', 'github repo', 'developer docs'],
       a: `<p>Yes — every internal service is reachable through one open, documented API, so you can build, integrate, and extend without touching the core. The API surface comes up at stage 6 of the boot sequence.</p>
-          <p>Code and docs live on <a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">GitHub (CloudTechDevOps)</a>. There's also a live sandbox at <a href="https://test.cloudinit.online" target="_blank" rel="noopener">test.cloudinit.online</a>.</p>
+          <p>Code and docs live on <a href="https://github.com/CloudTechDevOps" target="_blank" rel="noopener">GitHub (CloudTechDevOps)</a>.</p>
           <p>Since v3.0.0 the boot log also exports to JSON for CI pipelines.</p>`,
       next: ['What is in the changelog?', 'What are the nine stages?', 'Contact support']
     },
