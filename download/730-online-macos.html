@@ -85,11 +85,33 @@
           <span class="dlx-badge">arm64</span>
           <span class="dlx-badge">Online build</span>
         </div>
-        <a class="dlx-dl" href="https://storage.googleapis.com/abinashdatafetch/mac%20online/cloudinitonlinemac730am.dmg" rel="noopener">
+        <a class="dlx-dl" href="https://storage.googleapis.com/abinashdatafetch/mac%20online/cloudinitonlinemac730am.dmg" rel="noopener" data-dlx-url data-size="4935290" data-name="CloudINIT-730AM-online-macos.dmg">
           <span class="dlx-dl__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0l-4.5-4.5M12 14l4.5-4.5M4 20h16"/></svg></span>
           <span>Download for macOS<small>DMG · 4.7 MB</small></span>
         </a>
-        <p class="dlx-hint">The download starts as soon as you click. If your browser asks, choose <b>Keep</b> or <b>Allow</b> — the file is served over HTTPS from our own storage.</p>
+        <p class="dlx-hint">Progress shows right here once you click. If your browser asks, choose <b>Keep</b> or <b>Allow</b> — the file is served over HTTPS from our own storage.</p>
+        <div class="dlx-prog" data-dlx-prog data-mode="run" hidden>
+          <div class="dlx-prog__top">
+            <span class="dlx-prog__state" data-k="state" aria-live="polite">Connecting to storage…</span>
+            <span class="dlx-prog__pct" data-k="pct">0%</span>
+          </div>
+          <div class="dlx-prog__track" data-k="track" role="progressbar" aria-label="Download progress"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span class="dlx-prog__fill" data-k="fill"></span>
+          </div>
+          <dl class="dlx-prog__stats">
+            <div><dt>received</dt><dd data-k="bytes">0.0 MB / 4.7 MB</dd></div>
+            <div><dt>speed</dt><dd data-k="speed">—</dd></div>
+            <div><dt>time left</dt><dd data-k="eta">—</dd></div>
+          </dl>
+          <ol class="dlx-prog__rail"><li data-s="connect">connect</li><li data-s="fetch">download</li><li data-s="verify">verify</li><li data-s="save">save</li><li data-s="done">ready</li></ol>
+          <p class="dlx-prog__msg" data-k="msg"></p>
+          <div class="dlx-prog__btns">
+            <a class="dlx-prog__btn dlx-prog__btn--hot" data-k="save" href="#" hidden>Save file</a>
+            <button type="button" class="dlx-prog__btn" data-k="cancel">Cancel</button>
+            <button type="button" class="dlx-prog__btn" data-k="retry" hidden>Retry</button>
+          </div>
+        </div>
       </div>
       <div class="dlx-ticket__stub">
         <h3>Build details</h3>
@@ -129,6 +151,7 @@
   <div class="dlx-flownav"><a href="730-online.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6m0 0l5-5m-5 5l5 5"/></svg>Back to platform choice</a><a href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6m0 0l5-5m-5 5l5 5"/></svg>Start over</a><a href="../status.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m0 0l-5-5m5 5l-5 5"/></svg>Live system status</a></div>
  </div>
 </main>
+<script src="../dl-progress.js" defer></script>
 
 <footer>
   <div class="footer-grid">

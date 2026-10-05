@@ -276,7 +276,10 @@ def page(slug, title, desc, body, robots='index,follow'):
     doc = HEAD.format(title=html.escape(title), desc=html.escape(desc), slug=slug,
                       robots=robots, nav=NAV) + body + TAIL.format(footer=FOOTER)
     path = os.path.join(OUT, slug + '.html')
-    with open(path, 'w', encoding='utf-8') as f:
+    # The repo keeps CRLF line endings; normalise so re-running the generator
+    # does not rewrite every line of every page.
+    doc = doc.replace('\r\n', '\n')
+    with open(path, 'w', encoding='utf-8', newline='\r\n') as f:
         f.write(doc)
     return path
 
@@ -428,6 +431,35 @@ def gen_mode(b, m):
                 body)
 
 
+def progress_panel(size):
+    """In-page download progress. Hidden until the button is clicked;
+    dl-progress.js drives it."""
+    stages = [('connect', 'connect'), ('fetch', 'download'), ('verify', 'verify'), ('save', 'save'), ('done', 'ready')]
+    rail_items = ''.join(f'<li data-s="{k}">{label}</li>' for k, label in stages)
+    return f"""        <div class="dlx-prog" data-dlx-prog data-mode="run" hidden>
+          <div class="dlx-prog__top">
+            <span class="dlx-prog__state" data-k="state" aria-live="polite">Connecting to storage…</span>
+            <span class="dlx-prog__pct" data-k="pct">0%</span>
+          </div>
+          <div class="dlx-prog__track" data-k="track" role="progressbar" aria-label="Download progress"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span class="dlx-prog__fill" data-k="fill"></span>
+          </div>
+          <dl class="dlx-prog__stats">
+            <div><dt>received</dt><dd data-k="bytes">0.0 MB / {size_mb(size)}</dd></div>
+            <div><dt>speed</dt><dd data-k="speed">—</dd></div>
+            <div><dt>time left</dt><dd data-k="eta">—</dd></div>
+          </dl>
+          <ol class="dlx-prog__rail">{rail_items}</ol>
+          <p class="dlx-prog__msg" data-k="msg"></p>
+          <div class="dlx-prog__btns">
+            <a class="dlx-prog__btn dlx-prog__btn--hot" data-k="save" href="#" hidden>Save file</a>
+            <button type="button" class="dlx-prog__btn" data-k="cancel">Cancel</button>
+            <button type="button" class="dlx-prog__btn" data-k="retry" hidden>Retry</button>
+          </div>
+        </div>"""
+
+
 # ------------------------------------------------------------------ level 4
 def gen_leaf(b, m, o):
     url = url_for(b['id'], m['id'], o['id'])
@@ -435,6 +467,9 @@ def gen_leaf(b, m, o):
     c = MODE_COPY[m['id']]
     notes = ''.join(f'<li>{n}</li>' for n in c['notes'])
     steps = ''.join(f'<li>{s}</li>' for s in OS_COPY[o['id']]['install'])
+    # Clean name for the saved file; the bucket object names are irregular.
+    save_name = (f"CloudINIT-{b['label'].replace(':', '').replace(' ', '')}-"
+                 f"{m['id']}-{o['id']}.{o['ext'].lower()}")
 
     meta = spec([
         ('Release', b['label'] + f" <span>· {b['when']}</span>"),
@@ -470,11 +505,12 @@ def gen_leaf(b, m, o):
           <span class="dlx-badge">{o['short']}</span>
           <span class="dlx-badge">{m['label']}</span>
         </div>
-        <a class="dlx-dl" href="{url}" rel="noopener">
+        <a class="dlx-dl" href="{url}" rel="noopener" data-dlx-url data-size="{size}" data-name="{save_name}">
           <span class="dlx-dl__ico" aria-hidden="true">{I_DL}</span>
           <span>Download for {o['label']}<small>{o['ext']} · {size_mb(size)}</small></span>
         </a>
-        <p class="dlx-hint">The download starts as soon as you click. If your browser asks, choose <b>Keep</b> or <b>Allow</b> — the file is served over HTTPS from our own storage.</p>
+        <p class="dlx-hint">Progress shows right here once you click. If your browser asks, choose <b>Keep</b> or <b>Allow</b> — the file is served over HTTPS from our own storage.</p>
+{progress_panel(size)}
       </div>
       <div class="dlx-ticket__stub">
         <h3>Build details</h3>
@@ -501,6 +537,7 @@ def gen_leaf(b, m, o):
            ('Live system status', '../status.html', False))}
  </div>
 </main>
+<script src="../dl-progress.js" defer></script>
 """
     return page(f"{b['id']}-{m['id']}-{o['id']}",
                 f"Download {b['label']} {m['label']} for {o['label']} — Cloud iNIT",
